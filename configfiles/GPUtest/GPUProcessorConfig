@@ -1,0 +1,8 @@
+# GPU Processor config file
+#
+# Paths to files
+#
+PMTFile inputfiles/all_pmts.txt
+DetectorFile inputfiles/detector.txt
+ParameterFile inputfiles/parameters.txt
+

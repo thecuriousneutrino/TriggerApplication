@@ -1,3 +1,11 @@
+
+CUDA_HOME=/usr/local/cuda-7.5/targets/x86_64-linux
+CUDAINC = -I$(CUDA_HOME)/include -I.
+CUDALIB = -L$(CUDA_HOME)/lib -lcudart
+
+NVCCFLAGS       := -lineinfo -arch=sm_20 --ptxas-options=-v --use_fast_math
+
+
 ToolDAQPath=ToolDAQ
 ZMQLib= -L $(ToolDAQPath)/zeromq-4.0.7/lib -lzmq 
 ZMQInclude= -I $(ToolDAQPath)/zeromq-4.0.7/include/ 
@@ -8,8 +16,8 @@ BoostInclude= -I $(ToolDAQPath)/boost_1_66_0/install/include
 DataModelInclude = 
 DataModelLib = 
 
-MyToolsInclude =
-MyToolsLib = 
+MyToolsInclude = $(CUDAINC)
+MyToolsLib = $(CUDALIB)
 
 all: lib/libStore.so lib/libLogging.so lib/libDataModel.so include/Tool.h lib/libMyTools.so lib/libServiceDiscovery.so lib/libToolChain.so main RemoteControl  NodeDaemon
 
@@ -45,17 +53,18 @@ clean:
 	rm -f main
 	rm -f RemoteControl
 	rm -f NodeDaemon
+	rm -f UserTools/CUDA/daq_code.o
 
 lib/libDataModel.so: DataModel/* lib/libLogging.so | lib/libStore.so
 	@echo "\n*************** Making " $@ "****************"
 	cp DataModel/*.h include/
 	g++ -g -fPIC -shared DataModel/*.cpp -I include -L lib -lStore  -lLogging  -o lib/libDataModel.so $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude)  $(BoostLib) $(BoostInclude)
 
-lib/libMyTools.so: UserTools/*/* UserTools/* | include/Tool.h lib/libDataModel.so lib/libLogging.so lib/libStore.so lib/libToolChain.so
+lib/libMyTools.so: UserTools/*/* UserTools/* UserTools/CUDA/daq_code.o | include/Tool.h lib/libDataModel.so lib/libLogging.so lib/libStore.so lib/libToolChain.so
 	@echo "\n*************** Making " $@ "****************"
 	cp UserTools/*/*.h include/
 	cp UserTools/Factory/*.h include/
-	g++ -g -fPIC -shared  UserTools/Factory/Factory.cpp -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib) $(DataModelInclude) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude)
+	g++ -g -fPIC -shared  UserTools/Factory/Factory.cpp UserTools/CUDA/daq_code.o -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib) $(DataModelInclude) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude)
 
 RemoteControl:
 	cd $(ToolDAQPath)/ToolDAQFramework/ && make RemoteControl
@@ -86,3 +95,8 @@ update:
 	cd $(ToolDAQPath)/ToolDAQFramework; git pull
 	cd $(ToolDAQPath)/zeromq-4.0.7; git pull
 	git pull
+
+UserTools/CUDA/daq_code.o:
+
+	cp UserTools/CUDA/*.h include/
+	nvcc -c --shared -Xcompiler -fPIC UserTools/CUDA/daq_code.cu -o UserTools/CUDA/daq_code.o -I include $(CUDAINC) $(NVCCFLAGS) $(CUDALIB)
