@@ -1,7 +1,7 @@
 ### Created by Dr. Benjamin Richards (b.richards@qmul.ac.uk)
 
 ### Download base image from repo
-FROM hkdaq/hkdaq:base
+FROM hkdaq/triggerapplication:base
 
 ### Run the following commands as super user (root):
 USER root
