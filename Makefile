@@ -16,14 +16,23 @@ BoostInclude= -I $(ToolDAQPath)/boost_1_66_0/install/include
 DataModelInclude = 
 DataModelLib = 
 
-MyToolsInclude = $(CUDAINC)
-MyToolsLib = $(CUDALIB)
+MyToolsInclude = 
+MyToolsLib = 
+
+MyToolsIncludeGPU = $(MyToolsInclude) $(CUDAINC)
+MyToolsLibGPU = $(MyToolsLib) $(CUDALIB)
 
 all: lib/libStore.so lib/libLogging.so lib/libDataModel.so include/Tool.h lib/libMyTools.so lib/libServiceDiscovery.so lib/libToolChain.so main RemoteControl  NodeDaemon
+
+GPU: lib/libStore.so lib/libLogging.so lib/libDataModel.so include/Tool.h lib/libMyToolsGPU.so lib/libServiceDiscovery.so lib/libToolChain.so mainGPU RemoteControl NodeDaemon
 
 main: src/main.cpp | lib/libMyTools.so lib/libStore.so lib/libLogging.so lib/libToolChain.so lib/libDataModel.so lib/libServiceDiscovery.so
 	@echo "\n*************** Making " $@ "****************"
 	g++ -g src/main.cpp -o main -I include -L lib -lStore -lMyTools -lToolChain -lDataModel -lLogging -lServiceDiscovery -lpthread $(DataModelInclude) $(MyToolsInclude)  $(MyToolsLib) $(ZMQLib) $(ZMQInclude)  $(BoostLib) $(BoostInclude)
+
+mainGPU: src/main.cpp | lib/libMyToolsGPU.so lib/libStore.so lib/libLogging.so lib/libToolChain.so lib/libDataModel.so lib/libServiceDiscovery.so
+	@echo "\n*************** Making " $@ "****************"
+	g++ -g src/main.cpp -o main -I include -L lib -lStore -lMyToolsGPU -lToolChain -lDataModel -lLogging -lServiceDiscovery -lpthread $(DataModelInclude) $(MyToolsIncludeGPU)  $(MyToolsLibGPU) $(ZMQLib) $(ZMQInclude)  $(BoostLib) $(BoostInclude)
 
 
 lib/libStore.so: $(ToolDAQPath)/ToolDAQFramework/src/Store/*
@@ -60,11 +69,17 @@ lib/libDataModel.so: DataModel/* lib/libLogging.so | lib/libStore.so
 	cp DataModel/*.h include/
 	g++ -g -fPIC -shared DataModel/*.cpp -I include -L lib -lStore  -lLogging  -o lib/libDataModel.so $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude)  $(BoostLib) $(BoostInclude)
 
-lib/libMyTools.so: UserTools/*/* UserTools/* UserTools/CUDA/daq_code.o | include/Tool.h lib/libDataModel.so lib/libLogging.so lib/libStore.so lib/libToolChain.so
+lib/libMyTools.so: UserTools/*/* UserTools/* | include/Tool.h lib/libDataModel.so lib/libLogging.so lib/libStore.so lib/libToolChain.so
 	@echo "\n*************** Making " $@ "****************"
 	cp UserTools/*/*.h include/
 	cp UserTools/Factory/*.h include/
-	g++ -g -fPIC -shared  UserTools/Factory/Factory.cpp UserTools/CUDA/daq_code.o -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib) $(DataModelInclude) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude)
+	g++ -g -fPIC -shared  UserTools/Factory/Factory.cpp -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib) $(DataModelInclude) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude)
+
+lib/libMyToolsGPU.so: UserTools/*/* UserTools/* UserTools/CUDA/daq_code.o | include/Tool.h lib/libDataModel.so lib/libLogging.so lib/libStore.so lib/libToolChain.so
+	@echo "\n*************** Making " $@ "****************"
+	cp UserTools/*/*.h include/
+	cp UserTools/Factory/*.h include/
+	g++ -g -fPIC -shared  UserTools/Factory/FactoryGPU.cpp UserTools/CUDA/daq_code.o -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyToolsGPU.so $(MyToolsIncludeGPU) $(MyToolsLibGPU) $(DataModelInclude) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude)
 
 RemoteControl:
 	cd $(ToolDAQPath)/ToolDAQFramework/ && make RemoteControl
