@@ -26,6 +26,7 @@ RUN yum install -y \
     
 Run git clone https://github.com/ToolDAQ/ToolDAQApplication.git ; cd ToolDAQApplication ; ./GetToolDAQ.sh --ToolDAQ_ZMQ;
 Run cd ToolDAQApplication ; ./GetToolDAQ.sh --Boost;
+Run cd ToolDAQApplication ; ./GetToolDAQ.sh --with_root --Root;
 Run cd ToolDAQApplication ; ./GetToolDAQ.sh --Final;
 
 ### Open terminal
