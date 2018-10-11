@@ -1,7 +1,7 @@
 ### Created by Dr. Benjamin Richards (b.richards@qmul.ac.uk)
 
 ### Download base image from repo
-FROM tooldaq/tooldaq:base
+FROM hkdaq/hkdaq:base
 
 ### Run the following commands as super user (root):
 USER root
