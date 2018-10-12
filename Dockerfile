@@ -6,7 +6,7 @@ FROM hkdaq/triggerapplication:base
 ### Run the following commands as super user (root):
 USER root
 
-Run cd ToolDAQApplication; make update; make;
+Run cd TriggerApplication; make update; make;
 
 ### Open terminal
 CMD ["/bin/bash"]
