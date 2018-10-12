@@ -1,5 +1,5 @@
 #include "GPUProcessor.h"
-#include "CUDA/library_daq.h"
+#include "UserTools/CUDA/library_daq.h"
 
 GPUProcessor::GPUProcessor():Tool(){}
 
