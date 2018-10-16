@@ -1,0 +1,6 @@
+#test vertices config file
+
+PMTFile inputfiles/all_pmts.txt
+DetectorFile inputfiles/detector.txt
+ParameterFile inputfiles/parameters.txt
+

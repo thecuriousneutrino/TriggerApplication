@@ -1,10 +1,10 @@
-#include "GPUProcessor.h"
-#include "UserTools/CUDA/library_daq.h"
+#include "test_vertices.h"
 
-GPUProcessor::GPUProcessor():Tool(){}
+test_vertices::test_vertices():Tool(){}
 
 
-bool GPUProcessor::Initialise(std::string configfile, DataModel &data){
+bool test_vertices::Initialise(std::string configfile, DataModel &data){
+
 
   if(configfile!="")  m_variables.Initialise(configfile);
   //m_variables.Print();
@@ -25,7 +25,11 @@ bool GPUProcessor::Initialise(std::string configfile, DataModel &data){
   m_variables.Get("DetectorFile",DetectorFile);
   m_variables.Get("ParameterFile",ParameterFile);
   
-  gpu_daq_initialize(PMTFile,DetectorFile,ParameterFile);
+  //  gpu_daq_initialize(PMTFile,DetectorFile,ParameterFile);
+
+#ifdef GPU
+  GPU_daq::initialize();
+#endif
 
   // can acess variables directly like this and would be good if you could impliment in your code
 
@@ -42,11 +46,13 @@ bool GPUProcessor::Initialise(std::string configfile, DataModel &data){
 
   //and pull them out with the get function in the same way 
 
+
   return true;
 }
 
 
-bool GPUProcessor::Execute(){
+bool test_vertices::Execute(){
+
 
   //do stuff with m_data->Samples
   /*
@@ -56,17 +62,21 @@ bool GPUProcessor::Execute(){
   }
   */
   int the_output;
-  the_output = CUDAFunction(m_data->Samples.at(0).m_PMTid, m_data->Samples.at(0).m_time);
-
+  //  the_output = CUDAFunction(m_data->Samples.at(0).m_PMTid, m_data->Samples.at(0).m_time);
+#ifdef GPU   
+  //the_output =   GPU_daq::gpu_daq_execute();
+#endif
   m_data->triggeroutput=(bool)the_output;
 
   return true;
 }
 
 
-bool GPUProcessor::Finalise(){
+bool test_vertices::Finalise(){
 
-  gpu_daq_finalize();
+#ifdef GPU
+  GPU_daq::finalize();
+#endif
 
   return true;
 }

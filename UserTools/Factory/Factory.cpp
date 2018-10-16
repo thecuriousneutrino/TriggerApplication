@@ -6,9 +6,10 @@ Tool* ret=0;
 // if (tool=="Type") tool=new Type;
 if (tool=="DummyTool") ret=new DummyTool;
 
-//if (tool=="GPUProcessor") ret=new GPUProcessor;
 if (tool=="TriggerOutput") ret=new TriggerOutput;
-  if (tool=="WCSimASCIReader") ret=new WCSimASCIReader;
+if (tool=="WCSimASCIReader") ret=new WCSimASCIReader;
+if (tool=="nhits") ret=new nhits;
+  if (tool=="test_vertices") ret=new test_vertices;
 return ret;
 }
 
