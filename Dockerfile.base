@@ -20,14 +20,19 @@ RUN yum install -y \
     file \
     bzip2-devel \
     which \
+    binutils \
+    libX11-devel \
+    libXpm-devel \
+    libXft-devel \
+    libXext-devel \
     && yum clean all \
     && rm -rf /var/cache/yum
 
     
-Run git clone https://github.com/ToolDAQ/ToolDAQApplication.git ; cd ToolDAQApplication ; ./GetToolDAQ.sh --ToolDAQ_ZMQ;
-Run cd ToolDAQApplication ; ./GetToolDAQ.sh --Boost;
-Run cd ToolDAQApplication ; ./GetToolDAQ.sh --with_root --Root;
-Run cd ToolDAQApplication ; ./GetToolDAQ.sh --Final;
+Run git clone https://github.com/HKDAQ/TriggerApplication.git ; cd TriggerApplication ; ./GetToolDAQ.sh --ToolDAQ_ZMQ;
+Run cd TriggerApplication ; ./GetToolDAQ.sh --Boost;
+Run cd TriggerApplication ; ./GetToolDAQ.sh --with_root --Root;
+Run cd TriggerApplication ; ./GetToolDAQ.sh --Final;
 
 ### Open terminal
 CMD ["/bin/bash"]
