@@ -183,6 +183,7 @@ bool setup_threads_for_tof_2d(unsigned int A, unsigned int B);
 bool setup_threads_to_find_candidates();
 bool setup_threads_nhits();
 bool read_the_input();
+bool read_the_input_ToolDAQ(std::vector<int> PMTid, std::vector<int> time);
 void allocate_tofs_memory_on_device();
 void allocate_directions_memory_on_device();
 void allocate_correct_memory_on_device();
@@ -794,6 +795,50 @@ bool read_the_input(){
   return true;
 }
 
+bool read_the_input_ToolDAQ(std::vector<int> PMTids, std::vector<int> times){
+
+  printf(" --- read input \n");
+  n_hits = PMTids.size();
+  if( !n_hits ) return false;
+  if( n_hits != times.size() ){
+    printf(" n PMT ids %d but n times %d \n", n_hits, times.size());
+    return false;
+  }
+  printf(" input contains %d hits \n", n_hits);
+  host_ids = (unsigned int *)malloc(n_hits*sizeof(unsigned int));
+  host_times = (unsigned int *)malloc(n_hits*sizeof(unsigned int));
+
+  //  if( !read_input() ) return false;
+  // read_input()
+  {
+    int min = INT_MAX;
+    int max = INT_MIN;
+    int time;
+    for(int i=0; i<PMTids.size(); i++){
+      time = int(floor(times[i]));
+      host_times[i] = time;
+      host_ids[i] = PMTids[i];
+      if( time > max ) max = time;
+      if( time < min ) min = time;
+    }
+    if( min < 0 ){
+      time_offset -= min;
+    }
+    the_max_time = max;
+  }
+
+  //time_offset = 600.; // set to constant to match trevor running
+  n_time_bins = int(floor((the_max_time + time_offset)/time_step_size))+1; // floor returns the integer below
+  printf(" input max_time %d, n_time_bins %d \n", the_max_time, n_time_bins);
+  printf(" time_offset = %f ns \n", time_offset);
+  //print_input();
+
+  checkCudaErrors( cudaMemcpyToSymbol(constant_n_time_bins, &n_time_bins, sizeof(n_time_bins)) );
+  checkCudaErrors( cudaMemcpyToSymbol(constant_n_hits, &n_hits, sizeof(n_hits)) );
+
+  return true;
+}
+
 void allocate_tofs_memory_on_device(){
 
   printf(" --- allocate memory tofs \n");
@@ -1185,7 +1230,7 @@ unsigned int read_number_of_pmts(){
 
   FILE *f=fopen(pmts_file.c_str(), "r");
   if (f == NULL){
-    printf(" cannot read pmts file \n");
+    printf(" cannot read pmts file %s \n", pmts_file.c_str());
     fclose(f);
     return 0;
   }

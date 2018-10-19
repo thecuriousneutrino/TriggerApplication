@@ -35,9 +35,12 @@ bool WCSimASCIReader::Execute(){
       }
 
     SubSample tmpsb(PMTid,time);
-    for(int i=0;i<100;i++)m_data->Samples.push_back(tmpsb);
+    m_data->Samples.push_back(tmpsb);
     
     data.close();
+
+    printf("qqq reader from file %s found %d \n", inputfile.c_str(), PMTid.size());
+
   }
   
   else {

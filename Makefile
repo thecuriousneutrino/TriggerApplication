@@ -1,4 +1,5 @@
-CUDA_HOME=/usr/local/cuda
+#CUDA_HOME=/usr/local/cuda
+CUDA_HOME=/usr/local/cuda-8.0
 CUDAINC = -I$(CUDA_HOME)/include 
 CUDALIB = -L$(CUDA_HOME)/lib64 -lcudart -lcuda -lcudadevrt
 
