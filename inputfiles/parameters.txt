@@ -1,9 +1,9 @@
 
  dark_rate 8400.
  distance_between_vertices 500.
- wall_like_distance 0.
- water_like_threshold_number_of_pmts 64
- wall_like_threshold_number_of_pmts 100
+ wall_like_distance 0
+ water_like_threshold_number_of_pmts 50
+ wall_like_threshold_number_of_pmts 14
  coalesce_time 500.
  trigger_gate_up 950.0
  trigger_gate_down -400.0
@@ -15,7 +15,10 @@
  num_threads_per_block_x 1
  nhits_step_size 5
  nhits_window 400
- nhits_threshold_min 50
- nhits_threshold_max 100
+ nhits_threshold_min 173
+ nhits_threshold_max 173
  n_direction_bins_theta 3
- cylindrical_grid 0
+ cylindrical_grid 1
+ costheta_cone_cut 0.2
+ select_based_on_cone 1
+ write_output_mode 1

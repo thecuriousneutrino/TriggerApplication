@@ -1,17 +1,17 @@
-#ifndef GPUProcessor_H
-#define GPUProcessor_H
+#ifndef nhits_H
+#define nhits_H
 
 #include <string>
 #include <iostream>
 
 #include "Tool.h"
 
-class GPUProcessor: public Tool {
+class nhits: public Tool {
 
 
  public:
 
-  GPUProcessor();
+  nhits();
   bool Initialise(std::string configfile,DataModel &data);
   bool Execute();
   bool Finalise();
