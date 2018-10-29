@@ -42,6 +42,13 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   if(!ReadTree(fChainGeom))
     return false;
 
+  fWCOpt = new WCSimRootOptions();
+  fChainOpt  ->SetBranchAddress("wcsimrootoptions", &fWCOpt);
+  fWCEvt = new WCSimRootEvent();
+  fChainEvent->SetBranchAddress("wcsimrootevent",   &fWCEvt);
+  fWCGeo = new WCSimRootGeom();
+  fChainGeom ->SetBranchAddress("wcsimrootgeom",    &fWCGeo);
+
   //ensure that the geometry & options are the same for each file
   if(!CompareTree(fChainOpt))
     return false;
@@ -54,6 +61,11 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   else if (fNEvents > fChainEvent->GetEntries())
     fNEvents = fChainEvent->GetEntries();
   fCurrEvent = 0;
+
+  //store the pass through information in the transient data model
+  m_data->WCSimOpt = *fWCOpt;
+  m_data->WCSimEvt = *fWCEvt;
+  m_data->WCSimGeo = *fWCGeo;
 
   return true;
 }
@@ -91,13 +103,41 @@ bool WCSimReader::CompareTree(TChain * chain)
 }
 
 bool WCSimReader::Execute(){
-  cout << "Event " << fCurrEvent << " of " << fNEvents << endl;
+  cout << "Event " << fCurrEvent+1 << " of " << fNEvents << endl;
+  //get the digits
+  if(!fChainEvent->GetEntry(fCurrEvent)) {
+    cerr << "Could not read event " << fCurrEvent << " in event TChain" << endl;
+    return false;
+  }
+  fEvt = fWCEvt->GetTrigger(0);
 
+  //loop over the digits
+  std::vector<int> PMTid, time, charge;
+  for(int idigi = 0; idigi < fEvt->GetNcherenkovdigihits(); idigi++) {
+    //get a digit
+    TObject *element = (fEvt->GetCherenkovDigiHits())->At(idigi);
+    WCSimRootCherenkovDigiHit *digit = 
+      dynamic_cast<WCSimRootCherenkovDigiHit*>(element);
+    //get the digit information
+    PMTid.push_back(digit->GetTubeId());
+    time.push_back(digit->GetT());
+    charge.push_back(digit->GetQ());
+    //print
+    if(idigi < 10)
+    cout << "Digit " << idigi 
+	 << " has T " << digit->GetT()
+	 << ", Q " << digit->GetQ()
+	 << " on PMT " << digit->GetTubeId() << endl;
+  }//idigi  
+
+  //store digit info in the transient data model
+  SubSample sub(PMTid, time, charge);
+  m_data->Samples.push_back(sub);
 
   //and finally, increment event counter
   fCurrEvent++;
-  if(fCurrEvent > fNEvents)
-    return false;
+  if(fCurrEvent >= fNEvents)
+    m_data->vars.Set("StopLoop",1);
 
   return true;
 }

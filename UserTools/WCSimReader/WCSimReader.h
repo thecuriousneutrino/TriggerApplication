@@ -31,6 +31,11 @@ class WCSimReader: public Tool {
   TChain * fChainEvent;
   TChain * fChainGeom;
 
+  WCSimRootOptions * fWCOpt;
+  WCSimRootEvent   * fWCEvt;
+  WCSimRootGeom    * fWCGeo;
+  WCSimRootTrigger * fEvt;
+
   long int fCurrEvent;
   long int fNEvents;
 

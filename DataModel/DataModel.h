@@ -7,6 +7,10 @@
 
 //#include "TTree.h"
 
+#include "WCSimRootOptions.hh"
+#include "WCSimRootEvent.hh"
+#include "WCSimRootGeom.hh"
+
 #include "Store.h"
 #include "BoostStore.h"
 #include "Logging.h"
@@ -22,10 +26,15 @@ class SubSample{
     m_PMTid=PMTid;
     m_time=time;
   }
+  SubSample(std::vector<int> PMTid, std::vector<int> time, std::vector<int> charge) {
+    m_PMTid  = PMTid;
+    m_time   = time;
+    m_charge = charge;
+  }
 
   std::vector<int> m_PMTid;
   std::vector<int> m_time;
-
+  std::vector<int> m_charge;
 };
 
 class DataModel {
@@ -50,6 +59,9 @@ class DataModel {
   std::vector<SubSample> Samples;
   bool triggeroutput;
   
+  WCSimRootOptions WCSimOpt;
+  WCSimRootEvent   WCSimEvt;
+  WCSimRootGeom    WCSimGeo;
 
 
  private:
