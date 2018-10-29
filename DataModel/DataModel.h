@@ -37,6 +37,18 @@ class SubSample{
   std::vector<int> m_charge;
 };
 
+class PMTInfo{
+ public:
+  PMTInfo(int tubeno, float x, float y, float z) {
+    m_tubeno = tubeno;
+    m_x = x;
+    m_y = y;
+    m_z = z;
+  }
+  int m_tubeno;
+  float m_x, m_y, m_z;
+};
+
 class DataModel {
 
 
@@ -57,6 +69,11 @@ class DataModel {
   zmq::context_t* context;
 
   std::vector<SubSample> Samples;
+  std::vector<SubSample> ODSamples;
+
+  std::vector<PMTInfo> IDGeom;
+  std::vector<PMTInfo> ODGeom;
+
   bool triggeroutput;
   
   WCSimRootOptions WCSimOpt;

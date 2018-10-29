@@ -48,6 +48,7 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   fChainEvent->SetBranchAddress("wcsimrootevent",   &fWCEvt);
   fWCGeo = new WCSimRootGeom();
   fChainGeom ->SetBranchAddress("wcsimrootgeom",    &fWCGeo);
+  //TODO OD digits
 
   //ensure that the geometry & options are the same for each file
   if(!CompareTree(fChainOpt))
@@ -66,6 +67,19 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   m_data->WCSimOpt = *fWCOpt;
   m_data->WCSimEvt = *fWCEvt;
   m_data->WCSimGeo = *fWCGeo;
+
+  //store the PMT locations
+  /*
+  for(int ipmt = 0; ipmt < fWCGeo->GetWCNumPMT(); ipmt++) {
+    WCSimRootPMT pmt = fWCGeo->GetPMT(ipmt);
+    PMTInfo pmt_light(pmt.GetTubeNo(), pmt.GetPosition(0), pmt.GetPosition(1), pmt.GetPosition(2));
+    m_data->IDGeom.push_back(pmt_light);
+    //TODO differentiate OD/ID PMTs
+  }//ipmt
+  */
+
+  //store the relevant options
+  //TODO dark noise
 
   return true;
 }
