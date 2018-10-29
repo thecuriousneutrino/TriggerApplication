@@ -1,0 +1,4 @@
+# Dummy config file
+
+infile $WCSIMDIR/wcsim.root
+nevents -1
