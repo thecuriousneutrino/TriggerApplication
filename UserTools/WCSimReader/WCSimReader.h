@@ -4,6 +4,12 @@
 #include <string>
 #include <iostream>
 
+#include "WCSimRootOptions.hh"
+#include "WCSimRootEvent.hh"
+#include "WCSimRootGeom.hh"
+
+#include "TChain.h"
+
 #include "Tool.h"
 
 class WCSimReader: public Tool {
@@ -18,10 +24,18 @@ class WCSimReader: public Tool {
 
 
  private:
+  bool ReadTree(TChain * chain);
+  bool CompareTree(TChain * chain);
 
+  TChain * fChainOpt;
+  TChain * fChainEvent;
+  TChain * fChainGeom;
 
+  long int fCurrEvent;
+  long int fNEvents;
 
-
+  std::string fInFile;
+  std::string fFileList;
 
 };
 
