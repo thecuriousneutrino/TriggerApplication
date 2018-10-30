@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <sstream>
 
 #include "WCSimRootOptions.hh"
 #include "WCSimRootEvent.hh"
@@ -24,15 +25,20 @@ class WCSimReader: public Tool {
 
 
  private:
+  //methods used in Initialise
   bool ReadTree(TChain * chain);
   bool CompareTree(TChain * chain);
+
+  //methods used in Execute
+  SubSample GetDigits();
 
   TChain * fChainOpt;
   TChain * fChainEvent;
   TChain * fChainGeom;
 
   WCSimRootOptions * fWCOpt;
-  WCSimRootEvent   * fWCEvt;
+  WCSimRootEvent   * fWCEvtID;
+  WCSimRootEvent   * fWCEvtOD;
   WCSimRootGeom    * fWCGeo;
   WCSimRootTrigger * fEvt;
 
@@ -41,7 +47,6 @@ class WCSimReader: public Tool {
 
   std::string fInFile;
   std::string fFileList;
-
 };
 
 

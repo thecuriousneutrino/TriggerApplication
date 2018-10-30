@@ -25,7 +25,7 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
 	 << " infile filelist" << endl;
     return false;
   }
-     
+
   cout << "fNEvents  \t" << fNEvents  << endl;
   cout << "fInFile   \t" << fInFile   << endl;
   cout << "fFileList \t" << fFileList << endl;
@@ -44,17 +44,27 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
 
   fWCOpt = new WCSimRootOptions();
   fChainOpt  ->SetBranchAddress("wcsimrootoptions", &fWCOpt);
-  fWCEvt = new WCSimRootEvent();
-  fChainEvent->SetBranchAddress("wcsimrootevent",   &fWCEvt);
+  fChainOpt->GetEntry(0);
+  fWCEvtID = new WCSimRootEvent();
+  fChainEvent->SetBranchAddress("wcsimrootevent",   &fWCEvtID);
+  cerr << "Waiting for WCSim PR #251 to be able to save OD digits" << endl;
+  if(false) {
+  //if(fWCOpt->GetGeomHasOD()) { // TODO uncomment this after WCSim 251 merged
+    cout << "The geometry has an OD. Will add OD digits to m_data" << endl;
+    fWCEvtOD = new WCSimRootEvent();
+    fChainEvent->SetBranchAddress("wcsimrootevent_OD",   &fWCEvtOD);
+  }
+  else
+    fWCEvtOD = 0;
   fWCGeo = new WCSimRootGeom();
   fChainGeom ->SetBranchAddress("wcsimrootgeom",    &fWCGeo);
-  //TODO OD digits
 
   //ensure that the geometry & options are the same for each file
   if(!CompareTree(fChainOpt))
     return false;
   if(!CompareTree(fChainGeom))
     return false;
+
 
   //set number of events
   if(fNEvents <= 0)
@@ -63,23 +73,30 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
     fNEvents = fChainEvent->GetEntries();
   fCurrEvent = 0;
 
-  //store the pass through information in the transient data model
-  m_data->WCSimOpt = *fWCOpt;
-  m_data->WCSimEvt = *fWCEvt;
-  m_data->WCSimGeo = *fWCGeo;
-
   //store the PMT locations
-  /*
+  cerr << "OD PMTs are not currently stored in WCSimRootGeom. When they are TODO fill IDGeom & ODGeom depending on where the PMT is" << endl;
+  fChainGeom->GetEntry(0);
   for(int ipmt = 0; ipmt < fWCGeo->GetWCNumPMT(); ipmt++) {
     WCSimRootPMT pmt = fWCGeo->GetPMT(ipmt);
     PMTInfo pmt_light(pmt.GetTubeNo(), pmt.GetPosition(0), pmt.GetPosition(1), pmt.GetPosition(2));
     m_data->IDGeom.push_back(pmt_light);
-    //TODO differentiate OD/ID PMTs
   }//ipmt
-  */
+
+  //store the pass through information in the transient data model
+  //m_data->WCSimOpt = *fWCOpt;
+  //m_data->WCSimEvt = *fWCEvt;
+  //m_data->WCSimGeo = *fWCGeo;
 
   //store the relevant options
-  //TODO dark noise
+  m_data->IDPMTDarkRate = fWCOpt->GetPMTDarkRate();
+  m_data->IDNPMTs = fWCGeo->GetWCNumPMT();
+  cerr << "OD Dark rate is not current stored. TODO add when WCSim #246 is merged" << endl;
+  /* TODO Uncomment this when #246 merged
+  m_data->IDPMTDarkRate(fWCOpt->GetPMTDarkRate("tank"));
+  m_data->IDNPMTs = fWCGeo->GetWCNumPMT("tank");
+  m_data->ODPMTDarkRate(fWCOpt->GetPMTDarkRate("OD"));
+  m_data->ODNPMTs = fWCGeo->GetWCNumPMT("OD");
+  */
 
   return true;
 }
@@ -123,8 +140,29 @@ bool WCSimReader::Execute(){
     cerr << "Could not read event " << fCurrEvent << " in event TChain" << endl;
     return false;
   }
-  fEvt = fWCEvt->GetTrigger(0);
 
+  //store digit info in the transient data model
+  //ID
+  fEvt = fWCEvtID->GetTrigger(0);
+  SubSample subid = GetDigits();
+  m_data->IDSamples.push_back(subid);
+  //OD
+  if(fWCEvtOD) {
+    fEvt = fWCEvtOD->GetTrigger(0);
+    SubSample subod = GetDigits();
+    m_data->ODSamples.push_back(subod);
+  }
+
+  //and finally, increment event counter
+  fCurrEvent++;
+  if(fCurrEvent >= fNEvents)
+    m_data->vars.Set("StopLoop",1);
+
+  return true;
+}
+
+SubSample WCSimReader::GetDigits()
+{
   //loop over the digits
   std::vector<int> PMTid, time, charge;
   for(int idigi = 0; idigi < fEvt->GetNcherenkovdigihits(); idigi++) {
@@ -143,25 +181,25 @@ bool WCSimReader::Execute(){
 	 << ", Q " << digit->GetQ()
 	 << " on PMT " << digit->GetTubeId() << endl;
   }//idigi  
+  cout << "Saved information on " << time.size() << " digits" << endl;
 
-  //store digit info in the transient data model
   SubSample sub(PMTid, time, charge);
-  m_data->Samples.push_back(sub);
 
-  //and finally, increment event counter
-  fCurrEvent++;
-  if(fCurrEvent >= fNEvents)
-    m_data->vars.Set("StopLoop",1);
-
-  return true;
+  return sub;  
 }
 
-
 bool WCSimReader::Finalise(){
+  cout << "Read " << fCurrEvent << " WCSim events" << endl;
 
   delete fChainOpt;
   delete fChainEvent;
   delete fChainGeom;
+
+  delete fWCOpt;
+  delete fWCEvtID;
+  if(fWCEvtOD)
+    delete fWCEvtOD;
+  delete fWCGeo;
 
   return true;
 }

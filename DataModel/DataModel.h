@@ -68,13 +68,18 @@ class DataModel {
 
   zmq::context_t* context;
 
-  std::vector<SubSample> Samples;
+  std::vector<SubSample> IDSamples;
   std::vector<SubSample> ODSamples;
 
   std::vector<PMTInfo> IDGeom;
   std::vector<PMTInfo> ODGeom;
 
   bool triggeroutput;
+
+  double IDPMTDarkRate;
+  double ODPMTDarkRate;
+  double IDNPMTs;
+  double ODNPMTs;
   
   WCSimRootOptions WCSimOpt;
   WCSimRootEvent   WCSimEvt;

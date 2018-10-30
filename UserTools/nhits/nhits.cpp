@@ -61,17 +61,17 @@ bool nhits::Execute(){
 
   //do stuff with m_data->Samples
 
-  printf(" qqq data samples size %d \n", m_data->Samples.size());
+  printf(" qqq data samples size %d \n", m_data->IDSamples.size());
 
-  for( std::vector<SubSample>::const_iterator is=m_data->Samples.begin(); is!=m_data->Samples.end(); ++is){
+  for( std::vector<SubSample>::const_iterator is=m_data->IDSamples.begin(); is!=m_data->IDSamples.end(); ++is){
 #ifdef GPU   
   //  the_output =   GPU_daq::nhits_execute();
   the_output =   GPU_daq::nhits_execute(is->m_PMTid, is->m_time);
-  printf(" qqq qqq look at %d of size %d \n", is - m_data->Samples.begin(), m_data->Samples.size());
+  printf(" qqq qqq look at %d of size %d \n", is - m_data->IDSamples.begin(), m_data->IDSamples.size());
 #endif
   }
 
-  //  the_output = CUDAFunction(m_data->Samples.at(0).m_PMTid, m_data->Samples.at(0).m_time);
+  //  the_output = CUDAFunction(m_data->IDSamples.at(0).m_PMTid, m_data->IDSamples.at(0).m_time);
   m_data->triggeroutput=(bool)the_output;
 
 

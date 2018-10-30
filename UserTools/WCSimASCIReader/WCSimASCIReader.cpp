@@ -35,7 +35,7 @@ bool WCSimASCIReader::Execute(){
       }
 
     SubSample tmpsb(PMTid,time);
-    m_data->Samples.push_back(tmpsb);
+    m_data->IDSamples.push_back(tmpsb);
     
     data.close();
 
