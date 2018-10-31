@@ -85,6 +85,7 @@ class DataModel {
   WCSimRootEvent   WCSimEvt;
   WCSimRootGeom    WCSimGeo;
 
+  bool IsMC;
 
  private:
 

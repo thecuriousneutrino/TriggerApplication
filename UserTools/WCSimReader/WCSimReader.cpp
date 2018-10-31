@@ -88,6 +88,8 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   //m_data->WCSimGeo = *fWCGeo;
 
   //store the relevant options
+  m_data->IsMC = true;
+  //geometry
   m_data->IDPMTDarkRate = fWCOpt->GetPMTDarkRate();
   m_data->IDNPMTs = fWCGeo->GetWCNumPMT();
   cerr << "OD Dark rate is not current stored. TODO add when WCSim #246 is merged" << endl;
