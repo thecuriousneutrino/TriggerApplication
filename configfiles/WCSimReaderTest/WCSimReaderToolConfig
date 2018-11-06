@@ -2,3 +2,4 @@
 
 infile $WCSIMDIR/wcsim.root
 nevents -1
+verbose 3

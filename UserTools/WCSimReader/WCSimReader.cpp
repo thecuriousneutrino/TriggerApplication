@@ -1,8 +1,6 @@
 #include "WCSimReader.h"
 
-using std::cout;
 using std::cerr;
-using std::endl;
 
 WCSimReader::WCSimReader():Tool(){}
 
@@ -12,23 +10,28 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   if(configfile!="")  m_variables.Initialise(configfile);
   //m_variables.Print();
 
+  verbose = 0;
+  m_variables.Get("verbose", verbose);
+
   m_data= &data;
 
   //config reading
   if(! m_variables.Get("nevents",  fNEvents) ) {
-    cout << "nevents configuration not found. Reading all events" << endl;
+    Log("WARN: nevents configuration not found. Reading all events", WARN, verbose);
     fNEvents = -1;
   }
   if(! (m_variables.Get("infile",   fInFile) ||
 	m_variables.Get("filelist", fFileList))) {
-    cerr << "You must use one of the following options: "
-	 << " infile filelist" << endl;
+    Log("ERROR: You must use one of the following options: infile filelist", ERROR, verbose);
     return false;
   }
 
-  cout << "fNEvents  \t" << fNEvents  << endl;
-  cout << "fInFile   \t" << fInFile   << endl;
-  cout << "fFileList \t" << fFileList << endl;
+  ss << "INFO: fNEvents  \t" << fNEvents;
+  StreamToLog(INFO);
+  ss << "INFO: fInFile   \t" << fInFile;
+  StreamToLog(INFO);
+  ss << "INFO: fFileList \t" << fFileList;
+  StreamToLog(INFO);
 
   //open the trees
   fChainOpt   = new TChain("wcsimRootOptionsT");
@@ -48,7 +51,7 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   fWCEvtID = new WCSimRootEvent();
   fChainEvent->SetBranchAddress("wcsimrootevent",   &fWCEvtID);
   if(fWCOpt->GetGeomHasOD()) {
-    cout << "The geometry has an OD. Will add OD digits to m_data" << endl;
+    Log("INFO: The geometry has an OD. Will add OD digits to m_data", INFO, verbose);
     fWCEvtOD = new WCSimRootEvent();
     fChainEvent->SetBranchAddress("wcsimrootevent_OD",   &fWCEvtOD);
   }
@@ -72,7 +75,7 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   fCurrEvent = 0;
 
   //store the PMT locations
-  cerr << "OD PMTs are not currently stored in WCSimRootGeom. When they are TODO fill IDGeom & ODGeom depending on where the PMT is" << endl;
+  cerr << "OD PMTs are not currently stored in WCSimRootGeom. When they are TODO fill IDGeom & ODGeom depending on where the PMT is" << std::endl;
   fChainGeom->GetEntry(0);
   for(int ipmt = 0; ipmt < fWCGeo->GetWCNumPMT(); ipmt++) {
     WCSimRootPMT pmt = fWCGeo->GetPMT(ipmt);
@@ -90,7 +93,7 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   //geometry
   m_data->IDPMTDarkRate = fWCOpt->GetPMTDarkRate();
   m_data->IDNPMTs = fWCGeo->GetWCNumPMT();
-  cerr << "OD Dark rate is not current stored. TODO add when WCSim #246 is merged" << endl;
+  cerr << "OD Dark rate is not current stored. TODO add when WCSim #246 is merged" << std::endl;
   /* TODO Uncomment this when #246 merged
   m_data->IDPMTDarkRate(fWCOpt->GetPMTDarkRate("tank"));
   m_data->IDNPMTs = fWCGeo->GetWCNumPMT("tank");
@@ -105,39 +108,48 @@ bool WCSimReader::ReadTree(TChain * chain) {
   //use InFile
   if(fInFile.size()) { 
     if(! chain->Add(fInFile.c_str(), -1)) {
-      cerr << "Could not load tree: " << chain->GetName()
-	   << " in file(s): " << fInFile << endl;
+      ss << "ERROR: Could not load tree: " << chain->GetName()
+	 << " in file(s): " << fInFile;
+      StreamToLog(ERROR);
       return false;
     }
-    cout << "Loaded tree: " << chain->GetName()
-	 << " from file(s): " << fInFile
-	 << " with: " << chain->GetEntries()
-	 << " entries" << endl;
+    ss << "INFO: Loaded tree: " << chain->GetName()
+       << " from file(s): " << fInFile
+       << " with: " << chain->GetEntries()
+       << " entries";
+    StreamToLog(INFO);
     return true;
   }
   //use FileList
   else if(fFileList.size()) {
-    cerr << "FileList not implemented" << endl;
+    Log("ERROR: FileList not implemented", ERROR, verbose);
     return false;
   }
   else {
-    cerr << "Must use one of the following options: "
-	 << " infile filelist" << endl;
+    Log("ERROR: Must use one of the following options: infile filelist", ERROR, verbose);
     return false;
   }
 }
 
 bool WCSimReader::CompareTree(TChain * chain)
 {
-  cerr << "This function to ensure that the geometry (and at least some of the options tree) are identical is not yet implemented" << endl;
+  cerr << "This function to ensure that the geometry (and at least some of the options tree) are identical is not yet implemented" << std::endl;
   return true;
 }
 
 bool WCSimReader::Execute(){
-  cout << "Event " << fCurrEvent+1 << " of " << fNEvents << endl;
+  if(fCurrEvent % 100 == 0) {
+    ss << "INFO: Event " << fCurrEvent+1 << " of " << fNEvents;
+    StreamToLog(INFO);
+  }
+  else if(verbose >= DEBUG1) {
+    ss << "DEBUG: Event " << fCurrEvent+1 << " of " << fNEvents;
+    StreamToLog(DEBUG1);
+  }
   //get the digits
   if(!fChainEvent->GetEntry(fCurrEvent)) {
-    cerr << "Could not read event " << fCurrEvent << " in event TChain" << endl;
+    ss << "WARN: Could not read event " << fCurrEvent << " in event TChain";
+    StreamToLog(WARN);
     return false;
   }
 
@@ -175,13 +187,16 @@ SubSample WCSimReader::GetDigits()
     time.push_back(digit->GetT());
     charge.push_back(digit->GetQ());
     //print
-    if(idigi < 10)
-    cout << "Digit " << idigi 
+    if(idigi < 10 || verbose >= DEBUG2) {
+      ss << "DEBUG: Digit " << idigi 
 	 << " has T " << digit->GetT()
 	 << ", Q " << digit->GetQ()
-	 << " on PMT " << digit->GetTubeId() << endl;
+	 << " on PMT " << digit->GetTubeId();
+      StreamToLog(DEBUG2);
+    }
   }//idigi  
-  cout << "Saved information on " << time.size() << " digits" << endl;
+  ss << "DEBUG: Saved information on " << time.size() << " digits";
+  StreamToLog(DEBUG1);
 
   SubSample sub(PMTid, time, charge);
 
@@ -189,7 +204,8 @@ SubSample WCSimReader::GetDigits()
 }
 
 bool WCSimReader::Finalise(){
-  cout << "Read " << fCurrEvent << " WCSim events" << endl;
+  ss << "INFO: Read " << fCurrEvent << " WCSim events";
+  StreamToLog(INFO);
 
   delete fChainOpt;
   delete fChainEvent;
