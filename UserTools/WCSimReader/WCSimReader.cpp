@@ -96,9 +96,8 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   //file names
   TObjArray * rootfiles = fChainEvent->GetListOfFiles();
   for(int ifile = 0; ifile < rootfiles->GetEntries(); ifile++) {
-    fWCSimFiles.push_back(rootfiles->At(ifile)->GetTitle());
+    m_data->WCSimFiles.push_back(rootfiles->At(ifile)->GetTitle());
   }
-  m_data->WCSimFiles = fWCSimFiles;
   //geometry
   m_data->IDPMTDarkRate = fWCOpt->GetPMTDarkRate();
   m_data->IDNPMTs = fWCGeo->GetWCNumPMT();
