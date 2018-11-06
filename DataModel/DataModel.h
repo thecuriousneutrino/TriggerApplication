@@ -78,8 +78,8 @@ class DataModel {
 
   double IDPMTDarkRate;
   double ODPMTDarkRate;
-  double IDNPMTs;
-  double ODNPMTs;
+  int IDNPMTs;
+  int ODNPMTs;
   
   WCSimRootOptions WCSimOpt;
   WCSimRootEvent   WCSimEvt;
