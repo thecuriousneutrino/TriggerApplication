@@ -47,9 +47,7 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   fChainOpt->GetEntry(0);
   fWCEvtID = new WCSimRootEvent();
   fChainEvent->SetBranchAddress("wcsimrootevent",   &fWCEvtID);
-  cerr << "Waiting for WCSim PR #251 to be able to save OD digits" << endl;
-  if(false) {
-  //if(fWCOpt->GetGeomHasOD()) { // TODO uncomment this after WCSim 251 merged
+  if(fWCOpt->GetGeomHasOD()) {
     cout << "The geometry has an OD. Will add OD digits to m_data" << endl;
     fWCEvtOD = new WCSimRootEvent();
     fChainEvent->SetBranchAddress("wcsimrootevent_OD",   &fWCEvtOD);
