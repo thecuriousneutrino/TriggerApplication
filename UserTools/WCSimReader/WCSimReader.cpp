@@ -61,9 +61,9 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   fChainGeom ->SetBranchAddress("wcsimrootgeom",    &fWCGeo);
 
   //ensure that the geometry & options are the same for each file
-  if(!CompareTree(fChainOpt))
+  if(!CompareTree(fChainOpt, 0))
     return false;
-  if(!CompareTree(fChainGeom))
+  if(!CompareTree(fChainGeom, 1))
     return false;
 
 
@@ -131,10 +131,128 @@ bool WCSimReader::ReadTree(TChain * chain) {
   }
 }
 
-bool WCSimReader::CompareTree(TChain * chain)
+bool WCSimReader::CompareTree(TChain * chain, int mode)
 {
+  int n = chain->GetEntries();
+  //only 1 entry so nothing to compare
+  if(n == 1)
+    return true;
+  //get the 1st entry
+  chain->GetEntry(0);
+  if(mode == 0)
+    fWCOpt_Store = new WCSimRootOptions(*fWCOpt);
+  else if(mode == 1)
+    fWCGeo_Store = new WCSimRootGeom(*fWCGeo);
+  //loop over all the other entries
+  bool diff = false;
+  for(int i = 1; i < n; i++) {
+    chain->GetEntry(i);
+    bool diff_file = false;
+    if(mode == 0) {
+      //compare only the relevant options
+      //WCSimDetector
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDetectorName(),
+					     fWCOpt->GetDetectorName(),
+					     "DetectorName");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetGeomHasOD(),
+					   fWCOpt->GetGeomHasOD(),
+					   "GeomHasOD");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetPMTQEMethod(),
+					  fWCOpt->GetPMTQEMethod(),
+					  "PMTQEMethod");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetPMTCollEff(),
+					  fWCOpt->GetPMTCollEff(),
+					  "PMTCollEff");
+      //WCSimWCAddDarkNoise
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetPMTDarkRate(),
+					     fWCOpt->GetPMTDarkRate(),
+					     "PMTDarkRate");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetConvRate(),
+					     fWCOpt->GetConvRate(),
+					     "ConvRate");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDarkHigh(),
+					     fWCOpt->GetDarkHigh(),
+					     "DarkHigh");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDarkLow(),
+					     fWCOpt->GetDarkLow(),
+					     "DarkLow");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDarkWindow(),
+					     fWCOpt->GetDarkWindow(),
+					     "DarkWindow");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDarkMode(),
+					  fWCOpt->GetDarkMode(),
+					  "DarkMode");
+      //WCSimWCDigitizer
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDigitizerClassName(),
+					     fWCOpt->GetDigitizerClassName(),
+					     "DigitizerClassName");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDigitizerDeadTime(),
+					  fWCOpt->GetDigitizerDeadTime(),
+					  "DigitizerDeadTime");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDigitizerIntegrationWindow(),
+					  fWCOpt->GetDigitizerIntegrationWindow(),
+					  "DigitizerIntegrationWindow");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDigitizerTimingPrecision(),
+					  fWCOpt->GetDigitizerTimingPrecision(),
+					  "DigitizerTimingPrecision");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDigitizerPEPrecision(),
+					  fWCOpt->GetDigitizerPEPrecision(),
+					  "DigitizerPEPrecision");
+      //WCSimTuningParameters
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetRayff(),
+					     fWCOpt->GetRayff(),
+					     "Rayff");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetBsrff(),
+					     fWCOpt->GetBsrff(),
+					     "Bsrff");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetAbwff(),
+					     fWCOpt->GetAbwff(),
+					     "Abwff");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetRgcff(),
+					     fWCOpt->GetRgcff(),
+					     "Rgcff");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetMieff(),
+					     fWCOpt->GetMieff(),
+					     "Mieff");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetTvspacing(),
+					     fWCOpt->GetTvspacing(),
+					     "Tvspacing");
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetTopveto(),
+					   fWCOpt->GetTopveto(),
+					   "Topveto");
+      //WCSimPhysicsListFactory
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetPhysicsListName(),
+					     fWCOpt->GetPhysicsListName(),
+					     "PhysicsListName");
+      //WCSimRandomParameters
+      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetRandomGenerator(),
+					  fWCOpt->GetRandomGenerator(),
+					  "RandomGenerator");
+
+    }//mode == 0
+    if(diff_file) {
+      ss << "ERROR: Difference between WCSimOptions tree between input file 0 and " << i;
+      StreamToLog(ERROR);
+      diff = true;
+    }
+  }//i
+  if(diff) {
+    ss << "ERROR: Difference between WCSimOptions trees";
+    StreamToLog(ERROR);
+    return false;
+  }
   cerr << "This function to ensure that the geometry (and at least some of the options tree) are identical is not yet implemented" << std::endl;
   return true;
+}
+
+template <typename T> bool WCSimReader::CompareVariable(T v1, T v2, const char * tag)
+{
+  if(v1 == v2)
+    return false;
+  else {
+    ss << "WARN: Difference between strings " << v1 << " and " << v2 << " for variable " << tag;
+    StreamToLog(WARN);
+  }
 }
 
 bool WCSimReader::Execute(){

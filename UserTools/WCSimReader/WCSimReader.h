@@ -27,7 +27,8 @@ class WCSimReader: public Tool {
  private:
   //methods used in Initialise
   bool ReadTree(TChain * chain);
-  bool CompareTree(TChain * chain);
+  bool CompareTree(TChain * chain, int mode);
+  template <typename T> bool CompareVariable(T v1, T v2, const char * tag);
 
   //methods used in Execute
   SubSample GetDigits();
@@ -37,9 +38,11 @@ class WCSimReader: public Tool {
   TChain * fChainGeom;
 
   WCSimRootOptions * fWCOpt;
+  WCSimRootOptions * fWCOpt_Store;
   WCSimRootEvent   * fWCEvtID;
   WCSimRootEvent   * fWCEvtOD;
   WCSimRootGeom    * fWCGeo;
+  WCSimRootGeom    * fWCGeo_Store;
   WCSimRootTrigger * fEvt;
 
   long int fCurrEvent;
