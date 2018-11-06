@@ -28,9 +28,10 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
 
   ss << "INFO: fNEvents  \t" << fNEvents;
   StreamToLog(INFO);
-  ss << "INFO: fInFile   \t" << fInFile;
-  StreamToLog(INFO);
-  ss << "INFO: fFileList \t" << fFileList;
+  if(fInFile.size())
+    ss << "INFO: fInFile   \t" << fInFile;
+  else
+    ss << "INFO: fFileList \t" << fFileList;
   StreamToLog(INFO);
 
   //open the trees
@@ -121,7 +122,8 @@ bool WCSimReader::AddTreeToChain(const char * fname, TChain * chain) {
   }
   ss << "INFO: Loaded tree: " << chain->GetName()
      << " from file(s): " << fname
-     << " with: " << chain->GetEntries()
+     << " Chain: " << chain->GetName()
+     << " now has " << chain->GetEntries()
      << " entries";
   StreamToLog(INFO);
   return true;
