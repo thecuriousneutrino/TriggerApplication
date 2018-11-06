@@ -27,6 +27,7 @@ class WCSimReader: public Tool {
  private:
   //methods used in Initialise
   bool ReadTree(TChain * chain);
+  bool AddTreeToChain(const char * fname, TChain * chain);
   bool CompareTree(TChain * chain, int mode);
   template <typename T> bool CompareVariable(T v1, T v2, const char * tag);
 
@@ -50,6 +51,7 @@ class WCSimReader: public Tool {
 
   std::string fInFile;
   std::string fFileList;
+  std::vector<std::string> fWCSimFiles;
 
   int verbose;
 

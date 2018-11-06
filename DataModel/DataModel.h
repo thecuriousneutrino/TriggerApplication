@@ -87,6 +87,8 @@ class DataModel {
 
   bool IsMC;
 
+  std::vector<std::string> WCSimFiles;
+
  private:
 
 

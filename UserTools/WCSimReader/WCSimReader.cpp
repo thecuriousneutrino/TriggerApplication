@@ -20,9 +20,9 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
     Log("WARN: nevents configuration not found. Reading all events", WARN, verbose);
     fNEvents = -1;
   }
-  if(! (m_variables.Get("infile",   fInFile) ||
-	m_variables.Get("filelist", fFileList))) {
-    Log("ERROR: You must use one of the following options: infile filelist", ERROR, verbose);
+  if(! (m_variables.Get("infile",   fInFile) != 
+     m_variables.Get("filelist", fFileList))) {
+    Log("ERROR: You must use exactly one of the following options: infile filelist", ERROR, verbose);
     return false;
   }
 
@@ -60,19 +60,22 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   fWCGeo = new WCSimRootGeom();
   fChainGeom ->SetBranchAddress("wcsimrootgeom",    &fWCGeo);
 
-  //ensure that the geometry & options are the same for each file
-  if(!CompareTree(fChainOpt, 0))
-    return false;
-  if(!CompareTree(fChainGeom, 1))
-    return false;
-
-
   //set number of events
   if(fNEvents <= 0)
     fNEvents = fChainEvent->GetEntries();
   else if (fNEvents > fChainEvent->GetEntries())
     fNEvents = fChainEvent->GetEntries();
   fCurrEvent = 0;
+
+  //ensure that the geometry & options are the same for each file
+  if(!CompareTree(fChainOpt, 0)) {
+    fNEvents = 0;
+    return false;
+  }
+  if(!CompareTree(fChainGeom, 1)) {
+    fNEvents = 0;
+    return false;
+  }
 
   //store the PMT locations
   cerr << "OD PMTs are not currently stored in WCSimRootGeom. When they are TODO fill IDGeom & ODGeom depending on where the PMT is" << std::endl;
@@ -90,6 +93,12 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
 
   //store the relevant options
   m_data->IsMC = true;
+  //file names
+  TObjArray * rootfiles = fChainEvent->GetListOfFiles();
+  for(int ifile = 0; ifile < rootfiles->GetEntries(); ifile++) {
+    fWCSimFiles.push_back(rootfiles->At(ifile)->GetTitle());
+  }
+  m_data->WCSimFiles = fWCSimFiles;
   //geometry
   m_data->IDPMTDarkRate = fWCOpt->GetPMTDarkRate();
   m_data->IDNPMTs = fWCGeo->GetWCNumPMT();
@@ -104,29 +113,40 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   return true;
 }
 
+bool WCSimReader::AddTreeToChain(const char * fname, TChain * chain) {
+  if(! chain->Add(fname, -1)) {
+    ss << "ERROR: Could not load tree: " << chain->GetName()
+       << " in file(s): " << fname;
+    StreamToLog(ERROR);
+    return false;
+  }
+  ss << "INFO: Loaded tree: " << chain->GetName()
+     << " from file(s): " << fname
+     << " with: " << chain->GetEntries()
+     << " entries";
+  StreamToLog(INFO);
+  return true;
+}
+
 bool WCSimReader::ReadTree(TChain * chain) {
   //use InFile
-  if(fInFile.size()) { 
-    if(! chain->Add(fInFile.c_str(), -1)) {
-      ss << "ERROR: Could not load tree: " << chain->GetName()
-	 << " in file(s): " << fInFile;
-      StreamToLog(ERROR);
-      return false;
-    }
-    ss << "INFO: Loaded tree: " << chain->GetName()
-       << " from file(s): " << fInFile
-       << " with: " << chain->GetEntries()
-       << " entries";
-    StreamToLog(INFO);
-    return true;
+  if(fInFile.size()) {
+    return AddTreeToChain(fInFile.c_str(), chain);
   }
   //use FileList
   else if(fFileList.size()) {
-    Log("ERROR: FileList not implemented", ERROR, verbose);
-    return false;
+    std::ifstream infile(fFileList.c_str());
+    std::string fname;
+    bool return_value = true;
+    while(infile >> fname) {
+      if(fname.size())
+	if(!AddTreeToChain(fname.c_str(), chain))
+	  return_value = false;
+    }//read file list file
+    return return_value;
   }
   else {
-    Log("ERROR: Must use one of the following options: infile filelist", ERROR, verbose);
+    Log("ERROR: Must use exactly one of the following options: infile filelist", ERROR, verbose);
     return false;
   }
 }
@@ -139,10 +159,15 @@ bool WCSimReader::CompareTree(TChain * chain, int mode)
     return true;
   //get the 1st entry
   chain->GetEntry(0);
-  if(mode == 0)
+  std::string modestr;
+  if(mode == 0) {
     fWCOpt_Store = new WCSimRootOptions(*fWCOpt);
-  else if(mode == 1)
-    fWCGeo_Store = new WCSimRootGeom(*fWCGeo);
+    modestr = "WCSimRootOptions";
+  }
+  else if(mode == 1) {
+    //fWCGeo_Store = new WCSimRootGeom(*fWCGeo); //this operation doesn't work in WCSim
+    modestr = "WCSimRootGeom";
+  }
   //loop over all the other entries
   bool diff = false;
   for(int i = 1; i < n; i++) {
@@ -230,18 +255,26 @@ bool WCSimReader::CompareTree(TChain * chain, int mode)
 					  "RandomGenerator");
 
     }//mode == 0
+    else if(mode == 1) {
+      cerr << "This function to ensure that the geometry are identical is not yet implemented" << std::endl;
+    }//mode == 1
     if(diff_file) {
-      ss << "ERROR: Difference between WCSimOptions tree between input file 0 and " << i;
+      ss << "ERROR: Difference between " << modestr << " tree between input file 0 and " << i;
       StreamToLog(ERROR);
       diff = true;
     }
   }//i
+  if(mode == 0) {
+    delete fWCOpt_Store;
+  }
+  else if(mode == 1) {
+    //delete fWCGeo_Store;
+  }
   if(diff) {
-    ss << "ERROR: Difference between WCSimOptions trees";
+    ss << "ERROR: Difference between " << modestr << " trees";
     StreamToLog(ERROR);
     return false;
   }
-  cerr << "This function to ensure that the geometry (and at least some of the options tree) are identical is not yet implemented" << std::endl;
   return true;
 }
 
@@ -256,6 +289,12 @@ template <typename T> bool WCSimReader::CompareVariable(T v1, T v2, const char *
 }
 
 bool WCSimReader::Execute(){
+  if(fNEvents <= 0) {
+    Log("WARN: Reading 0 events", WARN, verbose);
+    m_data->vars.Set("StopLoop",1);
+    return true;
+  }
+
   if(fCurrEvent % 100 == 0) {
     ss << "INFO: Event " << fCurrEvent+1 << " of " << fNEvents;
     StreamToLog(INFO);
