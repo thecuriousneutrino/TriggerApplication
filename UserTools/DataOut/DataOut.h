@@ -4,6 +4,13 @@
 #include <string>
 #include <iostream>
 
+#include "WCSimRootEvent.hh"
+#include "WCSimRootGeom.hh"
+#include "WCSimRootOptions.hh"
+
+#include "TFile.h"
+#include "TTree.h"
+
 #include "Tool.h"
 
 class DataOut: public Tool {
@@ -19,6 +26,14 @@ class DataOut: public Tool {
 
  private:
 
+  std::string fOutFilename;
+  TFile fOutFile;
+  TTree * fTreeEvent;
+  TTree * fTreeGeom;
+  TTree * fTreeOptions;
+  WCSimRootEvent   * fWCSimEventID;
+  WCSimRootEvent   * fWCSimEventOD;
+  TString * fWCSimFilename;
 
   int verbose;
 

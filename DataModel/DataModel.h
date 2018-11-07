@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-//#include "TTree.h"
+#include "TChain.h"
 
 #include "WCSimRootOptions.hh"
 #include "WCSimRootEvent.hh"
@@ -81,13 +81,12 @@ class DataModel {
   int IDNPMTs;
   int ODNPMTs;
   
-  WCSimRootOptions WCSimOpt;
-  WCSimRootEvent   WCSimEvt;
-  WCSimRootGeom    WCSimGeo;
+  TChain * WCSimGeomTree;
+  TChain * WCSimOptionsTree;
+  TChain * WCSimEventTree;
+  TObjArray * CurrentWCSimFiles;
 
   bool IsMC;
-
-  std::vector<std::string> WCSimFiles;
 
  private:
 

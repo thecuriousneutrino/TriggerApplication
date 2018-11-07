@@ -1,5 +1,7 @@
 #include "WCSimReader.h"
 
+#include "TFile.h"
+
 using std::cerr;
 
 WCSimReader::WCSimReader():Tool(){}
@@ -88,17 +90,17 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   }//ipmt
 
   //store the pass through information in the transient data model
-  //m_data->WCSimOpt = *fWCOpt;
-  //m_data->WCSimEvt = *fWCEvt;
-  //m_data->WCSimGeo = *fWCGeo;
+  m_data->WCSimGeomTree = fChainGeom;
+  m_data->WCSimOptionsTree = fChainOpt;
+  m_data->WCSimEventTree = fChainEvent;
+
+  //setup the TObjArray to store the filenames
+  //int nfiles = fChainEvent->GetListOfFiles()->GetEntries();
+  m_data->CurrentWCSimFiles = new TObjArray();
+  m_data->CurrentWCSimFiles->SetOwner(true);
 
   //store the relevant options
   m_data->IsMC = true;
-  //file names
-  TObjArray * rootfiles = fChainEvent->GetListOfFiles();
-  for(int ifile = 0; ifile < rootfiles->GetEntries(); ifile++) {
-    m_data->WCSimFiles.push_back(rootfiles->At(ifile)->GetTitle());
-  }
   //geometry
   m_data->IDPMTDarkRate = fWCOpt->GetPMTDarkRate();
   m_data->IDNPMTs = fWCGeo->GetWCNumPMT();
@@ -311,6 +313,13 @@ bool WCSimReader::Execute(){
     return false;
   }
 
+  //store the WCSim filename(s) for the current event(s)
+  m_data->CurrentWCSimFiles->Clear();
+  TObjString * fname = new TObjString(fChainEvent->GetFile()->GetName());
+  ss << "DEBUG: Current event is from WCSim file " << fname->String();
+  StreamToLog(DEBUG1);
+  m_data->CurrentWCSimFiles->Add(fname);
+
   //store digit info in the transient data model
   //ID
   fEvt = fWCEvtID->GetTrigger(0);
@@ -364,6 +373,8 @@ SubSample WCSimReader::GetDigits()
 bool WCSimReader::Finalise(){
   ss << "INFO: Read " << fCurrEvent << " WCSim events";
   StreamToLog(INFO);
+
+  delete m_data->CurrentWCSimFiles;
 
   delete fChainOpt;
   delete fChainEvent;
