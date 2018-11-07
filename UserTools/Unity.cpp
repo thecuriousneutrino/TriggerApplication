@@ -4,3 +4,4 @@
 #include "nhits/nhits.cpp"
 #include "test_vertices/test_vertices.cpp"
 #include "WCSimReader/WCSimReader.cpp"
+#include "DataOut/DataOut.cpp"
