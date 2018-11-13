@@ -25,14 +25,16 @@ class DataOut: public Tool {
 
 
  private:
+  void RemoveDigits(WCSimRootEvent * WCSimEvent);
+  bool TimeInRange(double time);
 
   std::string fOutFilename;
   TFile fOutFile;
   TTree * fTreeEvent;
   TTree * fTreeGeom;
   TTree * fTreeOptions;
-  WCSimRootEvent   * fWCSimEventID;
-  WCSimRootEvent   * fWCSimEventOD;
+  WCSimRootEvent * fWCSimEventID;
+  WCSimRootEvent * fWCSimEventOD;
   TString * fWCSimFilename;
 
   int verbose;

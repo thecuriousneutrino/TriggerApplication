@@ -1,6 +1,7 @@
 #include "WCSimReader.h"
 
 #include "TFile.h"
+#include "TVectorT.h"
 
 using std::cerr;
 
@@ -93,6 +94,8 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   m_data->WCSimGeomTree = fChainGeom;
   m_data->WCSimOptionsTree = fChainOpt;
   m_data->WCSimEventTree = fChainEvent;
+  m_data->WCSimEventID = fWCEvtID;
+  m_data->WCSimEventOD = fWCEvtOD;
 
   //setup the TObjArray to store the filenames
   //int nfiles = fChainEvent->GetListOfFiles()->GetEntries();
@@ -102,15 +105,11 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   //store the relevant options
   m_data->IsMC = true;
   //geometry
-  m_data->IDPMTDarkRate = fWCOpt->GetPMTDarkRate();
+  m_data->IDPMTDarkRate = fWCOpt->GetPMTDarkRate("tank");
+  m_data->ODPMTDarkRate = fWCOpt->GetPMTDarkRate("OD");
   m_data->IDNPMTs = fWCGeo->GetWCNumPMT();
-  cerr << "OD Dark rate is not current stored. TODO add when WCSim #246 is merged" << std::endl;
-  /* TODO Uncomment this when #246 merged
-  m_data->IDPMTDarkRate(fWCOpt->GetPMTDarkRate("tank"));
-  m_data->IDNPMTs = fWCGeo->GetWCNumPMT("tank");
-  m_data->ODPMTDarkRate(fWCOpt->GetPMTDarkRate("OD"));
-  m_data->ODNPMTs = fWCGeo->GetWCNumPMT("OD");
-  */
+  cerr << "Number of OD PMTs not currently saved; uncomment this line after PR #253 merged" << std::endl;
+  //m_data->ODNPMTs = fWCGeo->GetODWCNumPMT();
 
   return true;
 }
@@ -192,24 +191,29 @@ bool WCSimReader::CompareTree(TChain * chain, int mode)
 					  fWCOpt->GetPMTCollEff(),
 					  "PMTCollEff");
       //WCSimWCAddDarkNoise
-      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetPMTDarkRate(),
-					     fWCOpt->GetPMTDarkRate(),
-					     "PMTDarkRate");
-      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetConvRate(),
-					     fWCOpt->GetConvRate(),
-					     "ConvRate");
-      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDarkHigh(),
-					     fWCOpt->GetDarkHigh(),
-					     "DarkHigh");
-      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDarkLow(),
-					     fWCOpt->GetDarkLow(),
-					     "DarkLow");
-      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDarkWindow(),
-					     fWCOpt->GetDarkWindow(),
-					     "DarkWindow");
-      diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDarkMode(),
-					  fWCOpt->GetDarkMode(),
-					  "DarkMode");
+      std::vector<string> pmtlocs;
+      pmtlocs.push_back("tank");
+      pmtlocs.push_back("OD");
+      for(unsigned int i = 0; i < pmtlocs.size(); i++) {
+	diff_file = diff_file || CompareVariable(fWCOpt_Store->GetPMTDarkRate(pmtlocs.at(i)),
+						 fWCOpt->GetPMTDarkRate(pmtlocs.at(i)),
+						 "PMTDarkRate");
+	diff_file = diff_file || CompareVariable(fWCOpt_Store->GetConvRate(pmtlocs.at(i)),
+						 fWCOpt->GetConvRate(pmtlocs.at(i)),
+						 "ConvRate");
+	diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDarkHigh(pmtlocs.at(i)),
+						 fWCOpt->GetDarkHigh(pmtlocs.at(i)),
+						 "DarkHigh");
+	diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDarkLow(pmtlocs.at(i)),
+						 fWCOpt->GetDarkLow(pmtlocs.at(i)),
+						 "DarkLow");
+	diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDarkWindow(pmtlocs.at(i)),
+						 fWCOpt->GetDarkWindow(pmtlocs.at(i)),
+						 "DarkWindow");
+	diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDarkMode(pmtlocs.at(i)),
+						 fWCOpt->GetDarkMode(pmtlocs.at(i)),
+						 "DarkMode");
+      }//i
       //WCSimWCDigitizer
       diff_file = diff_file || CompareVariable(fWCOpt_Store->GetDigitizerClassName(),
 					     fWCOpt->GetDigitizerClassName(),
@@ -313,12 +317,15 @@ bool WCSimReader::Execute(){
     return false;
   }
 
-  //store the WCSim filename(s) for the current event(s)
+  //store the WCSim filename(s) and event number(s) for the current event(s)
   m_data->CurrentWCSimFiles->Clear();
+  m_data->CurrentWCSimEventNums.clear();
   TObjString * fname = new TObjString(fChainEvent->GetFile()->GetName());
-  ss << "DEBUG: Current event is from WCSim file " << fname->String();
+  int event_in_wcsim_file = fCurrEvent - fChainEvent->GetTreeOffset()[fChainEvent->GetTreeNumber()];
+  ss << "DEBUG: Current event is event " << event_in_wcsim_file << " from WCSim file " << fname->String() << " " << fChainEvent->GetTreeOffset()[fChainEvent->GetTreeNumber()];
   StreamToLog(DEBUG1);
   m_data->CurrentWCSimFiles->Add(fname);
+  m_data->CurrentWCSimEventNums.push_back(event_in_wcsim_file);
 
   //store digit info in the transient data model
   //ID

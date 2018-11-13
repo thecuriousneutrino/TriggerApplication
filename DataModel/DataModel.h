@@ -84,7 +84,10 @@ class DataModel {
   TChain * WCSimGeomTree;
   TChain * WCSimOptionsTree;
   TChain * WCSimEventTree;
+  std::vector<int> CurrentWCSimEventNums;
   TObjArray * CurrentWCSimFiles;
+  WCSimRootEvent * WCSimEventID;
+  WCSimRootEvent * WCSimEventOD;
 
   bool IsMC;
 
