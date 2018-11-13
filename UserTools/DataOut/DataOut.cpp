@@ -67,8 +67,6 @@ bool DataOut::Execute(){
   RemoveDigits(fWCSimEventID);
 
   if(m_data->WCSimEventOD) {
-    ss << "DEBUG m_data->WCSimEventOD " << m_data->WCSimEventOD;
-    StreamToLog(ERROR);
     (*fWCSimEventOD) = (*(m_data->WCSimEventOD));
     RemoveDigits(fWCSimEventOD);
   }
