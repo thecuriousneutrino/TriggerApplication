@@ -26,7 +26,7 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
   fTreeEvent = new TTree("wcsimT","WCSim Tree");
   fWCSimEventID = new WCSimRootEvent();
   fTreeEvent->Branch("wcsimrootevent", "WCSimRootEvent", &fWCSimEventID, bufsize,2);
-  if(m_data->WCSimEventOD) {
+  if(m_data->HasOD) {
     fWCSimEventOD = new WCSimRootEvent();
     fTreeEvent->Branch("wcsimrootevent_OD", "WCSimRootEvent", &fWCSimEventOD, bufsize,2);
   }
@@ -60,7 +60,7 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
 
 bool DataOut::Execute(){
 
-  Log("INFO: DataOut::Execute Starting", INFO, verbose);
+  Log("DEBUG: DataOut::Execute Starting", DEBUG1, verbose);
   std::cerr << "Trigger vectors not yet stored in DataModel. Just using a fixed cutoff of 1000 ns" << std::endl;
 
   //get the WCSim event
@@ -68,14 +68,14 @@ bool DataOut::Execute(){
   //remove the digits that aren't in the trigger window(s)
   RemoveDigits(fWCSimEventID);
 
-  if(m_data->WCSimEventOD) {
+  if(m_data->HasOD) {
     (*fWCSimEventOD) = (*(m_data->WCSimEventOD));
     RemoveDigits(fWCSimEventOD);
   }
 
   fTreeEvent->Fill();
 
-  std::cerr << "DataOut::Execute Done" << std::endl;
+  Log("DEBUG: DataOut::Execute() Done", DEBUG1, verbose);
   return true;
 }
 
