@@ -89,6 +89,7 @@ class DataModel {
   WCSimRootEvent * WCSimEventID;
   WCSimRootEvent * WCSimEventOD;
 
+  bool HasOD;
   bool IsMC;
 
  private:
