@@ -60,7 +60,7 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
 
 bool DataOut::Execute(){
 
-  Log("INFO: DataOut::Execute Starting", verbose, INFO);
+  Log("INFO: DataOut::Execute Starting", INFO, verbose);
   std::cerr << "Trigger vectors not yet stored in DataModel. Just using a fixed cutoff of 1000 ns" << std::endl;
 
   //get the WCSim event
