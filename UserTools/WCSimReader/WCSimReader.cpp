@@ -266,7 +266,7 @@ bool WCSimReader::CompareTree(TChain * chain, int mode)
 
     }//mode == 0
     else if(mode == 1) {
-      return fWCGeo_Store->CompareAllVariables(fWCGeo);
+      diff_file = fWCGeo_Store->CompareAllVariables(fWCGeo);
     }//mode == 1
     if(diff_file) {
       ss << "ERROR: Difference between " << modestr << " tree between input file 0 and " << i;
