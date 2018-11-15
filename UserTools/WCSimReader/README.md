@@ -23,20 +23,26 @@ WCSimReader
     Stored as `double`
     * `IDPMTDarkRate` for ID PMT dark rate
     * `ODPMTDarkRate` for OD PMT dark rate
+  * Flag to state whether the OD exists.
+    Stored as a `bool`
+    * `HasOD`
   * Flag to state whether the "data" is from Monte Carlo
     Stored as `bool`
     * `IsMC`
-  * List of input WCSim files.
-    Note that these are the files after the wildcard expansion.
-    Stored in a `vector` of `string`
-    * `WCSimFiles`
+  * Linking of new events to original WCSim files/event numbers.
+    * `CurrentWCSimFiles` is a `TObjArray` of `TObjString`. Note that these are the files after the wildcard expansion.
+    * `CurrentWCSimEventNums` us a `vector<int>`
   * WCSim pass through information
-    This isn't implemented yet
+    * `TChain *` are stored for each of the WCSim trees
+      * `WCSimGeomTree` for the geometry
+      * `WCSimOptionsTree` for the options
+      * `WCSimEventTree` for the events
+    * Additionally, the current `WCSimRootEvent *` are stored
+      *  `WCSimEventID` for the ID events
+      *  `WCSimEventOD` for the OD events
     
 
 ## Configuration
-
-Describe any configuration variables for WCSimReader.
 
 ```
 infile /path/to/file(s)
