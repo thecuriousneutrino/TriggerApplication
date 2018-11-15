@@ -3,8 +3,6 @@
 #include "TFile.h"
 #include "TVectorT.h"
 
-using std::cerr;
-
 WCSimReader::WCSimReader():Tool(){}
 
 
@@ -58,9 +56,12 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
     Log("INFO: The geometry has an OD. Will add OD digits to m_data", INFO, verbose);
     fWCEvtOD = new WCSimRootEvent();
     fChainEvent->SetBranchAddress("wcsimrootevent_OD",   &fWCEvtOD);
+    m_data->HasOD = true;
   }
-  else
+  else {
     fWCEvtOD = 0;
+    m_data->HasOD = false;
+  }
   fWCGeo = new WCSimRootGeom();
   fChainGeom ->SetBranchAddress("wcsimrootgeom",    &fWCGeo);
 
@@ -82,7 +83,7 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   }
 
   //store the PMT locations
-  cerr << "OD PMTs are not currently stored in WCSimRootGeom. When they are TODO fill IDGeom & ODGeom depending on where the PMT is" << std::endl;
+  std::cerr << "OD PMTs are not currently stored in WCSimRootGeom. When they are TODO fill IDGeom & ODGeom depending on where the PMT is" << std::endl;
   fChainGeom->GetEntry(0);
   for(int ipmt = 0; ipmt < fWCGeo->GetWCNumPMT(); ipmt++) {
     WCSimRootPMT pmt = fWCGeo->GetPMT(ipmt);
@@ -106,10 +107,12 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   m_data->IsMC = true;
   //geometry
   m_data->IDPMTDarkRate = fWCOpt->GetPMTDarkRate("tank");
-  m_data->ODPMTDarkRate = fWCOpt->GetPMTDarkRate("OD");
   m_data->IDNPMTs = fWCGeo->GetWCNumPMT();
-  cerr << "Number of OD PMTs not currently saved; uncomment this line after PR #253 merged" << std::endl;
-  //m_data->ODNPMTs = fWCGeo->GetODWCNumPMT();
+  if(m_data->HasOD) {
+    m_data->ODPMTDarkRate = fWCOpt->GetPMTDarkRate("OD");
+    std::cerr << "Number of OD PMTs not currently saved; uncomment this line after PR #253 merged" << std::endl;
+    //m_data->ODNPMTs = fWCGeo->GetODWCNumPMT();
+  }
 
   return true;
 }
@@ -263,7 +266,7 @@ bool WCSimReader::CompareTree(TChain * chain, int mode)
 
     }//mode == 0
     else if(mode == 1) {
-      cerr << "This function to ensure that the geometry are identical is not yet implemented" << std::endl;
+      return fWCGeo_Store->CompareAllVariables(fWCGeo);
     }//mode == 1
     if(diff_file) {
       ss << "ERROR: Difference between " << modestr << " tree between input file 0 and " << i;
