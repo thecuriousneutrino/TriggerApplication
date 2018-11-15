@@ -60,10 +60,12 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
 
 bool DataOut::Execute(){
 
-  std::cerr << "DataOut::Execute Starting" << std::endl;
+  Log("INFO: DataOut::Execute Starting", verbose, INFO);
   std::cerr << "Trigger vectors not yet stored in DataModel. Just using a fixed cutoff of 1000 ns" << std::endl;
 
+  //get the WCSim event
   (*fWCSimEventID) = (*(m_data->WCSimEventID));
+  //remove the digits that aren't in the trigger window(s)
   RemoveDigits(fWCSimEventID);
 
   if(m_data->WCSimEventOD) {
@@ -71,10 +73,6 @@ bool DataOut::Execute(){
     RemoveDigits(fWCSimEventOD);
   }
 
-  ss << "DEBUG: Event has " << fWCSimEventID->GetTrigger(0)->GetNcherenkovdigihits() << " digits "
-     << fWCSimEventID->GetTrigger(0)->GetCherenkovDigiHits()->GetEntries();
-  StreamToLog(ERROR);
- 
   fTreeEvent->Fill();
 
   std::cerr << "DataOut::Execute Done" << std::endl;
@@ -84,17 +82,19 @@ bool DataOut::Execute(){
 void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent) {
   WCSimRootTrigger * trig = WCSimEvent->GetTrigger(0);
   TClonesArray * digits = trig->GetCherenkovDigiHits();
-  int ndigits = digits->GetEntries();
-  for(int i = 0; i < ndigits; i++) {
+  int ndigits = trig->GetNcherenkovdigihits();
+  int ndigits_slots = trig->GetNcherenkovdigihits_slots();
+  for(int i = 0; i < ndigits_slots; i++) {
     WCSimRootCherenkovDigiHit * d = (WCSimRootCherenkovDigiHit*)digits->At(i);
+    if(!d)
+      continue;
     double time = d->GetT();
     if(!TimeInRange(time)) {
-      //digits->Remove(d);
+      trig->RemoveCherenkovDigiHit(d);
     }
   }//i
-  //trig->ResetNcherenkovdigihits();
   ss << "INFO: RemoveDigits() has reduced number of digits from "
-     << ndigits << " to " << digits->GetEntries() << "     " << trig->GetNcherenkovdigihits();
+     << ndigits << " to " << trig->GetNcherenkovdigihits();
   StreamToLog(INFO);
 }
 
