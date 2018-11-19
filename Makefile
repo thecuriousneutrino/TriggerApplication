@@ -34,11 +34,11 @@ GPU: lib/libStore.so lib/libLogging.so lib/libDataModel.so include/Tool.h lib/li
 
 main: src/main.cpp | lib/libMyTools.so lib/libStore.so lib/libLogging.so lib/libToolChain.so lib/libDataModel.so lib/libServiceDiscovery.so
 	@echo "\n*************** Making " $@ "****************"
-	g++ -g src/main.cpp -o main -I include -L lib -lStore -lMyTools -lToolChain -lDataModel -lLogging -lServiceDiscovery -lpthread $(DataModelInclude) $(MyToolsInclude)  $(MyToolsLib) $(ZMQLib) $(ZMQInclude)  $(BoostLib) $(BoostInclude)
+	g++ -g src/main.cpp -o main -I include -L lib -lStore -lMyTools -lToolChain -lDataModel -lLogging -lServiceDiscovery -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsInclude)  $(MyToolsLib) $(ZMQLib) $(ZMQInclude)  $(BoostLib) $(BoostInclude)
 
 mainGPU: src/main.cpp UserTools/CUDA/GPU_link.o | lib/libMyToolsGPU.so lib/libStore.so lib/libLogging.so lib/libToolChain.so lib/libDataModel.so lib/libServiceDiscovery.so
 	@echo "\n*************** Making " $@ "****************"
-	g++ -g src/main.cpp UserTools/CUDA/GPU_link.o -o main -I include -L lib -lStore -lMyToolsGPU  -lMyTools -lToolChain -lDataModel -lLogging -lServiceDiscovery -lpthread $(DataModelInclude) $(MyToolsIncludeGPU)  $(MyToolsLibGPU) $(ZMQLib) $(ZMQInclude)  $(BoostLib) $(BoostInclude) 
+	g++ -g src/main.cpp UserTools/CUDA/GPU_link.o -o main -I include -L lib -lStore -lMyToolsGPU  -lMyTools -lToolChain -lDataModel -lLogging -lServiceDiscovery -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsIncludeGPU)  $(MyToolsLibGPU) $(ZMQLib) $(ZMQInclude)  $(BoostLib) $(BoostInclude)
 
 
 lib/libStore.so: $(ToolDAQPath)/ToolDAQFramework/src/Store/*
@@ -58,7 +58,7 @@ lib/libToolChain.so: $(ToolDAQPath)/ToolDAQFramework/src/ToolChain/* | lib/libLo
 	@echo "\n*************** Making " $@ "****************"
 	cp $(ToolDAQPath)/ToolDAQFramework/UserTools/Factory/*.h include/
 	cp $(ToolDAQPath)/ToolDAQFramework/src/ToolChain/*.h include/
-	g++ -g -fPIC -shared $(ToolDAQPath)/ToolDAQFramework/src/ToolChain/ToolChain.cpp -I include -lpthread -L lib -lStore -lDataModel -lServiceDiscovery -lMyTools -lLogging -o lib/libToolChain.so $(DataModelInclude) $(ZMQLib) $(ZMQInclude) $(MyToolsInclude)  $(BoostLib) $(BoostInclude)
+	g++ -g -fPIC -shared $(ToolDAQPath)/ToolDAQFramework/src/ToolChain/ToolChain.cpp -I include -lpthread -L lib -lStore -lDataModel -lServiceDiscovery -lMyTools -lLogging -o lib/libToolChain.so $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude) $(MyToolsInclude)  $(BoostLib) $(BoostInclude)
 
 
 
@@ -80,13 +80,13 @@ lib/libMyTools.so: UserTools/*/* UserTools/* | include/Tool.h lib/libDataModel.s
 	@echo "\n*************** Making " $@ "****************"
 	cp UserTools/*/*.h include/
 	cp UserTools/Factory/*.h include/
-	g++ -g -fPIC -shared  UserTools/Factory/Factory.cpp -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib) $(DataModelInclude) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude)
+	g++ -g -fPIC -shared  UserTools/Factory/Factory.cpp -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib) $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude)
 
 lib/libMyToolsGPU.so: UserTools/*/* UserTools/* UserTools/CUDA/GPU_link.o | include/Tool.h lib/libDataModel.so lib/libLogging.so lib/libStore.so
 	@echo "\n*************** Making " $@ "****************"
 	cp UserTools/*/*.h include/
 	cp UserTools/Factory/*.h include/
-	g++  -fPIC -shared  UserTools/Factory/Factory.cpp  -DGPU UserTools/CUDA/CUDA_Unity.o -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyToolsGPU.so $(MyToolsIncludeGPU) $(MyToolsLibGPU) $(DataModelInclude) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude)
+	g++  -fPIC -shared  UserTools/Factory/Factory.cpp  -DGPU UserTools/CUDA/CUDA_Unity.o -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyToolsGPU.so $(MyToolsIncludeGPU) $(MyToolsLibGPU) $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude)
 
 RemoteControl:
 	cd $(ToolDAQPath)/ToolDAQFramework/ && make RemoteControl
