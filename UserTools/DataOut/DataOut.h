@@ -37,6 +37,8 @@ class DataOut: public Tool {
   WCSimRootEvent * fWCSimEventOD;
   TString * fWCSimFilename;
 
+  std::vector<std::pair<double, double> > fTriggerIntervals;
+
   int verbose;
 
   std::stringstream ss;

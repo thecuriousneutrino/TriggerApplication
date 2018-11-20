@@ -63,17 +63,60 @@ bool DataOut::Execute(){
   Log("DEBUG: DataOut::Execute Starting", DEBUG1, verbose);
   std::cerr << "Trigger vectors not yet stored in DataModel. Just using a fixed cutoff of 1000 ns" << std::endl;
 
+  //Gather together all the trigger windows
+  std::vector<std::pair<double, double> > ranges;
+  for(unsigned int it = 0; it < m_data->IDTriggers.m_N; it++) {
+    double start = m_data->IDTriggers.m_starttime.at(it);
+    double end   = m_data->IDTriggers.m_endtime.at(it);
+    ranges.push_back(std::pair<double, double>(start, end));
+  }//it
+  for(unsigned int it = 0; it < m_data->ODTriggers.m_N; it++) {
+    double start = m_data->ODTriggers.m_starttime.at(it);
+    double end   = m_data->ODTriggers.m_endtime.at(it);
+    ranges.push_back(std::pair<double, double>(start, end));
+  }//it
+  //the following is borrowed from WCSimWCAddDarkNoise::FindDarkNoiseRanges()
+  if(ranges.size()) {
+    sort(ranges.begin(),ranges.end());
+
+    //the ranges vector contains overlapping ranges
+    //this loop removes overlaps
+    //output are pairs stored in the fTriggerIntervals vector
+    std::vector<std::pair<double, double> >::iterator it = ranges.begin();
+    std::pair<double, double> current = *(it)++;
+    for( ; it != ranges.end(); it++) {
+      if (current.second >= it->first){
+	current.second = std::max(current.second, it->second); 
+      }
+      else {
+	fTriggerIntervals.push_back(current);
+	current = *(it);
+      }
+    }//it
+    fTriggerIntervals.push_back(current);
+    //now we should have a vector of non-overlapping range pairs to pass to the
+    //digit removal routine
+  }
+  else {
+    //Set range vector to have one element from -99 to -99 (so no digits will be saved)
+    ranges.push_back(std::make_pair(-99.,-99.));
+  }
+
   //get the WCSim event
   (*fWCSimEventID) = (*(m_data->WCSimEventID));
   //remove the digits that aren't in the trigger window(s)
   RemoveDigits(fWCSimEventID);
-
+  
   if(m_data->HasOD) {
     (*fWCSimEventOD) = (*(m_data->WCSimEventOD));
     RemoveDigits(fWCSimEventOD);
   }
 
   fTreeEvent->Fill();
+
+  //make sure the triggers are reset for the next event
+  m_data->IDTriggers.Clear();
+  m_data->ODTriggers.Clear();
 
   Log("DEBUG: DataOut::Execute() Done", DEBUG1, verbose);
   return true;
@@ -99,9 +142,11 @@ void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent) {
 }
 
 bool DataOut::TimeInRange(double time) {
-  if(time > 1000)
-    return false;
-  return true;
+  for(std::vector<std::pair<double, double> >::iterator it = fTriggerIntervals.begin(); it != fTriggerIntervals.end(); it++) {
+    if(time >= it->first && time <= it->second)
+      return true;
+  }//it
+  return false;
 }
 
 bool DataOut::Finalise(){

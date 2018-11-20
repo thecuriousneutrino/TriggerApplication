@@ -20,10 +20,16 @@ class nhits: public Tool {
 
 
  private:
+  float fTriggerSearchWindow;
+  float fTriggerSearchWindowStep;
+  float fTriggerThreshold;
+  float fTriggerSaveWindowPre;
+  float fTriggerSaveWindowPost;
+  bool  fTriggerOD;
 
-
-
-
+  void AlgNDigits(const SubSample * samples); ///< Modified from WCSim v1.7.0
+ 
+  static const int kALongTime;      ///< An arbitrary long time to use in loops (ns)
 
 };
 

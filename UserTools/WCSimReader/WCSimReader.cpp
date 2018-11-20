@@ -299,6 +299,9 @@ template <typename T> bool WCSimReader::CompareVariable(T v1, T v2, const char *
 }
 
 bool WCSimReader::Execute(){
+  m_data->IDSamples.clear();
+  m_data->ODSamples.clear();
+
   if(fNEvents <= 0) {
     Log("WARN: Reading 0 events", WARN, verbose);
     m_data->vars.Set("StopLoop",1);
