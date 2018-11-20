@@ -17,37 +17,8 @@
 
 #include <zmq.hpp>
 
-class SubSample{
-
- public:
-
-  SubSample();
-  SubSample(std::vector<int> PMTid,std::vector<int> time){
-    m_PMTid=PMTid;
-    m_time=time;
-  }
-  SubSample(std::vector<int> PMTid, std::vector<int> time, std::vector<int> charge) {
-    m_PMTid  = PMTid;
-    m_time   = time;
-    m_charge = charge;
-  }
-
-  std::vector<int> m_PMTid;
-  std::vector<int> m_time;
-  std::vector<int> m_charge;
-};
-
-class PMTInfo{
- public:
-  PMTInfo(int tubeno, float x, float y, float z) {
-    m_tubeno = tubeno;
-    m_x = x;
-    m_y = y;
-    m_z = z;
-  }
-  int m_tubeno;
-  float m_x, m_y, m_z;
-};
+#include <SubSample.h>
+#include <PMTInfo.h>
 
 class DataModel {
 
