@@ -154,7 +154,6 @@ fi
 
 cd ../
 
-cd ../
 
 if [ $final -eq 1 ]
 then
