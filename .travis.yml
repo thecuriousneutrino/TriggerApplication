@@ -2,21 +2,15 @@ language: cpp
 
 sudo: false
 
-addons:
-  apt:
-    packages:
-    - git
-    - dpkg-dev
-    - make
-    - g++
-    - gcc
-    - binutils
-    - libx11-dev
-    - libxpm-dev
-    - libxft-dev
-    - libxext-dev
+services:
+  - docker
+
+before_install:
+  - docker pull hkdaq/triggerapplication:base
 
 install: true
 
-script: ./CI.sh;
+script: 
+  - docker run --rm -v `pwd`:/root/buildtest hkdaq/triggerapplication:base /bin/sh -c " cd /root/buildtest ; ln -s /TtriggerApplicaiton/ToolDAQ ./ToolDAQ ; source ./Setup.sh ; make clean; make update; make "
+
 
