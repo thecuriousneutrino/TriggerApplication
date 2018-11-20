@@ -161,6 +161,7 @@ then
     echo "current directory"
     echo `pwd`
     make clean
+    source Setup.sh
     make 
     
     export LD_LIBRARY_PATH=`pwd`/lib:$LD_LIBRARY_PATH
