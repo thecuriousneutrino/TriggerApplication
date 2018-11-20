@@ -5,7 +5,11 @@
 #include <string>
 #include <vector>
 
-//#include "TTree.h"
+#include "TChain.h"
+
+#include "WCSimRootOptions.hh"
+#include "WCSimRootEvent.hh"
+#include "WCSimRootGeom.hh"
 
 #include "Store.h"
 #include "BoostStore.h"
@@ -22,10 +26,27 @@ class SubSample{
     m_PMTid=PMTid;
     m_time=time;
   }
+  SubSample(std::vector<int> PMTid, std::vector<int> time, std::vector<int> charge) {
+    m_PMTid  = PMTid;
+    m_time   = time;
+    m_charge = charge;
+  }
 
   std::vector<int> m_PMTid;
   std::vector<int> m_time;
+  std::vector<int> m_charge;
+};
 
+class PMTInfo{
+ public:
+  PMTInfo(int tubeno, float x, float y, float z) {
+    m_tubeno = tubeno;
+    m_x = x;
+    m_y = y;
+    m_z = z;
+  }
+  int m_tubeno;
+  float m_x, m_y, m_z;
 };
 
 class DataModel {
@@ -47,10 +68,29 @@ class DataModel {
 
   zmq::context_t* context;
 
-  std::vector<SubSample> Samples;
-  bool triggeroutput;
-  
+  std::vector<SubSample> IDSamples;
+  std::vector<SubSample> ODSamples;
 
+  std::vector<PMTInfo> IDGeom;
+  std::vector<PMTInfo> ODGeom;
+
+  bool triggeroutput;
+
+  double IDPMTDarkRate;
+  double ODPMTDarkRate;
+  int IDNPMTs;
+  int ODNPMTs;
+  
+  TChain * WCSimGeomTree;
+  TChain * WCSimOptionsTree;
+  TChain * WCSimEventTree;
+  std::vector<int> CurrentWCSimEventNums;
+  TObjArray * CurrentWCSimFiles;
+  WCSimRootEvent * WCSimEventID;
+  WCSimRootEvent * WCSimEventOD;
+
+  bool HasOD;
+  bool IsMC;
 
  private:
 
