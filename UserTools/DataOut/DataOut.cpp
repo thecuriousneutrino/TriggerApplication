@@ -54,6 +54,9 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
   delete wcsimfilename;
   delete fTreeOptions;
 
+  fTriggers = new TriggerInfo();
+  fEvtNum = 0;
+
   return true;
 }
 
@@ -61,55 +64,46 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
 bool DataOut::Execute(){
 
   Log("DEBUG: DataOut::Execute Starting", DEBUG1, verbose);
-  std::cerr << "Trigger vectors not yet stored in DataModel. Just using a fixed cutoff of 1000 ns" << std::endl;
 
   //Gather together all the trigger windows
-  std::vector<std::pair<double, double> > ranges;
-  for(unsigned int it = 0; it < m_data->IDTriggers.m_N; it++) {
-    double start = m_data->IDTriggers.m_starttime.at(it);
-    double end   = m_data->IDTriggers.m_endtime.at(it);
-    ranges.push_back(std::pair<double, double>(start, end));
-  }//it
-  for(unsigned int it = 0; it < m_data->ODTriggers.m_N; it++) {
-    double start = m_data->ODTriggers.m_starttime.at(it);
-    double end   = m_data->ODTriggers.m_endtime.at(it);
-    ranges.push_back(std::pair<double, double>(start, end));
-  }//it
-  //the following is borrowed from WCSimWCAddDarkNoise::FindDarkNoiseRanges()
-  if(ranges.size()) {
-    sort(ranges.begin(),ranges.end());
+  fTriggers->Clear();
+  fTriggers->AddTriggers(&(m_data->IDTriggers));
+  if(m_data->HasOD)
+    fTriggers->AddTriggers(&(m_data->ODTriggers));
+  fTriggers->SortByStartTime();
+  ss << "INFO: Have " << fTriggers->m_N << " triggers to save times:";
+  StreamToLog(INFO);
+  for(int i = 0; i < fTriggers->m_N; i++) {
+    ss << "INFO: \t[" << fTriggers->m_starttime.at(i)
+       << ", " << fTriggers->m_endtime.at(i) << "] "
+       << fTriggers->m_triggertime.at(i) << " ns with type "
+       << WCSimEnumerations::EnumAsString(fTriggers->m_type.at(i)) << " extra info";
+    for(unsigned int ii = 0; ii < fTriggers->m_info.at(i).size(); ii++)
+      ss << " " << fTriggers->m_info.at(i).at(ii);
+    StreamToLog(INFO);
+  }//i
 
-    //the ranges vector contains overlapping ranges
-    //this loop removes overlaps
-    //output are pairs stored in the fTriggerIntervals vector
-    std::vector<std::pair<double, double> >::iterator it = ranges.begin();
-    std::pair<double, double> current = *(it)++;
-    for( ; it != ranges.end(); it++) {
-      if (current.second >= it->first){
-	current.second = std::max(current.second, it->second); 
-      }
-      else {
-	fTriggerIntervals.push_back(current);
-	current = *(it);
-      }
-    }//it
-    fTriggerIntervals.push_back(current);
-    //now we should have a vector of non-overlapping range pairs to pass to the
-    //digit removal routine
-  }
-  else {
-    //Set range vector to have one element from -99 to -99 (so no digits will be saved)
-    ranges.push_back(std::make_pair(-99.,-99.));
-  }
+  //Note: the ranges vector can contain overlapping ranges
+  //we want to make sure the triggers output aren't overlapping
+  // This is actually handled in DataOut::RemoveDigits()
+  // It puts digits into the output event in the earliest trigger they belong to
 
   //get the WCSim event
   (*fWCSimEventID) = (*(m_data->WCSimEventID));
+  //prepare the subtriggers
+  CreateSubEvents(fWCSimEventID);
   //remove the digits that aren't in the trigger window(s)
+  // also move digits from the 0th trigger to the trigger window it's in
   RemoveDigits(fWCSimEventID);
+  //set some trigger header infromation that requires all the digits to be 
+  // present to calculate e.g. sumq
+  FinaliseSubEvents(fWCSimEventID);
   
   if(m_data->HasOD) {
     (*fWCSimEventOD) = (*(m_data->WCSimEventOD));
+    CreateSubEvents(fWCSimEventOD);
     RemoveDigits(fWCSimEventOD);
+    FinaliseSubEvents(fWCSimEventOD);
   }
 
   fTreeEvent->Fill();
@@ -118,11 +112,48 @@ bool DataOut::Execute(){
   m_data->IDTriggers.Clear();
   m_data->ODTriggers.Clear();
 
+  //increment event number
+  fEvtNum++;
+
   Log("DEBUG: DataOut::Execute() Done", DEBUG1, verbose);
   return true;
 }
 
-void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent) {
+void DataOut::CreateSubEvents(WCSimRootEvent * WCSimEvent)
+{
+  const int n = fTriggers->m_N;
+  for(int i = 0; i < n; i++) {
+    if(i)
+      WCSimEvent->AddSubEvent();
+    WCSimRootTrigger * trig = WCSimEvent->GetTrigger(i);
+    trig->SetHeader(fEvtNum, 0, fTriggers->m_triggertime.at(i) - 950, i+1);
+    trig->SetTriggerInfo(fTriggers->m_type.at(i), fTriggers->m_info.at(i));
+    //trig->SetMode(jhfNtuple.mode);
+  }//i
+}
+
+void DataOut::FinaliseSubEvents(WCSimRootEvent * WCSimEvent)
+{
+  const int n = fTriggers->m_N;
+  for(int i = 0; i < n; i++) {
+    WCSimRootTrigger * trig = WCSimEvent->GetTrigger(i);
+    TClonesArray * digits = trig->GetCherenkovDigiHits();
+    float sumq = 0;
+    for(int j = 0; j < trig->GetNcherenkovdigihits_slots(); j++) {
+      WCSimRootCherenkovDigiHit * digi = (WCSimRootCherenkovDigiHit *)digits->At(j);
+      if(digi)
+	sumq += digi->GetQ();
+    }
+    trig->SetSumQ(sumq);
+  }//i
+}
+
+void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent)
+{
+  if(!fTriggers->m_N) {
+    ss << "DEBUG: No trigger intervals to save";
+    StreamToLog(DEBUG1);
+  }
   WCSimRootTrigger * trig = WCSimEvent->GetTrigger(0);
   TClonesArray * digits = trig->GetCherenkovDigiHits();
   int ndigits = trig->GetNcherenkovdigihits();
@@ -132,7 +163,18 @@ void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent) {
     if(!d)
       continue;
     double time = d->GetT();
-    if(!TimeInRange(time)) {
+    int window = TimeInTriggerWindow(time);
+    if(window >= 0) {
+      //need to apply an offset to the digit time using the trigger time
+      d->SetT(time - (fTriggers->m_triggertime.at(window) - 950));
+    }
+    if(window > 0) {
+      //need to add digit to a new trigger window
+      WCSimEvent->GetTrigger(window)->AddCherenkovDigiHit(d);
+    }
+    if(window) {
+      //either not in a trigger window (window = -1)
+      //or not in the 0th trigger window (window >= 1)
       trig->RemoveCherenkovDigiHit(d);
     }
   }//i
@@ -141,12 +183,14 @@ void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent) {
   StreamToLog(INFO);
 }
 
-bool DataOut::TimeInRange(double time) {
-  for(std::vector<std::pair<double, double> >::iterator it = fTriggerIntervals.begin(); it != fTriggerIntervals.end(); it++) {
-    if(time >= it->first && time <= it->second)
-      return true;
+int DataOut::TimeInTriggerWindow(double time) {
+  for(unsigned int i = 0; i < fTriggers->m_N; i++) {
+    double lo = fTriggers->m_starttime.at(i);
+    double hi = fTriggers->m_endtime.at(i);
+    if(time >= lo && time <= hi)
+      return i;
   }//it
-  return false;
+  return -1;
 }
 
 bool DataOut::Finalise(){
@@ -157,6 +201,8 @@ bool DataOut::Finalise(){
   delete fWCSimEventID;
   if(fWCSimEventOD)
     delete fWCSimEventOD;
+
+  delete fTriggers;
 
   return true;
 }

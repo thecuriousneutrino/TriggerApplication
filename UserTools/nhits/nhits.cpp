@@ -12,6 +12,9 @@ bool nhits::Initialise(std::string configfile, DataModel &data){
   if(configfile!="")  m_variables.Initialise(configfile);
   //m_variables.Print();
 
+  verbose = 0;
+  m_variables.Get("verbose", verbose);
+
   m_data= &data;
 
   m_data->triggeroutput=false;
@@ -48,6 +51,27 @@ bool nhits::Initialise(std::string configfile, DataModel &data){
   m_variables.Get("pretrigger_save_window",       fTriggerSaveWindowPre);
   m_variables.Get("posttrigger_save_window",      fTriggerSaveWindowPost);
   m_variables.Get("trigger_od",                   fTriggerOD);
+
+  bool adjust_for_noise;
+  m_variables.Get("trigger_threshold_adjust_for_noise", adjust_for_noise);
+  if(adjust_for_noise) {
+    int npmts = fTriggerOD ? m_data->ODNPMTs : m_data->IDNPMTs;
+    double dark_rate_kHZ = fTriggerOD ? m_data->ODPMTDarkRate : m_data->IDPMTDarkRate;
+    double trigger_window_seconds = fTriggerSearchWindow * 1E-9;
+    double dark_rate_Hz = dark_rate_kHZ * 1000;
+    double average_occupancy = dark_rate_Hz * trigger_window_seconds * npmts;
+
+    ss << "INFO: Average number of PMTs in detector active in a " << fTriggerSearchWindow
+       << "ns window with a dark noise rate of " << dark_rate_kHZ
+       << "kHz is " << average_occupancy
+       << " (" << npmts << " total PMTs)";
+    StreamToLog(INFO);
+    ss << "INFO: Updating the NDigits threshold, from " << fTriggerThreshold
+       << " to " << fTriggerThreshold + round(average_occupancy) << std::endl;
+    StreamToLog(INFO);
+    fTriggerThreshold += round(average_occupancy);    
+  }
+
   return true;
 }
 
@@ -83,10 +107,9 @@ void nhits::AlgNDigits(const SubSample * sample)
   //loop over PMTs, and Digits in each PMT.  If ndigits > Threshhold in a time window, then we have a trigger
 
   const unsigned int ndigits = sample->m_charge.size();
-  std::cout << "WCSimWCTriggerBase::AlgNDigits. Number of entries in input digit collection: " << ndigits << std::endl;
+  ss << "DEBUG: nhits::AlgNDigits(). Number of entries in input digit collection: " << ndigits;
+  StreamToLog(DEBUG1);
   
-  //first thing: what to loop over
-  int temp_total_pe = 0;
   //Loop over each digit
   float firsthit = +nhits::kALongTime;
   float lasthit  = -nhits::kALongTime;
@@ -97,17 +120,15 @@ void nhits::AlgNDigits(const SubSample * sample)
       lasthit = digit_time;
     if(digit_time < firsthit)
       firsthit = digit_time;
-    temp_total_pe += sample->m_charge.at(idigit);
   }//loop over Digits
   int window_start_time = firsthit;
-  int window_end_time   = lasthit - fTriggerSearchWindow + fTriggerSearchWindowStep;
-  std::cout << "Found first/last hits. Looping from " << window_start_time
-	    << " to " << window_end_time 
-	    << " in steps of " << fTriggerSearchWindowStep
-	    << std::endl;
+  window_start_time -= window_start_time % 5;
+  int window_end_time   = lasthit - (fTriggerSearchWindow - fTriggerSearchWindowStep);
+  ss << "DEBUG: Found first/last hits. Looping from " << window_start_time
+     << " to " << window_end_time 
+     << " in steps of " << fTriggerSearchWindowStep;
+  StreamToLog(DEBUG1);
 
-  std::cout << "WCSimWCTriggerBase::AlgNDigits. " << temp_total_pe << " total p.e. input" << std::endl;
-  
   std::vector<float> digit_times;
 
   // the upper time limit is set to the final possible full trigger window
@@ -120,8 +141,8 @@ void nhits::AlgNDigits(const SubSample * sample)
     //Loop over each digit
     for(unsigned int idigit = 0; idigit < ndigits; idigit++) {
       //int tube   = sample->m_PMTid.at(idigit);
-      //int charge = sample->m_charge.at(idigit);
-      int digit_time = sample->m_time.at(idigit);
+      //float charge = sample->m_charge.at(idigit);
+      float digit_time = sample->m_time.at(idigit);
       //hit in trigger window?
       if(digit_time >= window_start_time && digit_time <= (window_start_time + fTriggerSearchWindow)) {
 	n_digits++;
@@ -134,23 +155,28 @@ void nhits::AlgNDigits(const SubSample * sample)
       //The trigger time is the time of the first hit above threshold
       std::sort(digit_times.begin(), digit_times.end());
       triggertime = digit_times[fTriggerThreshold];
+      for(int itemp = 0; itemp < fTriggerThreshold; itemp++)
       triggertime -= (int)triggertime % 5;
       triggerfound = true;
       m_data->IDTriggers.AddTrigger(kTriggerNDigits,
 				    triggertime - fTriggerSaveWindowPre, 
 				    triggertime + fTriggerSaveWindowPost,
 				    triggertime,
-				    n_digits);
+				    std::vector<float>(1, n_digits));
     }
 
     if(n_digits)
-      std::cout << n_digits << " digits found in 200nsec trigger window ["
-		<< window_start_time << ", " << window_start_time + fTriggerSearchWindow
-		<< "]. Threshold is: " << fTriggerThreshold << std::endl;
+      ss << "DEBUG: " << n_digits << " digits found in 200nsec trigger window ["
+	 << window_start_time << ", " << window_start_time + fTriggerSearchWindow
+	 << "]. Threshold is: " << fTriggerThreshold;
+    StreamToLog(DEBUG2);
 
     //move onto the next go through the timing loop
     if(triggerfound) {
       window_start_time = triggertime + fTriggerSaveWindowPost;
+      ss << "INFO: nhits trigger found at time " << triggertime
+	 << " with " << n_digits << " digits in the decision window";
+      StreamToLog(INFO);
     }//triggerfound
     else {
       window_start_time += fTriggerSearchWindowStep;
@@ -158,7 +184,8 @@ void nhits::AlgNDigits(const SubSample * sample)
 
   }//sliding trigger window while loop
   
-  std::cout << "Found " << m_data->IDTriggers.m_N << " NDigit triggers" << std::endl;
+  ss << "INFO: Found " << m_data->IDTriggers.m_N << " NDigit triggers";
+  StreamToLog(INFO);
 }
 
 bool nhits::Finalise(){

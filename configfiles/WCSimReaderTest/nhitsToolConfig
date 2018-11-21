@@ -1,6 +1,8 @@
 trigger_search_window 200
 trigger_search_window_step 5
 trigger_threshold 25
+trigger_threshold_adjust_for_noise 1
 pretrigger_save_window 400
 posttrigger_save_window 950
 trigger_od 0
+verbose 3

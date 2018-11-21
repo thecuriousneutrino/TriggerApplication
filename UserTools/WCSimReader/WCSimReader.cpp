@@ -356,23 +356,27 @@ bool WCSimReader::Execute(){
 SubSample WCSimReader::GetDigits()
 {
   //loop over the digits
-  std::vector<int> PMTid, time, charge;
+  std::vector<int> PMTid;
+  std::vector<float>  time, charge;
   for(int idigi = 0; idigi < fEvt->GetNcherenkovdigihits(); idigi++) {
     //get a digit
     TObject *element = (fEvt->GetCherenkovDigiHits())->At(idigi);
     WCSimRootCherenkovDigiHit *digit = 
       dynamic_cast<WCSimRootCherenkovDigiHit*>(element);
     //get the digit information
-    PMTid.push_back(digit->GetTubeId());
-    time.push_back(digit->GetT());
-    charge.push_back(digit->GetQ());
+    int ID = digit->GetTubeId();
+    float T = digit->GetT();
+    float Q = digit->GetQ();
+    PMTid.push_back(ID);
+    time.push_back(T);
+    charge.push_back(Q);
     //print
     if(idigi < 10 || verbose >= DEBUG2) {
       ss << "DEBUG: Digit " << idigi 
-	 << " has T " << digit->GetT()
-	 << ", Q " << digit->GetQ()
-	 << " on PMT " << digit->GetTubeId();
-      StreamToLog(DEBUG2);
+	 << " has T " << T
+	 << ", Q " << Q
+	 << " on PMT " << ID;
+      StreamToLog(DEBUG1);
     }
   }//idigi  
   ss << "DEBUG: Saved information on " << time.size() << " digits";

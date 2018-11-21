@@ -22,7 +22,7 @@ bool WCSimASCIReader::Execute(){
   std::ifstream data (inputfile.c_str());
   if (data.is_open()){
     std::vector<int>PMTid;
-    std::vector<int>time;
+    std::vector<float>time;
     while ( getline (data,line) )
       {
 	int tmpPMTid=0;
