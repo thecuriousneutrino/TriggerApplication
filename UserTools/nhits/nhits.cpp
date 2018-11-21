@@ -155,7 +155,6 @@ void nhits::AlgNDigits(const SubSample * sample)
       //The trigger time is the time of the first hit above threshold
       std::sort(digit_times.begin(), digit_times.end());
       triggertime = digit_times[fTriggerThreshold];
-      for(int itemp = 0; itemp < fTriggerThreshold; itemp++)
       triggertime -= (int)triggertime % 5;
       triggerfound = true;
       m_data->IDTriggers.AddTrigger(kTriggerNDigits,
