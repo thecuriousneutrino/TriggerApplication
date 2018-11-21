@@ -1,2 +1,3 @@
 wcsim1 WCSimReader configfiles/WCSimReaderTest/WCSimReaderToolConfig
+nhits1 nhits configfiles/WCSimReaderTest/nhitsToolConfig
 out1 DataOut configfiles/WCSimReaderTest/DataOutToolConfig

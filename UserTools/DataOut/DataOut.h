@@ -25,8 +25,10 @@ class DataOut: public Tool {
 
 
  private:
+  void CreateSubEvents(WCSimRootEvent * WCSimEvent);
+  void FinaliseSubEvents(WCSimRootEvent * WCSimEvent);
   void RemoveDigits(WCSimRootEvent * WCSimEvent);
-  bool TimeInRange(double time);
+  int  TimeInTriggerWindow(double time);
 
   std::string fOutFilename;
   TFile fOutFile;
@@ -36,6 +38,11 @@ class DataOut: public Tool {
   WCSimRootEvent * fWCSimEventID;
   WCSimRootEvent * fWCSimEventOD;
   TString * fWCSimFilename;
+
+  std::vector<std::pair<double, double> > fTriggerIntervals;
+  TriggerInfo * fTriggers;
+
+  int fEvtNum;
 
   int verbose;
 

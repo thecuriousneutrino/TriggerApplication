@@ -20,11 +20,27 @@ class nhits: public Tool {
 
 
  private:
+  float fTriggerSearchWindow;
+  float fTriggerSearchWindowStep;
+  float fTriggerThreshold;
+  float fTriggerSaveWindowPre;
+  float fTriggerSaveWindowPost;
+  bool  fTriggerOD;
 
+  void AlgNDigits(const SubSample * samples); ///< Modified from WCSim v1.7.0
+ 
+  static const int kALongTime;      ///< An arbitrary long time to use in loops (ns)
 
+  int verbose;
 
+  std::stringstream ss;
 
+  void StreamToLog(int level) {
+    Log(ss.str(), level, verbose);
+    ss.str("");
+  }
 
+  enum LogLevel {FATAL=-1, ERROR=0, WARN=1, INFO=2, DEBUG1=3, DEBUG2=4, DEBUG3=5};
 };
 
 

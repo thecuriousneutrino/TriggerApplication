@@ -10,6 +10,7 @@
 #include "WCSimRootOptions.hh"
 #include "WCSimRootEvent.hh"
 #include "WCSimRootGeom.hh"
+#include "WCSimEnumerations.hh"
 
 #include "Store.h"
 #include "BoostStore.h"
@@ -19,6 +20,7 @@
 
 #include <SubSample.h>
 #include <PMTInfo.h>
+#include <TriggerInfo.h>
 
 class DataModel {
 
@@ -44,6 +46,9 @@ class DataModel {
 
   std::vector<PMTInfo> IDGeom;
   std::vector<PMTInfo> ODGeom;
+
+  TriggerInfo IDTriggers;
+  TriggerInfo ODTriggers;
 
   bool triggeroutput;
 

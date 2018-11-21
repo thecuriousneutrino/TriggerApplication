@@ -9,19 +9,22 @@ class SubSample{
  public:
 
   SubSample();
-  SubSample(std::vector<int> PMTid,std::vector<int> time){
-    m_PMTid=PMTid;
-    m_time=time;
-  }
-  SubSample(std::vector<int> PMTid, std::vector<int> time, std::vector<int> charge) {
-    m_PMTid  = PMTid;
-    m_time   = time;
-    m_charge = charge;
-  }
+  SubSample(std::vector<int> PMTid,std::vector<float> time)
+    {
+      m_PMTid=PMTid;
+      m_time=time;
+    }
+
+  SubSample(std::vector<int> PMTid, std::vector<float> time, std::vector<float> charge)
+    {
+      m_PMTid  = PMTid;
+      m_time   = time;
+      m_charge = charge;
+    }
 
   std::vector<int> m_PMTid;
-  std::vector<int> m_time;
-  std::vector<int> m_charge;
+  std::vector<float> m_time;
+  std::vector<float> m_charge;
 
 };
 
