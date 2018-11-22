@@ -17,8 +17,8 @@ bool pass_all::Initialise(std::string configfile, DataModel &data){
 bool pass_all::Execute(){
   int n_digits = m_data->IDSamples.at(0).m_time.size();
   m_data->IDTriggers.AddTrigger(kTriggerNoTrig,
-				-1E6,
-				+1E6,
+				-10E6, //-10ms
+				+10E6, //+10ms
 				0,
 				std::vector<float>(1, n_digits));
 
