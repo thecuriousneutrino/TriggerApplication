@@ -1,19 +1,15 @@
 # pass_all
 
-pass_all
+pass_all is a dummy trigger that creates a single very long readout trigger window that (should) pass everything
 
 ## Data
 
-Describe any data formats pass_all creates, destroys, changes, analyzes, or its usage.
-
-
-
+Adds a trigger to `IDTriggers` that has the properties
+* Type `kTriggerNoTrig`
+* Trigger readout window [-10,+10] ms
+* Trigger time 0
+* Info: one entry with number of ID digits
 
 ## Configuration
 
-Describe any configuration variables for pass_all.
-
-```
-param1 value1
-param2 value2
-```
+No configuration options exist
