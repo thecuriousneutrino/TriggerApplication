@@ -42,6 +42,7 @@ class DataOut: public Tool {
   TString * fWCSimFilename;
 
   TriggerInfo * fTriggers;
+  double fTriggerOffset;
 
   int fEvtNum;
 

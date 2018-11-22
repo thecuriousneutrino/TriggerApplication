@@ -23,6 +23,8 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
   //other options
   fSaveMultiDigiPerTrigger = true;
   m_variables.Get("save_multiple_digits_per_trigger", fSaveMultiDigiPerTrigger);
+  fTriggerOffset = 0;
+  m_variables.Get("trigger_offset", fTriggerOffset);
 
   //setup the out event tree
   // Nevents unique event objects
@@ -140,7 +142,7 @@ void DataOut::CreateSubEvents(WCSimRootEvent * WCSimEvent)
     if(i)
       WCSimEvent->AddSubEvent();
     WCSimRootTrigger * trig = WCSimEvent->GetTrigger(i);
-    int offset = fTriggers->m_type.at(i) == kTriggerNoTrig ? 0 : 950;
+    double offset = fTriggerOffset;
     trig->SetHeader(fEvtNum, 0, fTriggers->m_triggertime.at(i) - offset, i+1);
     trig->SetTriggerInfo(fTriggers->m_type.at(i), fTriggers->m_info.at(i));
     //trig->SetMode(jhfNtuple.mode);
@@ -187,8 +189,7 @@ void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent, std::map<int, std::map<i
     int pmt = d->GetTubeId();
     if(window >= 0) {
       //need to apply an offset to the digit time using the trigger time
-      if(fTriggers->m_type.at(window) != kTriggerNoTrig)
-	d->SetT(time + 950. - fTriggers->m_triggertime.at(window));
+      d->SetT(time + fTriggerOffset - fTriggers->m_triggertime.at(window));
     }
     if(window > 0 &&
        (!fSaveMultiDigiPerTrigger && !NDigitPerPMTPerTriggerMap[pmt][window])) {
