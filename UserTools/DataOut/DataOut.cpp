@@ -20,6 +20,10 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
   }
   fOutFile.Open(fOutFilename.c_str(), "RECREATE");
 
+  //other options
+  fSaveMultiDigiPerTrigger = true;
+  m_variables.Get("save_multiple_digits_per_trigger", fSaveMultiDigiPerTrigger);
+
   //setup the out event tree
   // Nevents unique event objects
   Int_t bufsize = 64000;
@@ -57,6 +61,11 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
   fTriggers = new TriggerInfo();
   fEvtNum = 0;
 
+  for(int i = 0; i <= m_data->IDNPMTs; i++)
+    fIDNDigitPerPMTPerTriggerMap[i] = std::map<int, bool>();
+  for(int i = 0; i <= m_data->ODNPMTs; i++)
+    fODNDigitPerPMTPerTriggerMap[i] = std::map<int, bool>();
+
   return true;
 }
 
@@ -64,6 +73,11 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
 bool DataOut::Execute(){
 
   Log("DEBUG: DataOut::Execute Starting", DEBUG1, verbose);
+
+  for(int i = 0; i <= m_data->IDNPMTs; i++)
+    fIDNDigitPerPMTPerTriggerMap[i].clear();
+  for(int i = 0; i <= m_data->ODNPMTs; i++)
+    fODNDigitPerPMTPerTriggerMap[i].clear();
 
   //Gather together all the trigger windows
   fTriggers->Clear();
@@ -94,7 +108,7 @@ bool DataOut::Execute(){
   CreateSubEvents(fWCSimEventID);
   //remove the digits that aren't in the trigger window(s)
   // also move digits from the 0th trigger to the trigger window it's in
-  RemoveDigits(fWCSimEventID);
+  RemoveDigits(fWCSimEventID, fIDNDigitPerPMTPerTriggerMap);
   //set some trigger header infromation that requires all the digits to be 
   // present to calculate e.g. sumq
   FinaliseSubEvents(fWCSimEventID);
@@ -102,7 +116,7 @@ bool DataOut::Execute(){
   if(m_data->HasOD) {
     (*fWCSimEventOD) = (*(m_data->WCSimEventOD));
     CreateSubEvents(fWCSimEventOD);
-    RemoveDigits(fWCSimEventOD);
+    RemoveDigits(fWCSimEventOD, fODNDigitPerPMTPerTriggerMap);
     FinaliseSubEvents(fWCSimEventOD);
   }
 
@@ -126,7 +140,8 @@ void DataOut::CreateSubEvents(WCSimRootEvent * WCSimEvent)
     if(i)
       WCSimEvent->AddSubEvent();
     WCSimRootTrigger * trig = WCSimEvent->GetTrigger(i);
-    trig->SetHeader(fEvtNum, 0, fTriggers->m_triggertime.at(i) - 950, i+1);
+    int offset = fTriggers->m_type.at(i) == kTriggerNoTrig ? 0 : 950;
+    trig->SetHeader(fEvtNum, 0, fTriggers->m_triggertime.at(i) - offset, i+1);
     trig->SetTriggerInfo(fTriggers->m_type.at(i), fTriggers->m_info.at(i));
     //trig->SetMode(jhfNtuple.mode);
   }//i
@@ -139,47 +154,62 @@ void DataOut::FinaliseSubEvents(WCSimRootEvent * WCSimEvent)
     WCSimRootTrigger * trig = WCSimEvent->GetTrigger(i);
     TClonesArray * digits = trig->GetCherenkovDigiHits();
     float sumq = 0;
+    int ntubeshit = 0;
     for(int j = 0; j < trig->GetNcherenkovdigihits_slots(); j++) {
       WCSimRootCherenkovDigiHit * digi = (WCSimRootCherenkovDigiHit *)digits->At(j);
-      if(digi)
+      if(digi) {
 	sumq += digi->GetQ();
-    }
+	ntubeshit++;
+      }
+    }//j
     trig->SetSumQ(sumq);
+    //this is actually number of digits, not number of unique PMTs with digits
+    trig->SetNumDigitizedTubes(ntubeshit);
   }//i
 }
 
-void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent)
+void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent, std::map<int, std::map<int, bool> > & NDigitPerPMTPerTriggerMap)
 {
   if(!fTriggers->m_N) {
     ss << "DEBUG: No trigger intervals to save";
     StreamToLog(DEBUG1);
   }
-  WCSimRootTrigger * trig = WCSimEvent->GetTrigger(0);
-  TClonesArray * digits = trig->GetCherenkovDigiHits();
-  int ndigits = trig->GetNcherenkovdigihits();
-  int ndigits_slots = trig->GetNcherenkovdigihits_slots();
+  WCSimRootTrigger * trig0 = WCSimEvent->GetTrigger(0);
+  TClonesArray * digits = trig0->GetCherenkovDigiHits();
+  int ndigits = trig0->GetNcherenkovdigihits();
+  int ndigits_slots = trig0->GetNcherenkovdigihits_slots();
   for(int i = 0; i < ndigits_slots; i++) {
     WCSimRootCherenkovDigiHit * d = (WCSimRootCherenkovDigiHit*)digits->At(i);
     if(!d)
       continue;
     double time = d->GetT();
     int window = TimeInTriggerWindow(time);
+    int pmt = d->GetTubeId();
     if(window >= 0) {
       //need to apply an offset to the digit time using the trigger time
-      d->SetT(time - (fTriggers->m_triggertime.at(window) - 950));
+      if(fTriggers->m_type.at(window) != kTriggerNoTrig)
+	d->SetT(time + 950. - fTriggers->m_triggertime.at(window));
     }
-    if(window > 0) {
+    if(window > 0 &&
+       (!fSaveMultiDigiPerTrigger && !NDigitPerPMTPerTriggerMap[pmt][window])) {
       //need to add digit to a new trigger window
+      //but not if we've already saved the 1 digit from this pmt in this window we're allowed
       WCSimEvent->GetTrigger(window)->AddCherenkovDigiHit(d);
     }
-    if(window) {
+    if(window ||
+       (window == 0 && !fSaveMultiDigiPerTrigger && NDigitPerPMTPerTriggerMap[pmt][window])) {
       //either not in a trigger window (window = -1)
       //or not in the 0th trigger window (window >= 1)
-      trig->RemoveCherenkovDigiHit(d);
+      //or in 0th window but we've already saved the 1 digit from this pmt in this window we're allowed
+      trig0->RemoveCherenkovDigiHit(d);
+    }
+    if(window >= 0) {
+      //save the fact that we've used this PMT
+      NDigitPerPMTPerTriggerMap[pmt][window] = true;
     }
   }//i
   ss << "INFO: RemoveDigits() has reduced number of digits from "
-     << ndigits << " to " << trig->GetNcherenkovdigihits();
+     << ndigits << " to " << trig0->GetNcherenkovdigihits();
   StreamToLog(INFO);
 }
 
