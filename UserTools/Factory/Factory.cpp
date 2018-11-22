@@ -12,6 +12,7 @@ if (tool=="nhits") ret=new nhits;
 if (tool=="test_vertices") ret=new test_vertices;
 if (tool=="WCSimReader") ret=new WCSimReader;
 if (tool=="DataOut") ret=new DataOut;
+  if (tool=="pass_all") ret=new pass_all;
 return ret;
 }
 

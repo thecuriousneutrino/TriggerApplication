@@ -1,2 +1,4 @@
 verbose 3
 outfilename triggered.root
+save_multiple_digits_per_trigger 1
+trigger_offset 950

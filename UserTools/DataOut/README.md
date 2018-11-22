@@ -25,7 +25,11 @@ DataOut
 ```
 outfilename /path/to/file
 verbose LEVEL
+save_multiple_digits_per_trigger [0,1]
+trigger_offset OFFSET
 ```
 
 * `outfilename` File path to output file
 * `verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity)
+* `save_multiple_digits_per_trigger` is a boolean flag. If false, will only allow one digit per PMT per trigger window to be written. If true, writes out as many as exist
+* `trigger_offset` Offset applied to trigger time to account for `WCSimWCTriggerBase::offset` constant (set to 950 ns by default). This is related to SKI delay in the electronics/DAQ

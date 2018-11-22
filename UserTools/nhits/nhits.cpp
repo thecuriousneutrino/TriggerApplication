@@ -123,7 +123,8 @@ void nhits::AlgNDigits(const SubSample * sample)
   }//loop over Digits
   int window_start_time = firsthit;
   window_start_time -= window_start_time % 5;
-  int window_end_time   = lasthit - (fTriggerSearchWindow - fTriggerSearchWindowStep);
+  int window_end_time   = lasthit - fTriggerSearchWindow + fTriggerSearchWindowStep;
+  window_end_time -= window_end_time % 5;
   ss << "DEBUG: Found first/last hits. Looping from " << window_start_time
      << " to " << window_end_time 
      << " in steps of " << fTriggerSearchWindowStep;

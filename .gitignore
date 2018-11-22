@@ -1,0 +1,12 @@
+main
+lib/*.so
+
+#files from the ToolDAQ framework
+ToolDAQ/
+include/*.h
+NodeDaemon
+RemoteControl
+
+#temp files
+*~ 
+.#*
