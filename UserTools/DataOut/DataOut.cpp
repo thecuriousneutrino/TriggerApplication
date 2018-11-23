@@ -152,7 +152,7 @@ void DataOut::CreateSubEvents(WCSimRootEvent * WCSimEvent)
     double offset = fTriggerOffset;
     trig->SetHeader(fEvtNum, 0, fTriggers->m_triggertime.at(i) - offset, i+1);
     trig->SetTriggerInfo(fTriggers->m_type.at(i), fTriggers->m_info.at(i));
-    //trig->SetMode(jhfNtuple.mode);
+    trig->SetMode(0);
   }//i
 }
 /////////////////////////////////////////////////////////////////
