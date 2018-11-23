@@ -2,6 +2,7 @@
 
 DataOut::DataOut():Tool(){}
 
+/////////////////////////////////////////////////////////////////
 
 bool DataOut::Initialise(std::string configfile, DataModel &data){
 
@@ -71,6 +72,9 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
   return true;
 }
 
+/////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
 
 bool DataOut::Execute(){
 
@@ -111,6 +115,8 @@ bool DataOut::Execute(){
   //remove the digits that aren't in the trigger window(s)
   // also move digits from the 0th trigger to the trigger window it's in
   RemoveDigits(fWCSimEventID, fIDNDigitPerPMTPerTriggerMap);
+  //also redistribute some true tracks
+  MoveTracks(fWCSimEventID);
   //set some trigger header infromation that requires all the digits to be 
   // present to calculate e.g. sumq
   FinaliseSubEvents(fWCSimEventID);
@@ -119,6 +125,7 @@ bool DataOut::Execute(){
     (*fWCSimEventOD) = (*(m_data->WCSimEventOD));
     CreateSubEvents(fWCSimEventOD);
     RemoveDigits(fWCSimEventOD, fODNDigitPerPMTPerTriggerMap);
+    MoveTracks(fWCSimEventOD);
     FinaliseSubEvents(fWCSimEventOD);
   }
 
@@ -134,7 +141,7 @@ bool DataOut::Execute(){
   Log("DEBUG: DataOut::Execute() Done", DEBUG1, verbose);
   return true;
 }
-
+/////////////////////////////////////////////////////////////////
 void DataOut::CreateSubEvents(WCSimRootEvent * WCSimEvent)
 {
   const int n = fTriggers->m_N;
@@ -148,7 +155,7 @@ void DataOut::CreateSubEvents(WCSimRootEvent * WCSimEvent)
     //trig->SetMode(jhfNtuple.mode);
   }//i
 }
-
+/////////////////////////////////////////////////////////////////
 void DataOut::FinaliseSubEvents(WCSimRootEvent * WCSimEvent)
 {
   const int n = fTriggers->m_N;
@@ -169,7 +176,7 @@ void DataOut::FinaliseSubEvents(WCSimRootEvent * WCSimEvent)
     trig->SetNumDigitizedTubes(ntubeshit);
   }//i
 }
-
+/////////////////////////////////////////////////////////////////
 void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent, std::map<int, std::map<int, bool> > & NDigitPerPMTPerTriggerMap)
 {
   if(!fTriggers->m_N) {
@@ -196,7 +203,7 @@ void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent, std::map<int, std::map<i
 	(!fSaveMultiDigiPerTrigger && !NDigitPerPMTPerTriggerMap[pmt][window]))) {
       //need to add digit to a new trigger window
       //but not if we've already saved the 1 digit from this pmt in this window we're allowed
-      ss << "Adding digit to trigger " << window;
+      ss << "DEBUG: Adding digit to trigger " << window;
       StreamToLog(DEBUG3);
       WCSimEvent->GetTrigger(window)->AddCherenkovDigiHit(d);
     }
@@ -212,11 +219,39 @@ void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent, std::map<int, std::map<i
       NDigitPerPMTPerTriggerMap[pmt][window] = true;
     }
   }//i
-  ss << "INFO: RemoveDigits() has reduced number of digits from "
+  ss << "INFO: RemoveDigits() has reduced number of digits in the 0th trigger from "
      << ndigits << " to " << trig0->GetNcherenkovdigihits();
   StreamToLog(INFO);
 }
-
+/////////////////////////////////////////////////////////////////
+void DataOut::MoveTracks(WCSimRootEvent * WCSimEvent)
+{
+  if(!fTriggers->m_N)
+    return;
+  WCSimRootTrigger * trig0 = WCSimEvent->GetTrigger(0);
+  TClonesArray * tracks = trig0->GetTracks();
+  int ntracks = trig0->GetNtrack();
+  int ntracks_slots = trig0->GetNtrack_slots();
+  for(int i = 0; i < ntracks_slots; i++) {
+    WCSimRootTrack * t = (WCSimRootTrack*)tracks->At(i);
+    if(!t)
+      continue;
+    double time = t->GetTime();
+    int window = TimeInTriggerWindowNoDelete(time);
+    if(window > 0) {
+      ss << "DEBUG: Moving track from 0th  to " << window << " trigger";
+      StreamToLog(DEBUG3);
+      //need to add track to a new trigger window
+      WCSimEvent->GetTrigger(window)->AddTrack(t);
+      //and remove from the 0th
+      trig0->RemoveTrack(t);
+    }
+  }//i
+  ss << "INFO: MoveTracks() has reduced number of tracks in the 0th trigger from "
+     << ntracks << " to " << trig0->GetNcherenkovdigihits();
+  StreamToLog(INFO);
+}
+/////////////////////////////////////////////////////////////////
 int DataOut::TimeInTriggerWindow(double time) {
   for(unsigned int i = 0; i < fTriggers->m_N; i++) {
     double lo = fTriggers->m_starttime.at(i);
@@ -226,6 +261,29 @@ int DataOut::TimeInTriggerWindow(double time) {
   }//it
   return -1;
 }
+/////////////////////////////////////////////////////////////////
+unsigned int DataOut::TimeInTriggerWindowNoDelete(double time) {
+  //we can't return -1 in this (i.e. we don't want to delete tracks)
+  //the logic is:
+  // if it's anytime before the 0th trigger + postrigger readout window, store in 0th trigger
+  // if it's anytime after the 0th trigger readout window and before the end of the 1st trigger readout window, store in the 1st trigger
+  // etc
+  //with the caveat that we don't create a WCSimRootTrigger just to store some tracks
+  // therefore return value is at maximum the number of triggers
+  const int N = fTriggers->m_N;
+  for(unsigned int i = 0; i < N; i++) {
+    double hi = fTriggers->m_endtime.at(i);
+    if(time <= hi)
+      return i;
+  }//it
+  ss << "WARNING DataOut::TimeInTriggerWindowNoDelete() could not find a trigger that track with time " << time << " can live in. Returning maximum trigger number " << N - 1;
+  StreamToLog(WARN);
+  return N - 1;
+}
+
+/////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
 
 bool DataOut::Finalise(){
   fTreeEvent->Write();

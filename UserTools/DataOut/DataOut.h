@@ -30,7 +30,9 @@ class DataOut: public Tool {
   void FinaliseSubEvents(WCSimRootEvent * WCSimEvent);
   void RemoveDigits(WCSimRootEvent * WCSimEvent,
 		    std::map<int, std::map<int, bool> > & NDigitPerPMTPerTriggerMap);
+  void MoveTracks(WCSimRootEvent * WCSimEvent);
   int  TimeInTriggerWindow(double time);
+  unsigned int TimeInTriggerWindowNoDelete(double time);
 
   std::string fOutFilename;
   TFile fOutFile;
