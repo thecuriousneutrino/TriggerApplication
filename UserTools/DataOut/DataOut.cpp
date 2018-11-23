@@ -150,7 +150,7 @@ void DataOut::CreateSubEvents(WCSimRootEvent * WCSimEvent)
       WCSimEvent->AddSubEvent();
     WCSimRootTrigger * trig = WCSimEvent->GetTrigger(i);
     double offset = fTriggerOffset;
-    trig->SetHeader(fEvtNum, 0, fTriggers->m_triggertime.at(i) - offset, i+1);
+    trig->SetHeader(fEvtNum, 0, fTriggers->m_triggertime.at(i), i+1);
     trig->SetTriggerInfo(fTriggers->m_type.at(i), fTriggers->m_info.at(i));
     trig->SetMode(0);
   }//i
@@ -162,7 +162,7 @@ void DataOut::FinaliseSubEvents(WCSimRootEvent * WCSimEvent)
   for(int i = 0; i < n; i++) {
     WCSimRootTrigger * trig = WCSimEvent->GetTrigger(i);
     TClonesArray * digits = trig->GetCherenkovDigiHits();
-    float sumq = 0;
+    double sumq = 0;
     int ntubeshit = 0;
     for(int j = 0; j < trig->GetNcherenkovdigihits_slots(); j++) {
       WCSimRootCherenkovDigiHit * digi = (WCSimRootCherenkovDigiHit *)digits->At(j);
@@ -196,7 +196,10 @@ void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent, std::map<int, std::map<i
     int pmt = d->GetTubeId();
     if(window >= 0) {
       //need to apply an offset to the digit time using the trigger time
-      d->SetT(time + fTriggerOffset - fTriggers->m_triggertime.at(window));
+      double t = - fTriggers->m_triggertime.at(window)
+	+ fTriggerOffset
+	+ time;
+      d->SetT(t);
     }
     if(window > 0 &&
        (fSaveMultiDigiPerTrigger ||
@@ -226,7 +229,7 @@ void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent, std::map<int, std::map<i
 /////////////////////////////////////////////////////////////////
 void DataOut::MoveTracks(WCSimRootEvent * WCSimEvent)
 {
-  if(!fTriggers->m_N)
+  if(fTriggers->m_N < 2)
     return;
   WCSimRootTrigger * trig0 = WCSimEvent->GetTrigger(0);
   TClonesArray * tracks = trig0->GetTracks();
@@ -248,7 +251,7 @@ void DataOut::MoveTracks(WCSimRootEvent * WCSimEvent)
     }
   }//i
   ss << "INFO: MoveTracks() has reduced number of tracks in the 0th trigger from "
-     << ntracks << " to " << trig0->GetNcherenkovdigihits();
+     << ntracks << " to " << trig0->GetNtrack();
   StreamToLog(INFO);
 }
 /////////////////////////////////////////////////////////////////
