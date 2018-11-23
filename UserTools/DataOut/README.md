@@ -13,12 +13,26 @@ DataOut
     * `wcsimrootoptions` of type `WCSimRootOptions` is a direct clone of the input tree
     * `wcsimfilename` of type `TObjString` is the WCSim file this options class came from
   3. `wcsimT` has N events entries
-    * `wcsimrootevent` of type `WCSimRootEvent` stores the ID events. This is identical to the WCSim event tree, with digits outside the trigger window removed*
-    * `wcsimrootevent_OD` of type `WCSimRootEvent` stores the OD events. This is identical to the WCSim event tree, with digits outside the trigger window removed*
+    * `wcsimrootevent` of type `WCSimRootEvent` stores the ID events. This is identical to the WCSim event tree, with digits outside the trigger window removed
+    * `wcsimrootevent_OD` of type `WCSimRootEvent` stores the OD events. This is identical to the WCSim event tree, with digits outside the trigger window removed
     * `wcsimfilename` of type `TObjArray` of `TObjString` stores the WCSim filename(s) of the current event
     * `wcsimeventnums` of type `vector<int>` stors the WCSim event number(s) of the current event
-* *Any digit that is not in the trigger window is removed from the output `TClonesArray`
-  * Currently a fixed cutoff of 1000 ns is used
+* Any digit that is not in a trigger window is removed from the output `TClonesArray`
+  * This is done using a combination of `IDTriggers` and `ODTriggers` that triggers have filled
+    * e.g. if an OD digit is doesn't have any OD triggers, but is within an ID trigger window, the OD digit will be saved
+    * This is different to WCSim which handles ID/OD triggers separately
+  * The logic of which trigger to add a digit too is:
+    * Time order the triggers
+    * It is then the first trigger the digit is in
+  * If there are no trigger windows, every digit will be removed
+  * Digits that are triggered, but not in the 0th trigger window, are added to the relevant window before removal from the 0th trigger
+* Truth tracks are also moved into their corresponding trigger window
+  * However the logic is slightly different (since they are never dropped)
+    * If they are in the 0th trigger readout window, store in 0th trigger
+    * If they are after the 0th readout window and before the end of the 1st trigger window, store in the 1st trigger
+    * etc
+    * But note that WCSimRootTrigger object aren't created just for tracks, therefore if the track time is beyond the last trigger window, it is stored in the last trigger
+  * Note that this is not exactly equivalent to WCSim. WCSim uses a fixed "`trigger_time` + 950 ns" for this check, rather than "`trigger_time` + `postrigger_save_window`"
 
 ## Configuration
 
