@@ -192,9 +192,12 @@ void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent, std::map<int, std::map<i
       d->SetT(time + fTriggerOffset - fTriggers->m_triggertime.at(window));
     }
     if(window > 0 &&
-       (!fSaveMultiDigiPerTrigger && !NDigitPerPMTPerTriggerMap[pmt][window])) {
+       (fSaveMultiDigiPerTrigger ||
+	(!fSaveMultiDigiPerTrigger && !NDigitPerPMTPerTriggerMap[pmt][window]))) {
       //need to add digit to a new trigger window
       //but not if we've already saved the 1 digit from this pmt in this window we're allowed
+      ss << "Adding digit to trigger " << window;
+      StreamToLog(DEBUG3);
       WCSimEvent->GetTrigger(window)->AddCherenkovDigiHit(d);
     }
     if(window ||
