@@ -38,7 +38,7 @@ verbose LEVEL
 * `trigger_search_window` The width of the window that sums nhits
 * `trigger_search_window_step` The slide step of the window that sums hits
 * `trigger_threshold` The threshold, above which the trigger fires
-  * Not equal to does not fire the trigger
+  * *Not equal to* does not fire the trigger
 * `trigger_threshold_adjust_for_noise` Boolean. If true, the trigger threshold will be increased by the average dark noise occupancy in the sliding window. If false, the trigger threshold will not be modified
 * `pretrigger_save_window` Once a trigger is issued, how much data should be read out before it
 * `posttrigger_save_window` Once a trigger is issued, how much data should be read out after it
