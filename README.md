@@ -83,11 +83,11 @@ Once the container has started to run the software
 Yuor then free to install any applicaitons in your container you wish for development
 
 Notes: 
-       * To exit a contianer use `exit` 
-       * To restart a container use `docker start -i TriggerApplicaiton`
-       * To see current contianers use `docker ps -a`
-       * To delete a container use `docker rm TriggerApplciaiton`
-       * When creating a container you can mount a folder from your native os with the `-v` run option e.g. `docker run --name=TriggerApplication -v local_folder_path:container_mount_path -it hkdaq/triggerapplication:latest`
+* To exit a contianer use `exit` 
+* To restart a container use `docker start -i TriggerApplicaiton`
+* To see current contianers use `docker ps -a`
+* To delete a container use `docker rm TriggerApplciaiton`
+* When creating a container you can mount a folder from your native os with the `-v` run option e.g. `docker run --name=TriggerApplication -v local_folder_path:container_mount_path -it hkdaq/triggerapplication:latest`
 
 ### From GitHub source
 
