@@ -104,21 +104,25 @@ Tools cannot communicate directly with one another. They rely on passing data be
      * `m_variables.Get("verbose", verbose);` is an example of reading in configuration options
    * Implement `Execute()`
      * Triggers shouldn't read truth information (although you could implement truth cherry pickers...) so you should only use the following from the DataModel `m_data`
-       * Inputs
+       * **Inputs**
          * `IDSamples` and `ODSamples` contain all the digit information i.e. charge, time, tubeID
 	 * `IDGeom` and `ODGeom` contain all the PMT information i.e tubeID, x, y, z
-	   * Note that this can be expanded to include e.g. PMT rotation
-       * Outputs
+
+	    Note that this can be expanded to include e.g. PMT rotation
+
+       * **Outputs**
          * Use `TriggerInfo::AddTrigger()` to save triggers in `IDTriggers` or `ODTriggers`
      * You can implement both CPU and CUDA-based GPU versions of your code
        * It is recommended to always have a CPU version of the code, since this allows anyone to use it; access to GPUs are not ubiquitous
-       * Use the following to select the correct version of the code, and hide GPU code from systems that cannot compile it ```
-#ifdef GPU
-// GPU code
-#else
-// CPU CODE
-#endif //GPU
-```
+       * Use the following to select the correct version of the code, and hide GPU code from systems that cannot compile it 
+        ```
+        #ifdef GPU
+        // GPU code
+        #else
+        // CPU CODE
+        #endif //GPU
+        ```
+
    * Implement `Finalise()`
      * Remember to `delete` any memory you've allocated
    * Check other triggers for more information
