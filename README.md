@@ -6,13 +6,13 @@ its built from ToolDAQ Application[1] which is an open source general DAQ Applic
 
 ****************************
 
-#Concept
+# Concept
 
 ****************************
 
 The main executable creates a ToolChain which is an object that holds Tools. Tools are added to the ToolChain and then the ToolChain can be told to Initialise Execute and Finalise each tool in the chain.
 
-The ToolChain also holds a uesr defined DataModel which each tool has access too and can read ,update and modify. This is the method by which data is passed between Tools.
+The ToolChain also holds a uesr defined DataModel which each tool has access too and can read, update and modify. This is the method by which data is passed between Tools.
 
 User Tools can be generated for use in the tool chain by incuding a Tool header. This can be done manually or by use of the newTool.sh script.
 
@@ -22,7 +22,7 @@ https://github.com/ToolDAQ/ToolDAQFramework/blob/master/ToolDAQ%20doc.pdf
 
 ****************************
 
-#Tutorial
+# Tutorial
 
 ## Key concepts
 
@@ -60,13 +60,13 @@ Tools cannot communicate directly with one another. They rely on passing data be
 ### From GitHub source
 
 * Clone from https://github.com/HKDAQ/TriggerApplication
-  * Note the model used to add to the main version of TriggerApplication is fork and pull request. So do fork if you need to!
+  * Note the model used to commit to the main version of TriggerApplication is fork and pull request. So do fork if you need to!
 * Run `./GetToolDAQ.sh`
   * This gets and compiles the prerequistes: ToolDAQ, boost, and zmq
   * You can optionally install Root
   * `./GetToolDAQ.sh --help` for the flags to turn on/off each of the prerequsites
 * Make sure you have sourced WCSim i.e. that you have $WCSIMDIR set
-  * Note that this currently has to be the following branch `https://github.com/tdealtry/WCSim/tree/trigger` - pull requests are pending
+  * Note that this currently has to be the following branch https://github.com/tdealtry/WCSim/tree/trigger - pull requests are pending
 * `source Setup.sh`
 * `make`
   * If you are `make GPU` to compile the CUDA-GPU code (only for compatible systems)
@@ -75,9 +75,8 @@ Tools cannot communicate directly with one another. They rely on passing data be
 
 ## Running
 
-Choosing the `WCSimReaderTest` as an example
-
 1. Choose the toolchain you want to run
+  * We use `WCSimReaderTest` as an example
 2. Check the configuration files are doing what you want them to in `configfiles/WCSimReaderTest`
   * `ToolChainConfig` -- Sets up how many events to run on, what to do on errors, etc. You probably don't need to alter this
   * `ToolsConfig` -- Select which tool(s) you want to use, and the configuration file of each version of the tool
