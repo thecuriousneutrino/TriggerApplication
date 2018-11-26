@@ -69,7 +69,7 @@ Tools cannot communicate directly with one another. They rely on passing data be
 
 ### Docker
 
-Docker is a platform independant container system which eases the headache of long instalation and incompatability problems. By creating a container form the image you will have a native Centos 7 terminal with all the prerequisits installed and the software garenteed to work.
+Docker is a platform independant container system which eases the headache of long installation and incompatability problems. By creating a container form the image you will have a native Centos 7 terminal with all the prerequisits installed and the software guaranteed to work.
 
 1) Install docker check either your platforms package manager or https://www.docker.com for the software
 2) Get the latest continer image `docker pull hkdaq/triggerapplication:latest`
@@ -80,14 +80,14 @@ Once the container has started to run the software
 2) source Setup.sh
 3) ./main
 
-Yuor then free to install any applicaitons in your container you wish for development
+You're then free to install any applications in your container you wish for development
 
 Notes: 
-       To exit a contianer use `exit` 
-       To restart a container use `docker start -i TriggerApplicaiton`
-       To see current contianers use `docker ps -a`
-       To delete a container use `docker rm TriggerApplciaiton`
-       When creating a container you can mount a folder from your native os with the `-v` run option e.g. `docker run --name=TriggerApplication -v local_folder_path:container_mount_path -it hkdaq/triggerapplication:latest`
+* To exit a contianer use `exit` 
+* To restart a container use `docker start -i TriggerApplicaiton`
+* To see current contianers use `docker ps -a`
+* To delete a container use `docker rm TriggerApplciaiton`
+* When creating a container you can mount a folder from your native os with the `-v` run option e.g. `docker run --name=TriggerApplication -v local_folder_path:container_mount_path -it hkdaq/triggerapplication:latest`
 
 ### From GitHub source
 
