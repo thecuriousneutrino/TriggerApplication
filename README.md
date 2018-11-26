@@ -106,9 +106,9 @@ Tools cannot communicate directly with one another. They rely on passing data be
      * Triggers shouldn't read truth information (although you could implement truth cherry pickers...) so you should only use the following from the DataModel `m_data`
        * **Inputs**
          * `IDSamples` and `ODSamples` contain all the digit information i.e. charge, time, tubeID
-	 * `IDGeom` and `ODGeom` contain all the PMT information i.e tubeID, x, y, z
+         * `IDGeom` and `ODGeom` contain all the PMT information i.e tubeID, x, y, z
 
-	    Note that this can be expanded to include e.g. PMT rotation
+           * Note that this can be expanded to include e.g. PMT rotation
 
        * **Outputs**
          * Use `TriggerInfo::AddTrigger()` to save triggers in `IDTriggers` or `ODTriggers`
