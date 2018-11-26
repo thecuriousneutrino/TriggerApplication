@@ -24,6 +24,8 @@ https://github.com/ToolDAQ/ToolDAQFramework/blob/master/ToolDAQ%20doc.pdf
 
 # Tutorial
 
+Note that there are `README.md` files in most folders. Check them out!
+
 ## Key concepts
 
 ### Tool
@@ -56,6 +58,7 @@ Tools cannot communicate directly with one another. They rely on passing data be
 
 ### Docker
 
+???
 
 ### From GitHub source
 
