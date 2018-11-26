@@ -76,18 +76,18 @@ Docker is a platform independant container system which eases the headache of lo
 3) Run an instance of the container which will ahve the trigger applicaiton and all dependancies installed `docker run --name=TriggerApplication -it hkdaq/triggerapplication:latest` Note: only run once or you will make multiple contianers
 
 Once the container has started to run the software
-1) cd TriggerApplication
-2) source Setup.sh
-3) ./main
+1) `cd TriggerApplication`
+2) `source Setup.sh`
+3) `./main`
 
 Yuor then free to install any applicaitons in your container you wish for development
 
 Notes: 
-       To exit a contianer use `exit` 
-       To restart a container use `docker start -i TriggerApplicaiton`
-       To see current contianers use `docker ps -a`
-       To delete a container use `docker rm TriggerApplciaiton`
-       When creating a container you can mount a folder from your native os with the `-v` run option e.g. `docker run --name=TriggerApplication -v local_folder_path:container_mount_path -it hkdaq/triggerapplication:latest`
+       * To exit a contianer use `exit` 
+       * To restart a container use `docker start -i TriggerApplicaiton`
+       * To see current contianers use `docker ps -a`
+       * To delete a container use `docker rm TriggerApplciaiton`
+       * When creating a container you can mount a folder from your native os with the `-v` run option e.g. `docker run --name=TriggerApplication -v local_folder_path:container_mount_path -it hkdaq/triggerapplication:latest`
 
 ### From GitHub source
 
