@@ -1,4 +1,4 @@
-#Data Model
+# Data Model
 *************************
 
 Data Model Class can be defined how ever the User requires. A Store is provided which ineficently maps variables to string lkeys via conversion to stringstream and can be used for debuging or other useful vairables.
@@ -37,7 +37,7 @@ Pass through information
 * `WCSimRootEvent * WCSimEventOD` - Same for the OD
 * `bool IsMC` - Is this Monte Carlo, rather than data?
 
-###Filled by trigger tools, used by `DataOut`
+### Filled by trigger tools, used by `DataOut`
 
 Trigger results
 * `TriggerInfo IDTriggers` - Containts vectors of trigger type, readout window start/end times, the time the trigger fired, and any additional information this trigger provides (in a `vector<float>`). For the ID
