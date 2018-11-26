@@ -113,7 +113,7 @@ Tools cannot communicate directly with one another. They rely on passing data be
        * **Outputs**
          * Use `TriggerInfo::AddTrigger()` to save triggers in `IDTriggers` or `ODTriggers`
      * You can implement both CPU and CUDA-based GPU versions of your code
-       * It is recommended to always have a CPU version of the code, since this allows anyone to use it; access to GPUs are not ubiquitous
+       * It is recommended to always have a CPU version of the code, since this allows anyone to use it; access to GPUs is not ubiquitous
        * Use the following to select the correct version of the code, and hide GPU code from systems that cannot compile it 
         ```
         #ifdef GPU
