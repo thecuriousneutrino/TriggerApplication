@@ -26,6 +26,17 @@ https://github.com/ToolDAQ/ToolDAQFramework/blob/master/ToolDAQ%20doc.pdf
 
 Note that there are `README.md` files in most folders. Check them out!
 
+* [Key concepts](#key-concepts)
+  * [Tool](#tool)
+  * [Toolchain](#toolchain)
+  * [DataModel](#datamodel)
+* [Installation](#installation)
+  * [Docker](#docker)
+  * [From GitHub source](#from-github-source)
+* [Running](#running)
+  * [Creating your own trigger chain](#creating-your-own-trigger-chain)
+  * [Creating your own trigger](#creating-your-own-trigger)
+
 ## Key concepts
 
 ### Tool
