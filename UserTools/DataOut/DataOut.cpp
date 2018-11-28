@@ -196,9 +196,10 @@ void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent, std::map<int, std::map<i
     int pmt = d->GetTubeId();
     if(window >= 0) {
       //need to apply an offset to the digit time using the trigger time
-      double t = - fTriggers->m_triggertime.at(window)
-	+ fTriggerOffset
-	+ time;
+      //do it this slightly odd way to mirror what WCSim does
+      double t = time;
+      t += fTriggerOffset
+	- (float)fTriggers->m_triggertime.at(window);
       d->SetT(t);
     }
     if(window > 0 &&
