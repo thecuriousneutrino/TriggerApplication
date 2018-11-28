@@ -26,6 +26,8 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
   m_variables.Get("save_multiple_digits_per_trigger", fSaveMultiDigiPerTrigger);
   fTriggerOffset = 0;
   m_variables.Get("trigger_offset", fTriggerOffset);
+  fSaveOnlyFailedDigits = false;
+  m_variables.Get("save_only_failed_digits", fSaveOnlyFailedDigits);
 
   //setup the out event tree
   // Nevents unique event objects
@@ -194,34 +196,45 @@ void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent, std::map<int, std::map<i
     double time = d->GetT();
     int window = TimeInTriggerWindow(time);
     int pmt = d->GetTubeId();
-    if(window >= 0) {
-      //need to apply an offset to the digit time using the trigger time
-      //do it this slightly odd way to mirror what WCSim does
-      double t = time;
-      t += fTriggerOffset
-	- (float)fTriggers->m_triggertime.at(window);
-      d->SetT(t);
-    }
-    if(window > 0 &&
-       (fSaveMultiDigiPerTrigger ||
-	(!fSaveMultiDigiPerTrigger && !NDigitPerPMTPerTriggerMap[pmt][window]))) {
-      //need to add digit to a new trigger window
-      //but not if we've already saved the 1 digit from this pmt in this window we're allowed
-      ss << "DEBUG: Adding digit to trigger " << window;
-      StreamToLog(DEBUG3);
-      WCSimEvent->GetTrigger(window)->AddCherenkovDigiHit(d);
-    }
-    if(window ||
-       (window == 0 && !fSaveMultiDigiPerTrigger && NDigitPerPMTPerTriggerMap[pmt][window])) {
-      //either not in a trigger window (window = -1)
-      //or not in the 0th trigger window (window >= 1)
-      //or in 0th window but we've already saved the 1 digit from this pmt in this window we're allowed
-      trig0->RemoveCherenkovDigiHit(d);
-    }
-    if(window >= 0) {
-      //save the fact that we've used this PMT
-      NDigitPerPMTPerTriggerMap[pmt][window] = true;
-    }
+    if(!fSaveOnlyFailedDigits) {
+      //we're saving only things in the trigger window
+      if(window >= 0) {
+	//need to apply an offset to the digit time using the trigger time
+	//do it this slightly odd way to mirror what WCSim does
+	double t = time;
+	t += fTriggerOffset
+	  - (float)fTriggers->m_triggertime.at(window);
+	d->SetT(t);
+      }
+      if(window > 0 &&
+	 (fSaveMultiDigiPerTrigger ||
+	  (!fSaveMultiDigiPerTrigger && !NDigitPerPMTPerTriggerMap[pmt][window]))) {
+	//need to add digit to a new trigger window
+	//but not if we've already saved the 1 digit from this pmt in this window we're allowed
+	ss << "DEBUG: Adding digit to trigger " << window;
+	StreamToLog(DEBUG3);
+	WCSimEvent->GetTrigger(window)->AddCherenkovDigiHit(d);
+      }
+      if(window ||
+	 (window == 0 && !fSaveMultiDigiPerTrigger && NDigitPerPMTPerTriggerMap[pmt][window])) {
+	//either not in a trigger window (window = -1)
+	//or not in the 0th trigger window (window >= 1)
+	//or in 0th window but we've already saved the 1 digit from this pmt in this window we're allowed
+	trig0->RemoveCherenkovDigiHit(d);
+      }
+      if(window >= 0) {
+	//save the fact that we've used this PMT
+	NDigitPerPMTPerTriggerMap[pmt][window] = true;
+      }
+    }//!fSaveOnlyFailedDigits
+    else {
+      //We want to save digits that *haven't* passed any trigger
+      //To keep it simple:
+      // Remove anything that's in a trigger window
+      // Keep everything else in the 0th trigger
+      if(window >= 0)
+	trig0->RemoveCherenkovDigiHit(d);
+    }//fSaveOnlyFailedDigits
   }//i
   ss << "INFO: RemoveDigits() has reduced number of digits in the 0th trigger from "
      << ndigits << " to " << trig0->GetNcherenkovdigihits();

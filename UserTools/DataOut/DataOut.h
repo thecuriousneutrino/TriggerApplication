@@ -48,6 +48,7 @@ class DataOut: public Tool {
 
   int fEvtNum;
 
+  bool fSaveOnlyFailedDigits;
   bool fSaveMultiDigiPerTrigger;
   std::map<int, std::map<int, bool> > fIDNDigitPerPMTPerTriggerMap;
   std::map<int, std::map<int, bool> > fODNDigitPerPMTPerTriggerMap;
