@@ -110,6 +110,7 @@ Notes:
 1. Choose the toolchain you want to run
   * We use `WCSimReaderTest` as an example
   * See https://github.com/WCSim/WCSim for how to compile and run WCSim
+    * Running `cd $WCSIMDIR; ./bin/Linux-g++/WCSim WCSim.mac` will create the expected output file for this tutorial.
 2. Check the configuration files are doing what you want them to in `configfiles/WCSimReaderTest`
   * `ToolChainConfig` -- Sets up how many events to run on, what to do on errors, etc. You probably don't need to alter this
   * `ToolsConfig` -- Select which tool(s) you want to use, and the configuration file of each version of the tool
