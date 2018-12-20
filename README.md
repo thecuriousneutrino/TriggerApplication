@@ -69,7 +69,7 @@ Tools cannot communicate directly with one another. They rely on passing data be
 
 ### Docker
 
-Docker is a platform independant container system which eases the headache of long instalation and incompatability problems. By creating a container form the image you will have a native Centos 7 terminal with all the prerequisits installed and the software garenteed to work.
+Docker is a platform independant container system which eases the headache of long installation and incompatability problems. By creating a container form the image you will have a native Centos 7 terminal with all the prerequisits installed and the software guaranteed to work.
 
 1) Install docker check either your platforms package manager or https://www.docker.com for the software
 2) Get the latest continer image `docker pull hkdaq/triggerapplication:latest`
@@ -80,7 +80,7 @@ Once the container has started to run the software
 2) `source Setup.sh`
 3) `./main`
 
-You are then free to install any applications in your container you wish for development
+You're then free to install any applications in your container you wish for development
 
 Notes: 
 * To exit a contianer use `exit` 
@@ -109,6 +109,8 @@ Notes:
 
 1. Choose the toolchain you want to run
   * We use `WCSimReaderTest` as an example
+  * See https://github.com/WCSim/WCSim for how to compile and run WCSim
+    * Running `cd $WCSIMDIR; ./bin/Linux-g++/WCSim WCSim.mac` will create the expected output file for this tutorial.
 2. Check the configuration files are doing what you want them to in `configfiles/WCSimReaderTest`
   * `ToolChainConfig` -- Sets up how many events to run on, what to do on errors, etc. You probably don't need to alter this
   * `ToolsConfig` -- Select which tool(s) you want to use, and the configuration file of each version of the tool
