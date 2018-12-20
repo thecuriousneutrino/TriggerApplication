@@ -73,7 +73,7 @@ Docker is a platform independant container system which eases the headache of lo
 
 1) Install docker check either your platforms package manager or https://www.docker.com for the software
 2) Get the latest continer image `docker pull hkdaq/triggerapplication:latest`
-3) Run an instance of the container which will ahve the trigger application and all dependancies installed `docker run --name=TriggerApplication -it hkdaq/triggerapplication:latest` Note: only run once or you will make multiple contianers
+3) Run an instance of the container which will have the trigger application and all dependancies installed `docker run --name=TriggerApplication -it hkdaq/triggerapplication:latest` Note: only run once or you will make multiple contianers
 
 Once the container has started to run the software
 1) `cd TriggerApplication`
