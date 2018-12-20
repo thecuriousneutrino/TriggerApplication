@@ -73,14 +73,14 @@ Docker is a platform independant container system which eases the headache of lo
 
 1) Install docker check either your platforms package manager or https://www.docker.com for the software
 2) Get the latest continer image `docker pull hkdaq/triggerapplication:latest`
-3) Run an instance of the container which will ahve the trigger applicaiton and all dependancies installed `docker run --name=TriggerApplication -it hkdaq/triggerapplication:latest` Note: only run once or you will make multiple contianers
+3) Run an instance of the container which will have the trigger application and all dependancies installed `docker run --name=TriggerApplication -it hkdaq/triggerapplication:latest` Note: only run once or you will make multiple contianers
 
 Once the container has started to run the software
 1) `cd TriggerApplication`
 2) `source Setup.sh`
 3) `./main`
 
-Yuor then free to install any applicaitons in your container you wish for development
+You are then free to install any applications in your container you wish for development
 
 Notes: 
 * To exit a contianer use `exit` 
@@ -97,7 +97,7 @@ Notes:
   * This gets and compiles the prerequistes: ToolDAQ, boost, and zmq
   * You can optionally install Root
   * `./GetToolDAQ.sh --help` for the flags to turn on/off each of the prerequsites
-* Make sure you have sourced WCSim i.e. that you have $WCSIMDIR set
+* Make sure you have sourced WCSim i.e. that you have `$WCSIMDIR` set
   * Note that this currently has to be the following branch https://github.com/tdealtry/WCSim/tree/trigger - pull requests are pending
 * `source Setup.sh`
 * `make`
@@ -113,8 +113,10 @@ Notes:
   * `ToolChainConfig` -- Sets up how many events to run on, what to do on errors, etc. You probably don't need to alter this
   * `ToolsConfig` -- Select which tool(s) you want to use, and the configuration file of each version of the tool
   * `WCSimReaderToolConfig` -- Options for the `WCSimReader` tool. Select the input file(s), number of events to loop over, and tool verbosity
+    * Note the default WCSim input file is `$WCSIMDIR/wcsim.root`
   * `nhitsToolConfig` -- Select the trigger options (e.g. threshold), whether to apply it to ID or OD digits, and tool verbosity
-  * `DataOutToolConfig` -- Select the output filename, whether to save multiple digits per PMT per trigger, the digit time offset, and tool verbosity
+  * `DataOutToolConfig` -- Select the output filename, whether to save multiple digits per PMT per trigger, the digit time offset, and tool verbosity.
+    * Note the default output file is `triggered.root`
 3. Run as `./main WCSimReaderTest`
 
 ## Creating your own trigger chain
