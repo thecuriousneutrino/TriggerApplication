@@ -69,7 +69,7 @@ Tools cannot communicate directly with one another. They rely on passing data be
 
 ### Docker
 
-Docker is a platform independant container system which eases the headache of long instalation and incompatability problems. By creating a container form the image you will have a native Centos 7 terminal with all the prerequisits installed and the software garenteed to work.
+Docker is a platform independant container system which eases the headache of long installation and incompatability problems. By creating a container form the image you will have a native Centos 7 terminal with all the prerequisits installed and the software guaranteed to work.
 
 1) Install docker check either your platforms package manager or https://www.docker.com for the software
 2) Get the latest continer image `docker pull hkdaq/triggerapplication:latest`
@@ -80,7 +80,7 @@ Once the container has started to run the software
 2) `source Setup.sh`
 3) `./main`
 
-You are then free to install any applications in your container you wish for development
+You're then free to install any applications in your container you wish for development
 
 Notes: 
 * To exit a contianer use `exit` 
