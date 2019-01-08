@@ -4,6 +4,9 @@
 
 ToolDAQapp=`pwd`
 
-source /root/HyperK/root/bin/thisroot.sh
+if [ -z "$WCSIMDIR" ]; then
+    echo "Setup WCSim (i.e. set \$WCSIMDIR) before setting up TriggerApplication";
+    return;
+fi
 
 export LD_LIBRARY_PATH=${ToolDAQapp}/lib:${ToolDAQapp}/ToolDAQ/zeromq-4.0.7/lib:${ToolDAQapp}/ToolDAQ/boost_1_66_0/install/lib:$WCSIMDIR:$LD_LIBRARY_PATH
