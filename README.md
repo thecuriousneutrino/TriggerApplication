@@ -93,15 +93,16 @@ Notes:
 
 * Clone from https://github.com/HKDAQ/TriggerApplication
   * Note the model used to commit to the main version of TriggerApplication is fork and pull request. So do fork if you need to!
+* Make sure you have sourced WCSim i.e. that you have `$WCSIMDIR` set
+  * Note that this currently has to be the following branch https://github.com/tdealtry/WCSim/tree/trigger - pull requests are pending
 * Run `./GetToolDAQ.sh`
   * This gets and compiles the prerequistes: ToolDAQ, boost, and zmq
   * You can optionally install Root
   * `./GetToolDAQ.sh --help` for the flags to turn on/off each of the prerequsites
-* Make sure you have sourced WCSim i.e. that you have `$WCSIMDIR` set
-  * Note that this currently has to be the following branch https://github.com/tdealtry/WCSim/tree/trigger - pull requests are pending
 * `source Setup.sh`
 * `make`
-  * If you are `make GPU` to compile the CUDA-GPU code (only for compatible systems)
+  * Note this will already have happened if you ran `./GetToolDAQ.sh` with no options, or the `--Final` flag
+  * If you are using GPU code, run `make GPU` to compile the CUDA-GPU code (only for compatible systems)
 * Check it runs with `./main`
   * This runs an example toolchain with two versions of the `dummy` tool. It's essentially a Hello World tool
 
