@@ -6,6 +6,7 @@ ToolDAQapp=`pwd`
 
 if [ -z "$WCSIMDIR" ]; then
     echo "Setup WCSim (i.e. set \$WCSIMDIR) before setting up TriggerApplication";
+    echo "Also make sure ROOT is setup (requirement of setting up WCSim)";
     return;
 fi
 
