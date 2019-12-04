@@ -12,9 +12,9 @@ its built from ToolDAQ Application[1] which is an open source general DAQ Applic
 
 The main executable creates a ToolChain which is an object that holds Tools. Tools are added to the ToolChain and then the ToolChain can be told to Initialise Execute and Finalise each tool in the chain.
 
-The ToolChain also holds a uesr defined DataModel which each tool has access too and can read, update and modify. This is the method by which data is passed between Tools.
+The ToolChain also holds a user-defined DataModel which each tool has access too and can read, update and modify. This is the method by which data is passed between Tools.
 
-User Tools can be generated for use in the tool chain by incuding a Tool header. This can be done manually or by use of the newTool.sh script.
+User Tools can be generated for use in the tool chain by including a Tool header. This can be done manually or by use of the newTool.sh script.
 
 For more information consult the ToolDAQ doc.pdf
 
@@ -63,29 +63,30 @@ Note that tools are run consecutively. i.e. if you have two tools (t1, t2) the f
 
 ### DataModel
 
-Tools cannot communicate directly with one another. They rely on passing data between each other using a transisent data model. This is found in the `DataModel` folder
+Tools cannot communicate directly with one another. They rely on passing data between each other using a transient data model. This is found in the `DataModel` folder
 
 ## Installation
 
 ### Docker
 
-Docker is a platform independant container system which eases the headache of long installation and incompatability problems. By creating a container form the image you will have a native Centos 7 terminal with all the prerequisits installed and the software guaranteed to work.
+Docker is a platform independent container system which eases the headache of long installation and incompatibility problems. By creating a container form the image you will have a native Centos 7 terminal with all the prerequisites installed and the software guaranteed to work.
 
 1) Install docker check either your platforms package manager or https://www.docker.com for the software
-2) Get the latest continer image `docker pull hkdaq/triggerapplication:latest`
-3) Run an instance of the container which will have the trigger application and all dependancies installed `docker run --name=TriggerApplication -it hkdaq/triggerapplication:latest` Note: only run once or you will make multiple contianers
+2) Get the latest container image `docker pull hkdaq/triggerapplication:latest`
+3) Run an instance of the container which will have the trigger application and all dependencies installed `docker run --name=TriggerApplication -it hkdaq/triggerapplication:latest` Note: only run once or you will make multiple contianers
 
 Once the container has started to run the software
 1) `cd TriggerApplication`
 2) `source Setup.sh`
 3) `./main`
+  * This runs an example toolchain with two versions of the `dummy` tool. It's essentially a Hello World tool
 
 You're then free to install any applications in your container you wish for development
 
 Notes: 
-* To exit a contianer use `exit` 
+* To exit a container use `exit` 
 * To restart a container use `docker start -i TriggerApplicaiton`
-* To see current contianers use `docker ps -a`
+* To see current containers use `docker ps -a`
 * To delete a container use `docker rm TriggerApplciaiton`
 * When creating a container you can mount a folder from your native os with the `-v` run option e.g. `docker run --name=TriggerApplication -v local_folder_path:container_mount_path -it hkdaq/triggerapplication:latest`
 
@@ -94,17 +95,25 @@ Notes:
 * Clone from https://github.com/HKDAQ/TriggerApplication
   * Note the model used to commit to the main version of TriggerApplication is fork and pull request. So do fork if you need to!
 * Make sure you have sourced WCSim i.e. that you have `$WCSIMDIR` set
-  * Note that this currently has to be the following branch https://github.com/tdealtry/WCSim/tree/trigger - pull requests are pending
+  * Note that this will work with the current WCSim develop branch. However if you want to compare WCSim/TriggerApplication output for equality, please use https://github.com/tdealtry/WCSim/tree/trigger - pull requests are pending
+  * Note that you also need ROOT setup (a WCSim prerequisite)
 * Run `./GetToolDAQ.sh`
-  * This gets and compiles the prerequistes: ToolDAQ, boost, and zmq
+  * This gets and compiles the prerequisites: ToolDAQ, boost, and zmq
   * You can optionally install Root
-  * `./GetToolDAQ.sh --help` for the flags to turn on/off each of the prerequsites
+  * `./GetToolDAQ.sh --help` for the flags to turn on/off each of the prerequisites
+
+To check it has built successfully:
 * `source Setup.sh`
-* `make`
-  * Note this will already have happened if you ran `./GetToolDAQ.sh` with no options, or the `--Final` flag
-  * If you are using GPU code, run `make GPU` to compile the CUDA-GPU code (only for compatible systems)
 * Check it runs with `./main`
   * This runs an example toolchain with two versions of the `dummy` tool. It's essentially a Hello World tool
+
+#### GPU code
+
+Some triggers have been developed to be run on CUDA-compatible GPUs.
+If you want to use these (and you have a compatible system)
+* `source Setup.sh`
+* `makeGPU`
+* `./mainGPU`
 
 ## Running
 
@@ -165,8 +174,10 @@ Notes:
    * Check other triggers for more information
       * `pass_all` is a very simple example
       * `nhits` is a relatively simple example. It has CPU and GPU versions
-4. Add your tool to a toolchain to test it with `./main TOOLCHAINNAME`
-5. Write the README: `$ToolDAQapp/UserTools/TOOLNAME/README.md`
+4. Use `make` and/or `makeGPU` to build it
+5. Add your tool to a toolchain to test it with `./main TOOLCHAINNAME`
+  * Or `./mainGPU TOOLCHAINNAME` for GPU code
+6. Write the README: `$ToolDAQapp/UserTools/TOOLNAME/README.md`
 
 ****************************
 
@@ -174,4 +185,4 @@ Copyright (c) 2018 Hyper-k Collaboration
 
 [1] Benjamin Richards. (2018, November 11). ToolDAQ Application v2.1.2 (Version V2.1.2). Zenodo. http://doi.org/10.5281/zenodo.1482772
 
-[2] Benajmin Richards. (2018, November 11). ToolDAQ Framework v2.1.1 (Version V2.1.1). Zenodo. http://doi.org/10.5281/zenodo.1482767
+[2] Benjamin Richards. (2018, November 11). ToolDAQ Framework v2.1.1 (Version V2.1.1). Zenodo. http://doi.org/10.5281/zenodo.1482767
