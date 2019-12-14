@@ -1,0 +1,32 @@
+# BONSAI
+
+Call hk-BONSAI for every trigger, to reconstruct the event vertex position and direction.
+Write out a new file with a `TTree` storing this information.
+
+## Data
+
+* Creates an output `TFile`
+* Sets up a `TTree` called `vertexInfo` which is filled every positive trigger.
+  	For more information on the meaning of the output, see the [hk-BONSAI documentation](https://github.com/hyperk/hk-BONSAI)
+    	* `EventNum` 
+      	* `TriggerNum`
+	* `NDigits`
+	* `Vertex[4]` x,y,z,t
+	* `DirectionEuler[3]` theta (zenith), phi (azimuth), alpha
+	* `CherenkovCone[2]` cos(Cherenkov angle), ellipticity
+	* `DirectionLikelihood`
+	* `GoodnessOfFit`
+	* `GoodnessOfTimeFit`
+* For every trigger, gets the digit information from the class `WCSimEventID` (filled by the DataOut tool)
+	* If the number of digits is at least 1, calls BONSAI with the digit information
+	* Fills the tree with the BONSAI result
+* Writes the output file
+
+## Configuration
+
+```
+outfilename /path/to/file
+verbose LEVEL
+```
+* `outfilename` File path to output file
+* `verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity)
