@@ -29,6 +29,11 @@ bool BONSAI::Initialise(std::string configfile, DataModel &data){
   }
 
   _bonsai = new WCSimBonsai();
+  WCSimRootGeom * geo = 0;
+  m_data->WCSimGeomTree->SetBranchAddress("wcsimrootgeom", &geo);
+  m_data->WCSimGeomTree->GetEntry(0);
+  _bonsai->Init(geo);
+  m_data->WCSimGeomTree->ResetBranchAddresses();
 
   _in_PMTIDs = new std::vector<int>  (1000);
   _in_Ts     = new std::vector<float>(1000);
@@ -60,7 +65,7 @@ bool BONSAI::Initialise(std::string configfile, DataModel &data){
 
 
 bool BONSAI::Execute(){
-  Log("DEBUG: BONSAI::Execute() Starting", WARN, verbose);
+  Log("DEBUG: BONSAI::Execute() Starting", DEBUG1, verbose);
 
   float out_vertex[4], out_direction[6], out_maxlike[500];
   int   out_nsel[2];
@@ -92,7 +97,7 @@ bool BONSAI::Execute(){
 	continue;
       }
       ss << "DEBUG: Digit " << idigi << " at time " << digi->GetT();
-      StreamToLog(DEBUG1);
+      StreamToLog(DEBUG2);
       _in_PMTIDs->push_back(digi->GetTubeId());
       _in_Ts    ->push_back(digi->GetT());
       _in_Qs    ->push_back(digi->GetQ());
@@ -105,15 +110,16 @@ bool BONSAI::Execute(){
     
     ss << "DEBUG: BONSAI running over " << _in_nhits << " digits";
     StreamToLog(DEBUG1);
+
     //call BONSAI
-    //_bonsai->BonsaiFit( out_vertex, out_direction, out_maxlike, out_nsel, &_in_nhits, _in_PMTIDs->data(), _in_Ts->data(), _in_Qs->data());
+    _bonsai->BonsaiFit( out_vertex, out_direction, out_maxlike, out_nsel, &_in_nhits, _in_PMTIDs->data(), _in_Ts->data(), _in_Qs->data());
 
     //fill the output tree variables
     fTriggerNum = itrigger;
-    ss << "Vertex reconstructed at x, y, z, t: ";
+    ss << "DEBUG: Vertex reconstructed at x, y, z, t:";
     for(int i = 0; i < 4; i++) {
       fVertex[i] = out_vertex[i];
-      ss << fVertex[i] << ", ";
+      ss << " " << fVertex[i] << ",";
     }
     StreamToLog(DEBUG1);
     for(int i = 0; i < 3; i++)
