@@ -51,9 +51,9 @@ bool BONSAI::Initialise(std::string configfile, DataModel &data){
   fTVertexInfo->Branch("EventNum", &fEventNum);
   fTVertexInfo->Branch("TriggerNum", &fTriggerNum);
   fTVertexInfo->Branch("NDigits", &_in_nhits);
-  fTVertexInfo->Branch("Vertex", &fVertex, "Vertex/D[4]");
-  fTVertexInfo->Branch("DirectionEuler", &fDirectionEuler, "DirectionEuler/D[3]");
-  fTVertexInfo->Branch("CherenkovCone", &fCherenkovCone, "CherenkovCone/D[2]");
+  fTVertexInfo->Branch("Vertex", fVertex, "Vertex[4]/D");
+  fTVertexInfo->Branch("DirectionEuler", fDirectionEuler, "DirectionEuler[3]/D");
+  fTVertexInfo->Branch("CherenkovCone", fCherenkovCone, "CherenkovCone[2]/D");
   fTVertexInfo->Branch("DirectionLikelihood", &fDirectionLikelihood);
   fTVertexInfo->Branch("GoodnessOfFit", &fGoodnessOfFit);
   fTVertexInfo->Branch("GoodnessOfTimeFit", &fGoodnessOfTimeFit);
