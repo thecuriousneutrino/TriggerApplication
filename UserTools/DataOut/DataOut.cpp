@@ -194,6 +194,8 @@ int DataOut::TimeInTriggerWindow(double time) {
 }
 
 bool DataOut::Finalise(){
+  //multiple TFiles may be open. Ensure we save to the correct one
+  fOutFile.cd(TString::Format("%s:/", fOutFilename.c_str()));
   fTreeEvent->Write();
   fOutFile.Close();
 
