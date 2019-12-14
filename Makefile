@@ -13,8 +13,8 @@ ZMQInclude= -I $(ToolDAQPath)/zeromq-4.0.7/include/
 BoostLib= -L $(ToolDAQPath)/boost_1_66_0/install/lib -lboost_date_time -lboost_serialization -lboost_iostreams
 BoostInclude= -I $(ToolDAQPath)/boost_1_66_0/install/include
 
-DataModelInclude = $(RootInclude) $(WCSimInclude)
-DataModelLib =  $(RootLib) $(WCSimLib)
+DataModelInclude = $(RootInclude) $(WCSimInclude) $(BonsaiInclude)
+DataModelLib =  $(RootLib) $(WCSimLib) $(BonsaiLib)
 
 MyToolsInclude = 
 MyToolsLib = 
@@ -27,6 +27,9 @@ RootLib     := $(shell root-config --libs)
 
 WCSimInclude = -I$(WCSIMDIR)/include
 WCSimLib     = -L$(WCSIMDIR) -lWCSimRoot
+
+BonsaiInclude = -I$(BONSAIDIR)/bonsai
+BonsaiLib = -L$(BONSAIDIR) -lWCSimBonsai
 
 all: lib/libStore.so lib/libLogging.so lib/libDataModel.so include/Tool.h lib/libMyTools.so lib/libServiceDiscovery.so lib/libToolChain.so main RemoteControl  NodeDaemon
 
