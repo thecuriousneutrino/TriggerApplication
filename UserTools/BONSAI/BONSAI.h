@@ -24,7 +24,7 @@ class BONSAI: public Tool {
 
  private:
 
-  bool FileExists(const char * filename);
+  bool FileExists(std::string pathname, std::string filename);
 
   WCSimBonsai * _bonsai;
   WCSimRootTrigger * _trigger;
@@ -36,8 +36,8 @@ class BONSAI: public Tool {
   std::string fOutFilename;
   TFile fOutFile;
   TTree * fTVertexInfo;
-  long   fEventNum;
-  long   fTriggerNum;
+  int    fEventNum;
+  int    fTriggerNum;
   double fVertex[4];  //x,y,z,t
   double fDirectionEuler[3]; // theta (zenith), phi (azimuth), alpha
   double fCherenkovCone[2];  // cos(Cherenkov angle), ellipticity

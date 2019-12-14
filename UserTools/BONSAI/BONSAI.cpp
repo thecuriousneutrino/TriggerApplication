@@ -2,10 +2,11 @@
 
 BONSAI::BONSAI():Tool(){}
 
-bool BONSAI::FileExists(const char * filename) {
-  bool exists = access(filename, F_OK) != -1;
+bool BONSAI::FileExists(std::string pathname, std::string filename) {
+  string filepath = pathname + "/" + filename;
+  bool exists = access(filepath.c_str(), F_OK) != -1;
   if(!exists) {
-    ss << "FATAL: " << filename << " not found or inaccessible";
+    ss << "FATAL: " << filepath << " not found or inaccessible";
     StreamToLog(FATAL);
     return false;
   }
@@ -22,8 +23,8 @@ bool BONSAI::Initialise(std::string configfile, DataModel &data){
 
   m_data= &data;
 
-  if(!FileExists("$BONSAIDIR/libBONSAI.so")) {
-    Log("FATAL: BONSAI library not found. Ensure the BONSAI library exists at $BONSAIDIR/libBONSAI.so. For more information about BONSAI, see https://github.com/hyperk/hk-BONSAI", FATAL, verbose);
+  if(!FileExists(std::getenv("BONSAIDIR"), "libWCSimBonsai.so")) {
+    Log("FATAL: BONSAI library not found. Ensure the BONSAI library exists at $BONSAIDIR/libWCSimBonsai.so. For more information about BONSAI, see https://github.com/hyperk/hk-BONSAI", FATAL, verbose);
     return false;
   }
 
@@ -59,6 +60,8 @@ bool BONSAI::Initialise(std::string configfile, DataModel &data){
 
 
 bool BONSAI::Execute(){
+  Log("DEBUG: BONSAI::Execute() Starting", WARN, verbose);
+
   float out_vertex[4], out_direction[6], out_maxlike[500];
   int   out_nsel[2];
   
@@ -71,11 +74,12 @@ bool BONSAI::Execute(){
     _in_Qs->clear();
 
     //fill the inputs to BONSAI with the current triggers' digit information
-    _in_nhits = _trigger->GetNcherenkovdigihits();
+    _in_nhits = _trigger->GetNcherenkovdigihits_slots();
     if(_in_nhits <= 0) {
       Log("INFO: No digits in current trigger. Not running BONSAI", INFO, verbose);
       return true;
     }
+
     long n_not_found = 0;
     for (long idigi=0; idigi < _in_nhits; idigi++) {
       TObject *element = (_trigger->GetCherenkovDigiHits())->At(idigi);
@@ -87,6 +91,8 @@ bool BONSAI::Execute(){
 	StreamToLog(WARN);
 	continue;
       }
+      ss << "DEBUG: Digit " << idigi << " at time " << digi->GetT();
+      StreamToLog(DEBUG1);
       _in_PMTIDs->push_back(digi->GetTubeId());
       _in_Ts    ->push_back(digi->GetT());
       _in_Qs    ->push_back(digi->GetQ());
@@ -97,13 +103,19 @@ bool BONSAI::Execute(){
       StreamToLog(WARN);
     }
     
+    ss << "DEBUG: BONSAI running over " << _in_nhits << " digits";
+    StreamToLog(DEBUG1);
     //call BONSAI
-    _bonsai->BonsaiFit( out_vertex, out_direction, out_maxlike, out_nsel, &_in_nhits, _in_PMTIDs->data(), _in_Ts->data(), _in_Qs->data());
+    //_bonsai->BonsaiFit( out_vertex, out_direction, out_maxlike, out_nsel, &_in_nhits, _in_PMTIDs->data(), _in_Ts->data(), _in_Qs->data());
 
     //fill the output tree variables
     fTriggerNum = itrigger;
-    for(int i = 0; i < 4; i++)
+    ss << "Vertex reconstructed at x, y, z, t: ";
+    for(int i = 0; i < 4; i++) {
       fVertex[i] = out_vertex[i];
+      ss << fVertex[i] << ", ";
+    }
+    StreamToLog(DEBUG1);
     for(int i = 0; i < 3; i++)
       fDirectionEuler[i] = out_direction[i];
     for(int i = 0; i < 2; i++)
@@ -114,14 +126,19 @@ bool BONSAI::Execute(){
 
     fTVertexInfo->Fill();
   }//itrigger
+
   fEventNum++;
   
+  Log("DEBUG: BONSAI::Execute() Done", WARN, verbose);
+
   return true;
 }
 
 
 bool BONSAI::Finalise(){
-  fOutFile.Write();
+  //multiple TFiles may be open. Ensure we save to the correct one
+  fOutFile.cd(TString::Format("%s:/", fOutFilename.c_str()));
+  fTVertexInfo->Write();
   fOutFile.Close();
   
   delete _bonsai;
