@@ -33,18 +33,6 @@ class BONSAI: public Tool {
   std::vector<float> * _in_Ts;
   std::vector<float> * _in_Qs;
 
-  std::string fOutFilename;
-  TFile fOutFile;
-  TTree * fTVertexInfo;
-  int    fEventNum;
-  int    fTriggerNum;
-  double fVertex[4];  //x,y,z,t
-  double fDirectionEuler[3]; // theta (zenith), phi (azimuth), alpha
-  double fCherenkovCone[2];  // cos(Cherenkov angle), ellipticity
-  double fDirectionLikelihood;
-  double fGoodnessOfFit;
-  double fGoodnessOfTimeFit;
-
   unsigned int fNHitsMin;
   unsigned int fNHitsMax;
 

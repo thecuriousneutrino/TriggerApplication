@@ -44,27 +44,9 @@ bool BONSAI::Initialise(std::string configfile, DataModel &data){
   _in_Ts     = new std::vector<float>(fNHitsMax);
   _in_Qs     = new std::vector<float>(fNHitsMax);
 
-  //open the output file
-  if(! m_variables.Get("outfilename", fOutFilename)) {
-    Log("ERROR: outfilename configuration not found. Cancelling initialisation", ERROR, verbose);
-    return false;
-  }
-  fOutFile.Open(fOutFilename.c_str(), "RECREATE");
+  //make other tools aware that there exists a tool that reconstructs
+  m_data->HasReconstructionTool = true;
 
-  //open & format the tree
-  fTVertexInfo = new TTree("vertexInfo", "Vertex information");
-  fTVertexInfo->Branch("EventNum", &fEventNum);
-  fTVertexInfo->Branch("TriggerNum", &fTriggerNum);
-  fTVertexInfo->Branch("NDigits", &_in_nhits);
-  fTVertexInfo->Branch("Vertex", fVertex, "Vertex[4]/D");
-  fTVertexInfo->Branch("DirectionEuler", fDirectionEuler, "DirectionEuler[3]/D");
-  fTVertexInfo->Branch("CherenkovCone", fCherenkovCone, "CherenkovCone[2]/D");
-  fTVertexInfo->Branch("DirectionLikelihood", &fDirectionLikelihood);
-  fTVertexInfo->Branch("GoodnessOfFit", &fGoodnessOfFit);
-  fTVertexInfo->Branch("GoodnessOfTimeFit", &fGoodnessOfTimeFit);
-
-  fEventNum = 0;
-  
   return true;
 }
 
@@ -74,6 +56,7 @@ bool BONSAI::Execute(){
 
   float out_vertex[4], out_direction[6], out_maxlike[500];
   int   out_nsel[2];
+  double dout_vertex[3], dout_direction[3], dout_cone[2];
   
   for (int itrigger = 0 ; itrigger < m_data->IDWCSimEvent_Triggered->GetNumberOfEvents(); itrigger++) {
     _trigger = m_data->IDWCSimEvent_Triggered->GetTrigger(itrigger);
@@ -126,27 +109,26 @@ bool BONSAI::Execute(){
     //call BONSAI
     _bonsai->BonsaiFit( out_vertex, out_direction, out_maxlike, out_nsel, &_in_nhits, _in_PMTIDs->data(), _in_Ts->data(), _in_Qs->data());
 
-    //fill the output tree variables
-    fTriggerNum = itrigger;
     ss << "DEBUG: Vertex reconstructed at x, y, z, t:";
     for(int i = 0; i < 4; i++) {
-      fVertex[i] = out_vertex[i];
-      ss << " " << fVertex[i] << ",";
+      ss << " " << out_vertex[i] << ",";
     }
     StreamToLog(DEBUG1);
-    for(int i = 0; i < 3; i++)
-      fDirectionEuler[i] = out_direction[i];
-    for(int i = 0; i < 2; i++)
-      fCherenkovCone[i] = out_direction[i+3];
-    fDirectionLikelihood = out_direction[5];
-    fGoodnessOfFit = out_maxlike[2];
-    fGoodnessOfTimeFit = out_maxlike[1];
 
-    fTVertexInfo->Fill();
+    //fill the data model with the result
+    // need to convert to double...
+    for(int i = 0; i < 3; i++) {
+      dout_vertex[i]    = out_vertex[i];
+      dout_direction[i] = out_direction[i];
+    }
+    for(int i = 0; i < 2; i++)
+      dout_cone[i] = out_direction[i+3];
+    
+    m_data->RecoInfo.AddRecon(kReconBONSAI, itrigger, _in_nhits, out_vertex[3], &(dout_vertex[0]), out_maxlike[2], out_maxlike[1],
+			      &(dout_direction[0]), &(dout_cone[0]), out_direction[5]);
+
   }//itrigger
 
-  fEventNum++;
-  
   Log("DEBUG: BONSAI::Execute() Done", WARN, verbose);
 
   return true;
@@ -154,16 +136,11 @@ bool BONSAI::Execute(){
 
 
 bool BONSAI::Finalise(){
-  //multiple TFiles may be open. Ensure we save to the correct one
-  fOutFile.cd(TString::Format("%s:/", fOutFilename.c_str()));
-  fTVertexInfo->Write();
-  fOutFile.Close();
-  
+
   delete _bonsai;
   delete _in_PMTIDs;
   delete _in_Ts;
   delete _in_Qs;
-  delete fTVertexInfo;
   
   return true;
 }
