@@ -21,6 +21,7 @@
 #include <SubSample.h>
 #include <PMTInfo.h>
 #include <TriggerInfo.h>
+#include <ReconInfo.h>
 
 class DataModel {
 
@@ -49,6 +50,7 @@ class DataModel {
 
   TriggerInfo IDTriggers;
   TriggerInfo ODTriggers;
+  ReconInfo RecoInfo;
 
   bool triggeroutput;
 

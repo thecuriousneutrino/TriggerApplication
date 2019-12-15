@@ -17,6 +17,7 @@ The variables in this DataModel used by TriggerApplication tools are
 |  `std::vector<PMTInfo>`   | ODGeom              | Store x, y, z, PMT ID of every OD PMT        | | WCSimReader |
 |  `TriggerInfo`            | IDTriggers          | Store trigger type, time, readout window start/end times, additional info vector, for ID triggers | WCSimReader | nhits |
 |  `TriggerInfo`            | ODTriggers          | Store trigger type, time, readout window start/end times, additional info vector, for OD triggers | WCSimReader | nhits |
+|  `ReconInfo`              | RecoInfo            | Store reconstruction information (vertex time/position, fit likelihoods, optionally direction) | DataOut | BONSAI |
 |  `bool`                   | triggeroutput       | Did a trigger fire?       | TriggerOutput | nhits, test_vertices |
 |  `double`                 | IDPMTDarkRate       | The dark rate for ID PMTs | nhits | WCSimReader |
 |  `double`                 | ODPMTDarkRate       | The dark rate for OD PMTs | nhits | WCSimReader |
