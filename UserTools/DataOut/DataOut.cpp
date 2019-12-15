@@ -24,11 +24,14 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
   // Nevents unique event objects
   Int_t bufsize = 64000;
   fTreeEvent = new TTree("wcsimT","WCSim Tree");
-  fWCSimEventID = new WCSimRootEvent();
-  fTreeEvent->Branch("wcsimrootevent", "WCSimRootEvent", &fWCSimEventID, bufsize,2);
+  m_data->IDWCSimEvent_Triggered = new WCSimRootEvent();
+  fTreeEvent->Branch("wcsimrootevent", "WCSimRootEvent", &m_data->IDWCSimEvent_Triggered, bufsize,2);
   if(m_data->HasOD) {
-    fWCSimEventOD = new WCSimRootEvent();
-    fTreeEvent->Branch("wcsimrootevent_OD", "WCSimRootEvent", &fWCSimEventOD, bufsize,2);
+    m_data->ODWCSimEvent_Triggered = new WCSimRootEvent();
+    fTreeEvent->Branch("wcsimrootevent_OD", "WCSimRootEvent", &m_data->ODWCSimEvent_Triggered, bufsize,2);
+  }
+  else {
+    m_data->ODWCSimEvent_Triggered = 0;
   }
   fTreeEvent->Branch("wcsimfilename", &(m_data->CurrentWCSimFiles), bufsize, 0);
   fTreeEvent->Branch("wcsimeventnums", &(m_data->CurrentWCSimEventNums), bufsize, 0);
@@ -89,21 +92,21 @@ bool DataOut::Execute(){
   // It puts digits into the output event in the earliest trigger they belong to
 
   //get the WCSim event
-  (*fWCSimEventID) = (*(m_data->WCSimEventID));
+  (*m_data->IDWCSimEvent_Triggered) = (*(m_data->IDWCSimEvent_Raw));
   //prepare the subtriggers
-  CreateSubEvents(fWCSimEventID);
+  CreateSubEvents(m_data->IDWCSimEvent_Triggered);
   //remove the digits that aren't in the trigger window(s)
   // also move digits from the 0th trigger to the trigger window it's in
-  RemoveDigits(fWCSimEventID);
+  RemoveDigits(m_data->IDWCSimEvent_Triggered);
   //set some trigger header infromation that requires all the digits to be 
   // present to calculate e.g. sumq
-  FinaliseSubEvents(fWCSimEventID);
+  FinaliseSubEvents(m_data->IDWCSimEvent_Triggered);
   
   if(m_data->HasOD) {
-    (*fWCSimEventOD) = (*(m_data->WCSimEventOD));
-    CreateSubEvents(fWCSimEventOD);
-    RemoveDigits(fWCSimEventOD);
-    FinaliseSubEvents(fWCSimEventOD);
+    (*m_data->ODWCSimEvent_Triggered) = (*(m_data->ODWCSimEvent_Raw));
+    CreateSubEvents(m_data->ODWCSimEvent_Triggered);
+    RemoveDigits(m_data->ODWCSimEvent_Triggered);
+    FinaliseSubEvents(m_data->ODWCSimEvent_Triggered);
   }
 
   fTreeEvent->Fill();
@@ -200,9 +203,9 @@ bool DataOut::Finalise(){
   fOutFile.Close();
 
   delete fTreeEvent;
-  delete fWCSimEventID;
-  if(fWCSimEventOD)
-    delete fWCSimEventOD;
+  delete m_data->IDWCSimEvent_Triggered;
+  if(m_data->ODWCSimEvent_Triggered)
+    delete m_data->ODWCSimEvent_Triggered;
 
   delete fTriggers;
 

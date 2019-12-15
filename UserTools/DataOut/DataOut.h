@@ -35,8 +35,6 @@ class DataOut: public Tool {
   TTree * fTreeEvent;
   TTree * fTreeGeom;
   TTree * fTreeOptions;
-  WCSimRootEvent * fWCSimEventID;
-  WCSimRootEvent * fWCSimEventOD;
   TString * fWCSimFilename;
 
   std::vector<std::pair<double, double> > fTriggerIntervals;

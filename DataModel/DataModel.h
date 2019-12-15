@@ -62,8 +62,11 @@ class DataModel {
   TChain * WCSimEventTree;
   std::vector<int> CurrentWCSimEventNums;
   TObjArray * CurrentWCSimFiles;
-  WCSimRootEvent * WCSimEventID;
-  WCSimRootEvent * WCSimEventOD;
+  WCSimRootEvent * IDWCSimEvent_Raw;
+  WCSimRootEvent * ODWCSimEvent_Raw;
+  WCSimRootEvent * IDWCSimEvent_Triggered;
+  WCSimRootEvent * ODWCSimEvent_Triggered;
+
 
   bool HasOD;
   bool IsMC;

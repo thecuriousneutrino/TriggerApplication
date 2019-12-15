@@ -14,7 +14,9 @@ DataOut
     * `wcsimfilename` of type `TObjString` is the WCSim file this options class came from
   3. `wcsimT` has N events entries
     * `wcsimrootevent` of type `WCSimRootEvent` stores the ID events. This is identical to the WCSim event tree, with digits outside the trigger window removed*
+      * This `WCSimRootEvent` with removed digits can be accessed by other tools using `IDWCSimEvent_Triggered` in the data model
     * `wcsimrootevent_OD` of type `WCSimRootEvent` stores the OD events. This is identical to the WCSim event tree, with digits outside the trigger window removed*
+      * This `WCSimRootEvent` with removed digits can be accessed by other tools using `ODWCSimEvent_Triggered` in the data model
     * `wcsimfilename` of type `TObjArray` of `TObjString` stores the WCSim filename(s) of the current event
     * `wcsimeventnums` of type `vector<int>` stors the WCSim event number(s) of the current event
 * *Any digit that is not in the trigger window is removed from the output `TClonesArray`

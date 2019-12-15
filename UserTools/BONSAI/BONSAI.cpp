@@ -70,8 +70,8 @@ bool BONSAI::Execute(){
   float out_vertex[4], out_direction[6], out_maxlike[500];
   int   out_nsel[2];
   
-  for (int itrigger = 0 ; itrigger < m_data->WCSimEventID->GetNumberOfEvents(); itrigger++) {
-    _trigger = m_data->WCSimEventID->GetTrigger(itrigger);
+  for (int itrigger = 0 ; itrigger < m_data->IDWCSimEvent_Raw->GetNumberOfEvents(); itrigger++) {
+    _trigger = m_data->IDWCSimEvent_Raw->GetTrigger(itrigger);
 
     //clear the previous triggers' digit information
     _in_PMTIDs->clear();

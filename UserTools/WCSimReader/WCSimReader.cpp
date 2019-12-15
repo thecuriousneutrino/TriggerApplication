@@ -95,8 +95,8 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
   m_data->WCSimGeomTree = fChainGeom;
   m_data->WCSimOptionsTree = fChainOpt;
   m_data->WCSimEventTree = fChainEvent;
-  m_data->WCSimEventID = fWCEvtID;
-  m_data->WCSimEventOD = fWCEvtOD;
+  m_data->IDWCSimEvent_Raw = fWCEvtID;
+  m_data->ODWCSimEvent_Raw = fWCEvtOD;
 
   //setup the TObjArray to store the filenames
   //int nfiles = fChainEvent->GetListOfFiles()->GetEntries();
