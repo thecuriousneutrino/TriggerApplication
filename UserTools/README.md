@@ -19,9 +19,9 @@ The tools available are
 ## Triggers
 
 * nhits
-  * Look for x-digits in a y ns sliding-window
+  * Trigger on more than x-digits in a y ns sliding-window
 * test_vertices
-  * Look for x-digits in a y ns sliding-window, using time-of-flight subtracted times, on a fixed grid of vertices
+  * Trigger on more than x-digits in a y ns sliding-window, using time-of-flight subtracted times, on a fixed grid of vertices
 
 ## Reconstruction
 
