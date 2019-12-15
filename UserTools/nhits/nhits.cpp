@@ -40,11 +40,6 @@ bool nhits::Initialise(std::string configfile, DataModel &data){
 
   // can acess variables directly like this and would be good if you could impliment in your code
 
-  float dark_rate = -99;
-  m_variables.Get("dark_rate",dark_rate);
-  if(!dark_rate)
-    dark_rate = 0;
- 
   m_variables.Get("trigger_search_window",        fTriggerSearchWindow);
   m_variables.Get("trigger_search_window_step",   fTriggerSearchWindowStep);
   m_variables.Get("trigger_threshold",            fTriggerThreshold);
@@ -110,6 +105,8 @@ void nhits::AlgNDigits(const SubSample * sample)
   ss << "DEBUG: nhits::AlgNDigits(). Number of entries in input digit collection: " << ndigits;
   StreamToLog(DEBUG1);
   
+  TriggerInfo * Triggers = fTriggerOD ? &(m_data->ODTriggers) : &(m_data->IDTriggers);
+
   //Loop over each digit
   float firsthit = +nhits::kALongTime;
   float lasthit  = -nhits::kALongTime;
@@ -157,11 +154,11 @@ void nhits::AlgNDigits(const SubSample * sample)
       triggertime = digit_times[fTriggerThreshold];
       triggertime -= (int)triggertime % 5;
       triggerfound = true;
-      m_data->IDTriggers.AddTrigger(kTriggerNDigits,
-				    triggertime - fTriggerSaveWindowPre, 
-				    triggertime + fTriggerSaveWindowPost,
-				    triggertime,
-				    std::vector<float>(1, n_digits));
+      Triggers->AddTrigger(kTriggerNDigits,
+			   triggertime - fTriggerSaveWindowPre, 
+			   triggertime + fTriggerSaveWindowPost,
+			   triggertime,
+			   std::vector<float>(1, n_digits));
     }
 
     if(n_digits)
@@ -183,7 +180,7 @@ void nhits::AlgNDigits(const SubSample * sample)
 
   }//sliding trigger window while loop
   
-  ss << "INFO: Found " << m_data->IDTriggers.m_N << " NDigit triggers";
+  ss << "INFO: Found " << Triggers->m_N << " NDigit trigger(s) from " << (fTriggerOD ? "OD" : "ID");
   StreamToLog(INFO);
 }
 
