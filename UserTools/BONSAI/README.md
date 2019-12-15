@@ -6,8 +6,7 @@ Write out a new file with a `TTree` storing this information.
 
 ## Data
 
-* Creates an output `TFile`
-* Sets up a `TTree` called `vertexInfo` which is filled every positive trigger.
+* Sets up a `TTree` called `vertexInfo` which is filled every positive trigger. #MOVE TO NEW TOOL
   	For more information on the meaning of the output, see the [hk-BONSAI documentation](https://github.com/hyperk/hk-BONSAI)
     	* `EventNum` 
       	* `TriggerNum`
@@ -20,18 +19,15 @@ Write out a new file with a `TTree` storing this information.
 	* `GoodnessOfTimeFit`
 * For every trigger, gets the digit information from the data member `IDWCSimEvent_Triggered` (filled by the DataOut tool)
 	* If the number of digits is in range [`nhitmin`, `nhitmax`] (inclusive), calls BONSAI with the digit information
-	* Fills the tree with the BONSAI result
-* Writes the output file
+	* Fills the `RecoInfo` in the data model with the BONSAI result
 
 ## Configuration
 
 ```
-outfilename /path/to/file
 verbose LEVEL
 nhitsmin UINT
 nhitsmax UINT
 ```
-* `outfilename` File path to output file
 * `verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity)
 * `nhitsmin` If the number of digits in a trigger is less than this, don't run BONSAI
 * `nhitsmax` If the number of digits in a trigger is more than this, don't run BONSAI
