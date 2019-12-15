@@ -1,1 +1,41 @@
-# DAQFramework
+# TriggerApplication
+
+The tools available are
+
+## Data input
+
+* WCSimReader
+  * Read in data from WCSim files
+* WCSimASCIReader
+  * Read in data from ASCII files
+
+## Data output
+
+* DataOut
+  * Write out data in WCSim file format
+* TriggerOutput
+  * Write out data in text format
+
+## Triggers
+
+* nhits
+  * Look for x-digits in a y ns sliding-window
+* test_vertices
+  * Look for x-digits in a y ns sliding-window, using time-of-flight subtracted times, on a fixed grid of vertices
+
+## Reconstruction
+
+* BONSAI
+  * Reconstruct low-energy events with hk-BONSAI
+* (test_vertices)
+
+## SuperNova Triggers
+
+## Miscellaneous
+
+* CUDA
+  * Some CUDA-GPU related code for on-GPU triggers
+* template
+  * Skeleton used by `newTool.sh`
+* DummyTool
+  * Dummy that prints out differnt messages to the console depending on the debug level
