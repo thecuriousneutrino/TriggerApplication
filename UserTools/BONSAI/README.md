@@ -17,7 +17,7 @@ Write out a new file with a `TTree` storing this information.
 	* `DirectionLikelihood`
 	* `GoodnessOfFit`
 	* `GoodnessOfTimeFit`
-* For every trigger, gets the digit information from the class `IDWCSimEvent_Raw` (filled by the DataOut tool)
+* For every trigger, gets the digit information from the data member `IDWCSimEvent_Triggered` (filled by the DataOut tool)
 	* If the number of digits is at least 1, calls BONSAI with the digit information
 	* Fills the tree with the BONSAI result
 * Writes the output file

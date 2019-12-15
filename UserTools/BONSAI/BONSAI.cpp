@@ -70,8 +70,8 @@ bool BONSAI::Execute(){
   float out_vertex[4], out_direction[6], out_maxlike[500];
   int   out_nsel[2];
   
-  for (int itrigger = 0 ; itrigger < m_data->IDWCSimEvent_Raw->GetNumberOfEvents(); itrigger++) {
-    _trigger = m_data->IDWCSimEvent_Raw->GetTrigger(itrigger);
+  for (int itrigger = 0 ; itrigger < m_data->IDWCSimEvent_Triggered->GetNumberOfEvents(); itrigger++) {
+    _trigger = m_data->IDWCSimEvent_Triggered->GetTrigger(itrigger);
 
     //clear the previous triggers' digit information
     _in_PMTIDs->clear();
@@ -79,21 +79,23 @@ bool BONSAI::Execute(){
     _in_Qs->clear();
 
     //fill the inputs to BONSAI with the current triggers' digit information
-    _in_nhits = _trigger->GetNcherenkovdigihits_slots();
+    _in_nhits = _trigger->GetNcherenkovdigihits();
+    int nhits_slots = _trigger->GetNcherenkovdigihits_slots();
     if(_in_nhits <= 0) {
       Log("INFO: No digits in current trigger. Not running BONSAI", INFO, verbose);
       return true;
     }
 
     long n_not_found = 0;
-    for (long idigi=0; idigi < _in_nhits; idigi++) {
+    for (long idigi=0; idigi < nhits_slots; idigi++) {
       TObject *element = (_trigger->GetCherenkovDigiHits())->At(idigi);
       WCSimRootCherenkovDigiHit *digi = 
 	dynamic_cast<WCSimRootCherenkovDigiHit*>(element);
       if(!digi) {
 	n_not_found++;
-	ss << "WARN: Digit " << idigi << " of " << _in_nhits << "not found in WCSimRootTrigger";
-	StreamToLog(WARN);
+	//this happens regularly because removing digits doesn't shrink the TClonesArray
+	ss << "DEBUG: Digit " << idigi << " of " << _in_nhits << "not found in WCSimRootTrigger";
+	StreamToLog(DEBUG2);
 	continue;
       }
       ss << "DEBUG: Digit " << idigi << " at time " << digi->GetT();
@@ -102,10 +104,11 @@ bool BONSAI::Execute(){
       _in_Ts    ->push_back(digi->GetT());
       _in_Qs    ->push_back(digi->GetQ());
     }//idigi
-    if(n_not_found) {
-      _in_nhits -= n_not_found;
-      ss << "WARN: Missing " << n_not_found << " digits";
+    int digits_found = nhits_slots - n_not_found;
+    if(_in_nhits != digits_found) {
+      ss << "WARN: BONSAI expected " << _in_nhits << " digits. Found " << digits_found;
       StreamToLog(WARN);
+      _in_nhits = digits_found;
     }
     
     ss << "DEBUG: BONSAI running over " << _in_nhits << " digits";

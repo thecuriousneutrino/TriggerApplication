@@ -27,13 +27,11 @@ The variables in this DataModel used by TriggerApplication tools are
 |  `TChain *`               | WCSimEventTree      | The `WCSimRootEvent` tree from input WCSim file(s)   | | WCSimReader |
 |  `std::vector<int>`       | CurrentWCSimEventNums | The original WCSim files' event number(s) for the current event | DataOut | WCSimReader |
 |  `TObjArray *`            | CurrentWCSimFiles     | The original WCSim files' filename(s) for the current event     | DataOut | WCSimReader |
-|  `WCSimRootEvent *`       | IDWCSimEvent_Raw      | The original, unmodified `WCSimRootEvent` for the ID | DataOut, BONSAI | WCSimReader |
+|  `WCSimRootEvent *`       | IDWCSimEvent_Raw      | The original, unmodified `WCSimRootEvent` for the ID | DataOut | WCSimReader |
 |  `WCSimRootEvent *`       | ODWCSimEvent_Raw      | The original, unmodified `WCSimRootEvent` for the OD | DataOut | WCSimReader |
-|  `WCSimRootEvent *`       | IDWCSimEvent_Triggered      | The triggered `WCSimRootEvent` for the ID (digits are sorted into trigger windows) | | DataOut |
+|  `WCSimRootEvent *`       | IDWCSimEvent_Triggered      | The triggered `WCSimRootEvent` for the ID (digits are sorted into trigger windows) | BONSAI | DataOut |
 |  `WCSimRootEvent *`       | ODWCSimEvent_Triggered      | The triggered `WCSimRootEvent` for the OD (digits are sorted into trigger windows) | | DataOut |
 |  `bool`                   | HasOD             | Does the geometry include the OD? | DataOut | WCSimReader |
 |  `bool`                   | IsMC              | Is the input MC? | | WCSimReader |
  
 TODO: setup to allow multiple types of PMT in the ID (e.g. 20" + mPMT hybrid geometry)
-
-TODO: give BONSAI the modified version of `WCSimRootEvent`
