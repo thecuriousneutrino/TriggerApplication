@@ -1,0 +1,7 @@
+*~
+lib/*.so
+include/*.h
+main
+RemoteControl
+NodeDaemon
+ToolDAQ/
