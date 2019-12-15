@@ -1,6 +1,7 @@
 # BONSAI
 
 Call hk-BONSAI for every trigger, to reconstruct the event vertex position and direction.
+hk-BONSAI is a low-energy reconstruction algorithm/software, therefore should only be run on low-energy events.
 Write out a new file with a `TTree` storing this information.
 
 ## Data
@@ -18,7 +19,7 @@ Write out a new file with a `TTree` storing this information.
 	* `GoodnessOfFit`
 	* `GoodnessOfTimeFit`
 * For every trigger, gets the digit information from the data member `IDWCSimEvent_Triggered` (filled by the DataOut tool)
-	* If the number of digits is at least 1, calls BONSAI with the digit information
+	* If the number of digits is in range [`nhitmin`, `nhitmax`] (inclusive), calls BONSAI with the digit information
 	* Fills the tree with the BONSAI result
 * Writes the output file
 
@@ -27,6 +28,10 @@ Write out a new file with a `TTree` storing this information.
 ```
 outfilename /path/to/file
 verbose LEVEL
+nhitsmin UINT
+nhitsmax UINT
 ```
 * `outfilename` File path to output file
 * `verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity)
+* `nhitsmin` If the number of digits in a trigger is less than this, don't run BONSAI
+* `nhitsmax` If the number of digits in a trigger is more than this, don't run BONSAI

@@ -1,2 +1,4 @@
 verbose 3
 outfilename reconstructed.root
+nhitsmin 1
+nhitsmax 2000

@@ -28,6 +28,10 @@ bool BONSAI::Initialise(std::string configfile, DataModel &data){
     return false;
   }
 
+  m_variables.Get("nhitsmin", fNHitsMin);
+  m_variables.Get("nhitsmax", fNHitsMax);
+
+  //setup BONSAI with the geometry
   _bonsai = new WCSimBonsai();
   WCSimRootGeom * geo = 0;
   m_data->WCSimGeomTree->SetBranchAddress("wcsimrootgeom", &geo);
@@ -35,9 +39,10 @@ bool BONSAI::Initialise(std::string configfile, DataModel &data){
   _bonsai->Init(geo);
   m_data->WCSimGeomTree->ResetBranchAddresses();
 
-  _in_PMTIDs = new std::vector<int>  (1000);
-  _in_Ts     = new std::vector<float>(1000);
-  _in_Qs     = new std::vector<float>(1000);
+  //allocate memory for the digit vectors
+  _in_PMTIDs = new std::vector<int>  (fNHitsMax);
+  _in_Ts     = new std::vector<float>(fNHitsMax);
+  _in_Qs     = new std::vector<float>(fNHitsMax);
 
   //open the output file
   if(! m_variables.Get("outfilename", fOutFilename)) {
@@ -78,14 +83,18 @@ bool BONSAI::Execute(){
     _in_Ts->clear();
     _in_Qs->clear();
 
-    //fill the inputs to BONSAI with the current triggers' digit information
+    //get the number of digits
     _in_nhits = _trigger->GetNcherenkovdigihits();
     int nhits_slots = _trigger->GetNcherenkovdigihits_slots();
-    if(_in_nhits <= 0) {
-      Log("INFO: No digits in current trigger. Not running BONSAI", INFO, verbose);
+
+    //don't run bonsai on large or small events
+    if(_in_nhits < fNHitsMin || _in_nhits > fNHitsMax) {
+      ss << "INFO: " << _in_nhits << " digits in current trigger. Not running BONSAI";
+      StreamToLog(INFO);
       return true;
     }
 
+    //fill the inputs to BONSAI with the current triggers' digit information
     long n_not_found = 0;
     for (long idigi=0; idigi < nhits_slots; idigi++) {
       TObject *element = (_trigger->GetCherenkovDigiHits())->At(idigi);
@@ -94,7 +103,7 @@ bool BONSAI::Execute(){
       if(!digi) {
 	n_not_found++;
 	//this happens regularly because removing digits doesn't shrink the TClonesArray
-	ss << "DEBUG: Digit " << idigi << " of " << _in_nhits << "not found in WCSimRootTrigger";
+	ss << "DEBUG: Digit " << idigi << " of " << _in_nhits << " not found in WCSimRootTrigger";
 	StreamToLog(DEBUG2);
 	continue;
       }

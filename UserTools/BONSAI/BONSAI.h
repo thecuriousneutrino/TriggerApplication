@@ -45,6 +45,9 @@ class BONSAI: public Tool {
   double fGoodnessOfFit;
   double fGoodnessOfTimeFit;
 
+  unsigned int fNHitsMin;
+  unsigned int fNHitsMax;
+
   int verbose;
 
   std::stringstream ss;
