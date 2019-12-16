@@ -8,12 +8,15 @@ typedef enum EReconstructers {
   kReconUndefined = -1,
   kReconBONSAI,
   kReconTestVerticesNoDirection,
-  kReconTestVertices
+  kReconTestVertices,
+  kReconRandomNoDirection,
+  kReconRandom //ensure this stays at the end, for looping purposes
 } Reconstructer_t;
 
 struct Pos3D
 {
   double x, y, z;
+  double R() { return sqrt(x*x + y*y + z*z); }
 };
 
 struct DirectionEuler
@@ -79,6 +82,12 @@ class ReconInfo
     case (kReconTestVertices):
       return "TestVertices";
       break;
+    case(kReconRandomNoDirection):
+      return "Random_NoDirection";
+      break;
+    case (kReconRandom):
+      return "Random";
+      break;
     default:
       return "";
     }
@@ -86,7 +95,7 @@ class ReconInfo
   }
   
   static Reconstructer_t ReconstructerFromString(std::string s) {
-    for(int i = int(kReconUndefined)+1; i <= kReconTestVertices; i++) {
+    for(int i = int(kReconUndefined)+1; i <= kReconRandom; i++) {
       if(s.compare(ReconInfo::EnumAsString((Reconstructer_t)i)) == 0) {
 	return (Reconstructer_t)i;
       }
@@ -99,6 +108,7 @@ class ReconInfo
     switch(r) {
     case(kReconBONSAI):
     case(kReconTestVertices):
+    case(kReconRandom):
       return true;
       break;
     default:
