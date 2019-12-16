@@ -8,6 +8,8 @@ The tools available are
   * Read in data from WCSim files
 * WCSimASCIReader
   * Read in data from ASCII files
+* ReconRandomiser
+  * Produce randomised vertex distributions
 
 ## Data output
 
@@ -30,6 +32,10 @@ The tools available are
 * (test_vertices)
 
 ## SuperNova Triggers
+
+* dimfit
+  * Find the number of dimensions a positional vertex distribution corresponds to
+  * Algorithm inherited from SK
 
 ## Miscellaneous
 
