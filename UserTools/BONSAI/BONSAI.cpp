@@ -44,9 +44,6 @@ bool BONSAI::Initialise(std::string configfile, DataModel &data){
   _in_Ts     = new std::vector<float>(fNHitsMax);
   _in_Qs     = new std::vector<float>(fNHitsMax);
 
-  //make other tools aware that there exists a tool that reconstructs
-  m_data->HasReconstructionTool = true;
-
   return true;
 }
 

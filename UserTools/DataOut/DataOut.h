@@ -35,23 +35,10 @@ class DataOut: public Tool {
   TTree * fTreeEvent;
   TTree * fTreeGeom;
   TTree * fTreeOptions;
-  TTree * fTreeRecon;
   TString * fWCSimFilename;
 
   std::vector<std::pair<double, double> > fTriggerIntervals;
   TriggerInfo * fTriggers;
-
-  int    fRTTriggerNum;
-  int    fRTNHits;
-  Reconstructer_t fRTReconstructer;
-  double fRTTime;
-  double fRTVertex[4];  //x,y,z
-  bool   fRTHasDirection;
-  double fRTDirectionEuler[3]; // theta (zenith), phi (azimuth), alpha
-  double fRTCherenkovCone[2];  // cos(Cherenkov angle), ellipticity
-  double fRTDirectionLikelihood;
-  double fRTGoodnessOfFit;
-  double fRTGoodnessOfTimeFit;
 
   int fEvtNum;
 
