@@ -9,6 +9,7 @@ Write out a new file with a `TTree` storing reconstruction information
       	* `TriggerNum`
 	* `NDigits`
 	* `Reconstructer` an enumeration of the tool that reconstructed (e.g. kReconBONSAI)
+	  * TODO it is currently cast to an int. Need to setup a root linkdef to allow the enum to be used directly in the tree
 	* `Time`
 	* `Vertex[3]` x,y,z
 	* `GoodnessOfFit`
