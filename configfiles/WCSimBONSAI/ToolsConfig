@@ -2,3 +2,4 @@ wcsim1 WCSimReader configfiles/WCSimBONSAI/WCSimReaderToolConfig
 nhits1 nhits configfiles/WCSimBONSAI/nhitsToolConfig
 out1 DataOut configfiles/WCSimBONSAI/DataOutToolConfig
 bonsai1 BONSAI configfiles/WCSimBONSAI/BONSAIToolConfig
+reconout ReconDataOut configfiles/WCSimBONSAI/ReconDataOutToolConfig
