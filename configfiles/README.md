@@ -1,7 +1,7 @@
 # Configure files
 
 ***********************
-#Description
+# Description
 **********************
 
 Configure files are simple text files for passing variables to the Tools.
@@ -10,7 +10,7 @@ Text files are read by the Store class (src/Store) and automatically asigned to 
 
 
 ************************
-#Useage
+# Usage
 ************************
 
 Any line starting with a "#" will be ignored by the Store, as will blank lines.
@@ -23,3 +23,17 @@ Name Value #Comments
 
 Note: Only one value is permitted per name and they are stored in a string stream and templated cast back to the type given.
 
+*******************
+# List of toolchains
+******************
+
+Useful examples of triggering
+| GPUtest         | Read WCSim ASCII file; Run nhits trigger on GPU; Write out text-file |
+| WCSimReaderTest | Read WCSim root file; Run nhits trigger; Write out WCSim-like file |
+| WCSimBONSAI     | Read WCSim root file; Run nhits trigger; Write out WCSim-like file; Run BONSAI reconstruction; Write out reconstructed tree |
+| SNTriggering    | Create fake events in ReconRandomiser; Run dimfit |
+
+Simple examples
+| Dummy           | Run 2 versions of the Dummy print-out tool |
+| template        | Run 2 versions of the Dummy print-out tool; used by `Create_run_config.sh`
+| test            | Does nothing |
