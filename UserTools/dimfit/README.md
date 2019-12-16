@@ -36,8 +36,8 @@ max_z_pos DISTANCE
 * `reconstruction_algorithm` Use the results of which reconstruction algorithm?
 * `min_recon_likelihood` Events with a likelihood smaller than this will not be included in dimfit calculations
 * `min_recon_time_likelihood` Events with a time-fit likelihood smaller than this will not be included in dimfit calculations
-* `max_r_pos` Events with larger reconstructed `r` (in mm) than this will not be included in dimfit calculations
-* `max_z_pos` Events with larger reconstructed `z` (in mm) than this will not be included in dimfit calculations
+* `max_r_pos` Events with larger reconstructed `r` (in cm) than this will not be included in dimfit calculations
+* `max_z_pos` Events with larger reconstructed `z` (in cm) than this will not be included in dimfit calculations
   * Note that this is a detector half-height because the co-ordinate origin is at the detector centre
 
 TODO potentially move the above parameters into a separate tool so that NClusters, dimfit, reconstruction can be run on the same set of reconstructed events without having to keep track of the same variables in different config files

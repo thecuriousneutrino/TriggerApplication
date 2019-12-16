@@ -100,7 +100,10 @@ bool dimfit::Execute(){
   //use a sliding window to loop over the events
   double tloop = tstart;
   double tloopend = tloop + time_window_ns;
-  while(tloop < tend) {
+  tloopend = TMath::Min(tloopend, tend); //ensure the loop runs at least once
+  while(tloopend <= tend) {
+    fEventPos->clear();
+
     unsigned int nvertices = 0;
     for(int irecon = 0; irecon < N; irecon++) {
       //skip events reconstructed with the wrong algorithm
@@ -131,20 +134,26 @@ bool dimfit::Execute(){
       fEventPos->push_back(pos.y);
       fEventPos->push_back(pos.z);
       nvertices++;
+
+      ss << "DEBUG: Adding vertex " << pos.x << ", " << pos.y << "\t" << pos.z << " to run through dimfit";
+      StreamToLog(DEBUG3);
     }//irecon
 
     //only call dimfit if there are over (or equal to) the minimum number of vertices
     if(nvertices >= min_events) {
+      ss << "DEBUG: Running " << nvertices << " event positions through dimfit";
+      StreamToLog(DEBUG1);
+
       dimfit_(nvertices, fEventPos->data(), fCentr, fRot, fRMean, fDim, fExitPoint, verbose);
 
-      ss << "INFO: Dimfit returns " << fDim;
+      ss << "INFO: Dimfit returns " << fDim << " Exited at " << fExitPoint;
       StreamToLog(INFO);
     }
 
     //increment the sliding time window
     tloop += time_window_step_ns;
     tloopend = tloop + time_window_ns;
-    
+
   }//while(tloop < tend)
 
   return true;
@@ -201,7 +210,7 @@ int dimfit::dimfit_(int n,double *points,double *centr,double *rot,double *rmean
   for(i=0; i<n; i++)
     {
       x=*points++; y=*points++; z=*points++;
-      //if(i==0){fprintf( stdout, "in dimfit %f %f %f\n", x, y, z );}
+      // printf("in dimfit position %f %f %f\n", x, y, z );
       *centr+=x;
       centr[1]+=y;
       centr[2]+=z;
@@ -267,9 +276,11 @@ int dimfit::dimfit_(int n,double *points,double *centr,double *rot,double *rmean
   rmean[2] = root2;
   rmean[3] = root3;
   rmean[4] = Pos;
-  if(verbose)
+  if(verbose) {
     printf("3 values %lf %lf %lf\n",sqrt(root),sqrt(root2),sqrt(root3));
-  
+    printf("Mean position %lf\n", Pos);
+  }
+
   //Here the decisions are made as to how many dimensions the vertex distribution is
   if ((n==2) || root<GOODPOINT)
     {
