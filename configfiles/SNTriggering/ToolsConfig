@@ -1,1 +1,2 @@
-dimfit1 dimfit configfiles/dimfitToolConfig
+reconrandom ReconRandomiser configfiles/SNTriggering/ReconRandomiserToolConfig
+dimfit1 dimfit configfiles/SNTriggering/dimfitToolConfig

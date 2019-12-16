@@ -1,0 +1,14 @@
+n_vertices_mean 250
+x_mean_pos 0
+x_width -1 #UNIFORM
+y_mean_pos 0
+y_width -1 #UNIFORM
+z_mean_pos 0
+z_width -1 #UNIFORM
+max_z_pos 2700
+max_r_pos 3500
+flat_r 0
+t_min 0
+t_max 2.5E9 #2.5 seconds
+seed 512
+verbose 3
