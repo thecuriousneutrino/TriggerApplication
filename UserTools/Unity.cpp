@@ -12,3 +12,4 @@
 #include "ReconDataIn/ReconDataIn.cpp"
 #include "pass_all/pass_all.cpp"
 
+#include "ReconFilter/ReconFilter.cpp"
