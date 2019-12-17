@@ -31,7 +31,7 @@ Useful examples of triggering
 | GPUtest         | Read WCSim ASCII file; Run nhits trigger on GPU; Write out text-file |
 | WCSimReaderTest | Read WCSim root file; Run nhits trigger; Write out WCSim-like file |
 | WCSimBONSAI     | Read WCSim root file; Run nhits trigger; Write out WCSim-like file; Run BONSAI reconstruction; Write out reconstructed tree |
-| SNTriggering    | Create fake events in ReconRandomiser; Run dimfit |
+| SNTriggering    | Create fake events in ReconRandomiser; Run dimfit; Write out reconstructed tree |
 
 Simple examples
 | Dummy           | Run 2 versions of the Dummy print-out tool |

@@ -9,15 +9,15 @@ A TTree map with getter and setter functions is provided and can be uncommented 
 
 The variables in this DataModel used by TriggerApplication tools are
 
-| Type                      | Name                | Purpose | Read by | Modified by |
-| ------------------------- | ------------------- | ------- | ------- | ----------- |
+| Type                      | Name                | Purpose | Read by | Modified by | Reset by |
+| ------------------------- | ------------------- | ------- | ------- | ----------- | 
 |  `std::vector<SubSample>` | IDSamples           | Store charge, time, PMT ID of every ID digit | nhits | WCSimReader, WCSimASCIReader |
 |  `std::vector<SubSample>` | ODSamples           | Store charge, time, PMT ID of every OD digit | nhits | WCSimReader |
 |  `std::vector<PMTInfo>`   | IDGeom              | Store x, y, z, PMT ID of every ID PMT        | | WCSimReader |
 |  `std::vector<PMTInfo>`   | ODGeom              | Store x, y, z, PMT ID of every OD PMT        | | WCSimReader |
 |  `TriggerInfo`            | IDTriggers          | Store trigger type, time, readout window start/end times, additional info vector, for ID triggers | WCSimReader | nhits |
 |  `TriggerInfo`            | ODTriggers          | Store trigger type, time, readout window start/end times, additional info vector, for OD triggers | WCSimReader | nhits |
-|  `ReconInfo`              | RecoInfo            | Store reconstruction information (vertex time/position, fit likelihoods, optionally direction) | DataOut | BONSAI |
+|  `ReconInfo`              | RecoInfo            | Store reconstruction information (vertex time/position, fit likelihoods, optionally direction) | dimfit, ReconDataOut | BONSAI, ReconRandomiser |
 |  `bool`                   | triggeroutput       | Did a trigger fire?       | TriggerOutput | nhits, test_vertices |
 |  `double`                 | IDPMTDarkRate       | The dark rate for ID PMTs | nhits | WCSimReader |
 |  `double`                 | ODPMTDarkRate       | The dark rate for OD PMTs | nhits | WCSimReader |
@@ -36,3 +36,5 @@ The variables in this DataModel used by TriggerApplication tools are
 |  `bool`                   | IsMC              | Is the input MC? | | WCSimReader |
  
 TODO: setup to allow multiple types of PMT in the ID (e.g. 20" + mPMT hybrid geometry)
+
+TODO: fill 'Reset By' column
