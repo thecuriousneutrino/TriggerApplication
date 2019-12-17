@@ -19,7 +19,16 @@ class ReconFilter: public Tool {
 
  private:
 
+  ReconInfo * fInFilter;
+  ReconInfo * fOutFilter;
+  std::string fInputFilterName;
+  std::string fOutputFilterName;
 
+  Reconstructer_t fReconstructionAlgorithm;
+  double fMinReconLikelihood;
+  double fMinReconTimeLikelihood;
+  double fMaxRPos_cm;
+  double fMaxZPos_cm;
 
   int verbose;
 
