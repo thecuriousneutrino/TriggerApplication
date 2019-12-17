@@ -59,12 +59,10 @@ bool ReconRandomiser::Initialise(std::string configfile, DataModel &data){
     return false;
   }
 
-  if(fXWidth < 1E-6)
-    fUniformX = true;
-  if(fYWidth < 1E-6)
-    fUniformY = true;
-  if(fZWidth < 1E-6)
-    fUniformZ = true;
+  // work out the type of distribution for each axis
+  fXDistribution = GetDistributionType(fXWidth, "X");
+  fYDistribution = GetDistributionType(fYWidth, "Y");
+  fZDistribution = GetDistributionType(fZWidth, "Z");
 
   if(!m_variables.Get("t_min", fTMin)) {
     Log("FATAL: Must specify t_min", FATAL, verbose);
@@ -135,9 +133,12 @@ bool ReconRandomiser::Finalise(){
 void ReconRandomiser::CreateVertex(double * pos)
 {
   double x, y, r, z, xdir, ydir;
+  const int maxcount = 100;
 
   //create a flat distribution in r and phi
-  if(fFlatR && fUniformX && fUniformY) {
+  if(fFlatR
+     && (fXDistribution == kUniform)
+     && (fYDistribution == kUniform)) {
     r = fRand->Uniform(0, +fMaxRPos);
     fRand->Circle(xdir, ydir, 1);
     x = r * xdir;
@@ -148,28 +149,74 @@ void ReconRandomiser::CreateVertex(double * pos)
     r = fMaxRPos + 1;
     while(r > fMaxRPos) {
       //x
-      if(fUniformX)
-	x = fRand->Uniform(-fMaxRPos, +fMaxRPos);
-      else
-	x = fRand->Gaus(fXMean, fXWidth);
+      x = GetRandomNumber(fXDistribution, fMaxRPos, fXMean, fXWidth, maxcount);
       //y
-      if(fUniformY)
-	y = fRand->Uniform(-fMaxRPos, +fMaxRPos);
-      else
-	y = fRand->Gaus(fXMean, fXWidth);
+      y = GetRandomNumber(fYDistribution, fMaxRPos, fYMean, fYWidth, maxcount);
       //r
       r = TMath::Sqrt(TMath::Power(x, 2) + TMath::Power(y, 2));
     }
   }
   //z
-  if(fUniformZ)
-    z = fRand->Uniform(-fMaxZPos, +fMaxZPos);
-  else
-    z = fRand->Gaus(fZMean, fZWidth);
+    z = GetRandomNumber(fZDistribution, fMaxZPos, fZMean, fZWidth, maxcount);
 
   pos[0] = x;
   pos[1] = y;
   pos[2] = z;
+}
+
+double ReconRandomiser::GetRandomNumber(Distribution_t dist, double max, double mean, double width, const int maxcount)
+{
+  switch(dist) {
+  case (kUniform):
+    return fRand->Uniform(-max, +max);
+    break;
+  case(kGauss): {
+    double x = max + 1;
+    int count = 0; //don't get stuck in the loop forever
+    while(abs(x) > max) {
+      fRand->Gaus(mean, width);
+      if(count > maxcount) break;
+    }
+    //if we've not got a sensible value after enough tries, return the appropriate max
+    if(abs(x) > max) {
+      ss << "WARN: Could not produce random number within limit. Returning appropriately signed " << max;
+      StreamToLog(WARN);
+      if(mean >= 0)
+	return +max;
+      else
+	return -max;
+    }
+    else
+      return x;
+    break;
+  }
+  case(kFixed):
+    return mean;
+    break;
+  default:
+    ss << "WARN: Unknown Distribution_t value " << dist << " Returning 0";
+    StreamToLog(WARN);
+    return 0;
+    break;
+  }
+  return 0;
+}
+
+Distribution_t ReconRandomiser::GetDistributionType(double width, const char * axis)
+{
+  Distribution_t dist;
+  if(abs(width) < 1E-6) {
+    dist = kFixed;
+  }
+  else if(width < 0) {
+    dist = kUniform;
+  }
+  else {
+    dist = kGauss;
+  }
+  ss << "INFO: Will generate " << axis << " axis as " << EnumAsString(dist);
+  StreamToLog(INFO);
+  return dist;
 }
 
 ///////////////////////////////////////////////////////////////////////

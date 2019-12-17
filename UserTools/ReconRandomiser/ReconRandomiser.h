@@ -8,6 +8,26 @@
 
 #include "Tool.h"
 
+
+typedef enum EDistribution {kUniform, kGauss, kFixed} Distribution_t;
+
+static std::string EnumAsString(Distribution_t dist) {
+  switch(dist) {
+  case (kUniform):
+    return "Uniform";
+    break;
+  case (kGauss):
+    return "Gauss";
+    break;
+  case (kFixed):
+    return "Fixed";
+    break;
+  default:
+    return "";
+  }
+  return "";
+}
+
 class ReconRandomiser: public Tool {
 
 
@@ -22,6 +42,8 @@ class ReconRandomiser: public Tool {
  private:
 
   void CreateVertex(double * pos);
+  double GetRandomNumber(Distribution_t dist, double max, double mean, double width, const int maxcount);
+  Distribution_t GetDistributionType(double width, const char * axis);
 
   int fNVerticesMean;
 
@@ -35,9 +57,9 @@ class ReconRandomiser: public Tool {
   double fMaxZPos;
   double fMaxRPos;
   bool   fFlatR;
-  bool   fUniformX;
-  bool   fUniformY;
-  bool   fUniformZ;
+  Distribution_t fXDistribution;
+  Distribution_t fYDistribution;
+  Distribution_t fZDistribution;
 
   //time distribution
   double fTMin;
