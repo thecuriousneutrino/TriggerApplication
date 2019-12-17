@@ -13,6 +13,13 @@ bool dimfit::Initialise(std::string configfile, DataModel &data){
 
   m_data= &data;
 
+  //parameters determining which events to read in
+  if(!m_variables.Get("input_filter_name", fInputFilterName)) {
+    Log("INFO: input_filter_name not given. Using ALL", WARN, verbose);
+    fInputFilterName = "ALL";
+  }
+  fInFilter  = m_data->GetFilter(fInputFilterName);
+
   //sliding time window parameters
   if(!m_variables.Get("time_window", time_window_s)) {
     time_window_s = 20;
@@ -24,35 +31,9 @@ bool dimfit::Initialise(std::string configfile, DataModel &data){
     Log("WARN: No time_window_step parameter found. Using a value of 0.2 (seconds)", WARN, verbose);
   }
   time_window_step_ns = time_window_step_s * 1E9;
-
-  //parameters determining which reconstructed events to use
-  std::string reconstruction_algorithm_str;
-  reconstruction_algorithm = kReconUndefined;
-  m_variables.Get("reconstruction_algorithm", reconstruction_algorithm_str);
-  reconstruction_algorithm = ReconInfo::ReconstructerFromString(reconstruction_algorithm_str);
-  if(reconstruction_algorithm == kReconUndefined) {
-    Log("ERROR: The reconstruction_algorithm parameter you have chosen is not defined. Please choose a valid option", ERROR, verbose);
-    return false;
-  }
   if(!m_variables.Get("min_events", min_events)) {
     min_events = 3;
     Log("WARN: No min_events parameter found. Using a value of 3", WARN, verbose);
-  }
-  if(!m_variables.Get("min_recon_likelihood", min_recon_likelihood)) {
-    min_recon_likelihood = 0;
-    Log("WARN: No min_recon_likelihood parameter found. Using a value of 0", WARN, verbose);
-  }
-  if(!m_variables.Get("min_recon_time_likelihood", min_recon_time_likelihood)) {
-    min_recon_time_likelihood = 0;
-    Log("WARN: No min_recon_time_likelihood parameter found. Using a value of 0", WARN, verbose);
-  }
-  if(!m_variables.Get("max_r_pos", max_r_pos_mm)) {
-    max_r_pos_mm = 35000;
-    Log("WARN: No max_r_pos parameter found. Using a value of 35000 (mm)", WARN, verbose);
-  }
-  if(!m_variables.Get("max_z_pos", max_z_pos_mm)) {
-    max_z_pos_mm = 27000;
-    Log("WARN: No max_z_pos parameter found. Using a value of 27000 (mm)", WARN, verbose);
   }
 
   //dimfit parameters
@@ -83,17 +64,11 @@ bool dimfit::Initialise(std::string configfile, DataModel &data){
 
 bool dimfit::Execute(){
 
-  const int N = m_data->RecoInfo.GetNRecons();
+  const int N = fInFilter->GetNRecons();
 
   //get first/last times
-  double tstart = 1E7, tend = -1E7;
-  for(int irecon = 0; irecon < N; irecon++) {
-    double t = m_data->RecoInfo.GetTime(irecon);
-    if(t < tstart)
-      tstart = t;
-    if(t > tend)
-      tend = t;
-  }//irecon
+  double tstart = fInFilter->GetFirstTime();
+  double tend   = fInFilter->GetLastTime();
   ss << "DEBUG: dimfit looping in time from " << tstart << " to " << tend << " in steps of " << time_window_step_ns;
   StreamToLog(DEBUG1);
 
@@ -106,28 +81,13 @@ bool dimfit::Execute(){
 
     unsigned int nvertices = 0;
     for(int irecon = 0; irecon < N; irecon++) {
-      //skip events reconstructed with the wrong algorithm
-      if(m_data->RecoInfo.GetReconstructer(irecon) != reconstruction_algorithm)
-	continue;
-
       //skip events reconstructed outside the time window
-      double t = m_data->RecoInfo.GetTime(irecon);
+      double t = fInFilter->GetTime(irecon);
       if(t < tloop || t > tloopend)
 	continue;
 
-      //skip events with poor likelihoods
-      if(m_data->RecoInfo.GetGoodnessOfFit(irecon) < min_recon_likelihood)
-	continue;
-      if(m_data->RecoInfo.GetGoodnessOfTimeFit(irecon) < min_recon_time_likelihood)
-	continue;
-
       //get the vertex position
-      Pos3D pos = m_data->RecoInfo.GetVertex(irecon);
-      //skip events that are reconstructed too close to the wall
-      if(pos.R() > max_r_pos_mm)
-	continue;
-      if(abs(pos.z) > max_z_pos_mm)
-	continue;
+      Pos3D pos = fInFilter->GetVertex(irecon);
       
       //we'll use this event! Put it in the vertex array
       fEventPos->push_back(pos.x);

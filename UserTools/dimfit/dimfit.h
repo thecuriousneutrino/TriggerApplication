@@ -19,17 +19,15 @@ class dimfit: public Tool {
 
  private:
 
+  ReconInfo * fInFilter;
+  std::string fInputFilterName;
+
   std::vector<double> * fEventPos;
   double time_window_s;
   double time_window_ns;
   double time_window_step_s;
   double time_window_step_ns;
-  Reconstructer_t reconstruction_algorithm;
   int min_events;
-  double min_recon_likelihood;
-  double min_recon_time_likelihood;
-  double max_r_pos_mm;
-  double max_z_pos_mm;
 
   double fCentr[15];
   double fRot[9];
