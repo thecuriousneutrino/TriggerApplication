@@ -16,7 +16,8 @@ if (tool=="BONSAI") ret=new BONSAI;
 
 if (tool=="ReconDataOut") ret=new ReconDataOut;
 if (tool=="dimfit") ret=new dimfit;
-  if (tool=="ReconRandomiser") ret=new ReconRandomiser;
+if (tool=="ReconRandomiser") ret=new ReconRandomiser;
+  if (tool=="ReconDataIn") ret=new ReconDataIn;
 return ret;
 }
 
