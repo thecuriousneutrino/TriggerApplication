@@ -98,7 +98,10 @@ Notes:
   * You can optionally install Root
   * `./GetToolDAQ.sh --help` for the flags to turn on/off each of the prerequsites
 * Make sure you have sourced WCSim i.e. that you have `$WCSIMDIR` set
-  * Note that this currently has to be the following branch https://github.com/tdealtry/WCSim/tree/trigger - pull requests are pending
+  * Note that if you're comparing WCSim files for consistency with TriggerApplication output, this currently has to be the following branch https://github.com/tdealtry/WCSim/tree/trigger (pull requests are pending)
+  * If you're not, the head of WCSim should be fine
+* Make sure you have sourced hk-BONSAI i.e. that you have `$BONSAIDIR` set
+  * TODO: in the future, this will not be required, and instead be a configuration option
 * `source Setup.sh`
 * `make`
   * If you are `make GPU` to compile the CUDA-GPU code (only for compatible systems)
