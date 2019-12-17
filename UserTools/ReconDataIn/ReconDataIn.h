@@ -19,7 +19,19 @@ class ReconDataIn: public Tool {
 
  private:
 
+  TChain * fTreeRecon;
 
+  int    fRTTriggerNum;
+  int    fRTNHits;
+  int    fRTReconstructerInt; //TODO when the enum is actually save in the tree, replace casting from int with Reconstructer_t
+  double fRTTime;
+  double fRTVertex[4];  //x,y,z
+  bool   fRTHasDirection;
+  double fRTDirectionEuler[3]; // theta (zenith), phi (azimuth), alpha
+  double fRTCherenkovCone[2];  // cos(Cherenkov angle), ellipticity
+  double fRTDirectionLikelihood;
+  double fRTGoodnessOfFit;
+  double fRTGoodnessOfTimeFit;
 
   int verbose;
 

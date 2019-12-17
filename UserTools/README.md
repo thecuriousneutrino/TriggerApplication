@@ -5,18 +5,22 @@ The tools available are
 ## Data input
 
 * WCSimReader
-  * Read in data from WCSim files
+  * Read in simulation data from WCSim files
 * WCSimASCIReader
-  * Read in data from ASCII files
+  * Read in simulation data from ASCII files
 * ReconRandomiser
-  * Produce randomised vertex distributions
+  * Produce randomised reconstruction distributions
+* ReconDataIn
+  * Read in reconstruction data from a `TTree`
 
 ## Data output
 
 * DataOut
-  * Write out data in WCSim file format
+  * Write out trigger (+ full simulation) data in WCSim file format
+* ReconDataOut
+  * Write out reconstructed event data in a `TTree`
 * TriggerOutput
-  * Write out data in text format
+  * Write out trigger data in text format
 
 ## Triggers
 
@@ -34,7 +38,7 @@ The tools available are
 ## SuperNova Triggers
 
 * dimfit
-  * Find the number of dimensions a positional vertex distribution corresponds to
+  * Find the number of dimensions that a positional vertex distribution corresponds to
   * Algorithm inherited from SK
 
 ## Miscellaneous
