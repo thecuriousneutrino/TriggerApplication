@@ -28,6 +28,7 @@ Note: Only one value is permitted per name and they are stored in a string strea
 ******************
 
 Useful examples of triggering
+
 | Toolchain       | Description |
 | ----            | -----       |
 | GPUtest         | Read WCSim ASCII file; Run nhits trigger on GPU; Write out text-file |
@@ -36,6 +37,7 @@ Useful examples of triggering
 | SNTriggering    | Reads in BONSAI reconstruction from `reconstructed.root`; Create fake events in ReconRandomiser; Run dimfit; Write out reconstructed tree |
 
 Simple examples
+
 | Toolchain       | Description |
 | ----            | -----       |
 | Dummy           | Run 2 versions of the Dummy print-out tool |
