@@ -1,13 +1,16 @@
-# TriggerApplication
+# TriggerApplication tools
 
 The tools available are
 
 ## Data input
 
+### Simulation/digit input
 * WCSimReader
   * Read in simulation data from WCSim files
 * WCSimASCIReader
   * Read in simulation data from ASCII files
+
+### Reconstruction input
 * ReconRandomiser
   * Produce randomised reconstruction distributions
 * ReconDataIn
@@ -15,12 +18,15 @@ The tools available are
 
 ## Data output
 
+### Trigger output
 * DataOut
   * Write out trigger (+ full simulation) data in WCSim file format
-* ReconDataOut
-  * Write out reconstructed event data in a `TTree`
 * TriggerOutput
   * Write out trigger data in text format
+
+### Reconstruction output
+* ReconDataOut
+  * Write out reconstructed event data in a `TTree`
 
 ## Triggers
 
@@ -34,6 +40,7 @@ The tools available are
 * BONSAI
   * Reconstruct low-energy events with hk-BONSAI
 * (test_vertices)
+  * TODO: add option (or similar tool) to test_vertices
 
 ## SuperNova Triggers
 
