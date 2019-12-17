@@ -28,12 +28,16 @@ Note: Only one value is permitted per name and they are stored in a string strea
 ******************
 
 Useful examples of triggering
+| Toolchain       | Description |
+| ----            | -----       |
 | GPUtest         | Read WCSim ASCII file; Run nhits trigger on GPU; Write out text-file |
 | WCSimReaderTest | Read WCSim root file; Run nhits trigger; Write out WCSim-like file |
 | WCSimBONSAI     | Read WCSim root file; Run nhits trigger; Write out WCSim-like file; Run BONSAI reconstruction; Write out reconstructed tree |
 | SNTriggering    | Reads in BONSAI reconstruction from `reconstructed.root`; Create fake events in ReconRandomiser; Run dimfit; Write out reconstructed tree |
 
 Simple examples
+| Toolchain       | Description |
+| ----            | -----       |
 | Dummy           | Run 2 versions of the Dummy print-out tool |
 | template        | Run 2 versions of the Dummy print-out tool; used by `Create_run_config.sh`
 | test            | Does nothing |
