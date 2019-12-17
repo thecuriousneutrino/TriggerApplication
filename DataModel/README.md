@@ -9,14 +9,19 @@ A TTree map with getter and setter functions is provided and can be uncommented 
 
 The variables in this DataModel used by TriggerApplication tools are
 
+Digit Information
+
 | Type                      | Name                | Purpose | Read by | Modified by | Reset by |
-| ------------------------- | ------------------- | ------- | ------- | ----------- | 
-| Digit Information |
+| ------------------------- | ------------------- | ------- | ------- | ----------- | -------- |
 |  `std::vector<SubSample>` | IDSamples           | Store charge, time, PMT ID of every ID digit | nhits | WCSimReader, WCSimASCIReader |
 |  `std::vector<SubSample>` | ODSamples           | Store charge, time, PMT ID of every OD digit | nhits | WCSimReader |
 |  `WCSimRootEvent *`       | IDWCSimEvent_Triggered      | The triggered `WCSimRootEvent` for the ID (digits are sorted into trigger windows) | BONSAI | DataOut |
 |  `WCSimRootEvent *`       | ODWCSimEvent_Triggered      | The triggered `WCSimRootEvent` for the OD (digits are sorted into trigger windows) | | DataOut |
-| Geometry Information |
+
+ Geometry Information
+
+| Type                      | Name                | Purpose | Read by | Modified by | Reset by |
+| ------------------------- | ------------------- | ------- | ------- | ----------- | -------- |
 |  `std::vector<PMTInfo>`   | IDGeom              | Store x, y, z, PMT ID of every ID PMT        | | WCSimReader |
 |  `std::vector<PMTInfo>`   | ODGeom              | Store x, y, z, PMT ID of every OD PMT        | | WCSimReader |
 |  `double`                 | IDPMTDarkRate       | The dark rate for ID PMTs | nhits | WCSimReader |
@@ -24,13 +29,25 @@ The variables in this DataModel used by TriggerApplication tools are
 |  `int`                    | IDNPMTs             | The number of ID PMTs     | nhits | WCSimReader |
 |  `int`                    | ODNPMTs             | The number of OD PMTs     | nhits | WCSimReader |
 |  `bool`                   | HasOD             | Does the geometry include the OD? | DataOut | WCSimReader |
-| Trigger Information |
+
+Trigger Information
+
+| Type                      | Name                | Purpose | Read by | Modified by | Reset by |
+| ------------------------- | ------------------- | ------- | ------- | ----------- | -------- |
 |  `TriggerInfo`            | IDTriggers          | Store trigger type, time, readout window start/end times, additional info vector, for ID triggers | WCSimReader | nhits |
 |  `TriggerInfo`            | ODTriggers          | Store trigger type, time, readout window start/end times, additional info vector, for OD triggers | WCSimReader | nhits |
 |  `bool`                   | triggeroutput       | Did a trigger fire?       | TriggerOutput | nhits, test_vertices |
-| Reconstruction information |
+
+Reconstruction information
+
+| Type                      | Name                | Purpose | Read by | Modified by | Reset by |
+| ------------------------- | ------------------- | ------- | ------- | ----------- | -------- |
 |  `ReconInfo`              | RecoInfo            | Store reconstruction information (vertex time/position, fit likelihoods, optionally direction) | dimfit, ReconDataOut | BONSAI, ReconRandomiser, ReconDataIn |
-| Pass-through information |
+
+Pass-through information
+
+| Type                      | Name                | Purpose | Read by | Modified by | Reset by |
+| ------------------------- | ------------------- | ------- | ------- | ----------- | -------- |
 |  `TChain *`               | WCSimGeomTree       | The `WCSimRootGeom` tree from input WCSim file(s)    | DataOut, BONSAI | WCSimReader |
 |  `TChain *`               | WCSimOptionsTree    | The `WCSimRootOptions` tree from input WCSim file(s) | DataOut | WCSimReader |
 |  `TChain *`               | WCSimEventTree      | The `WCSimRootEvent` tree from input WCSim file(s)   | | WCSimReader |
