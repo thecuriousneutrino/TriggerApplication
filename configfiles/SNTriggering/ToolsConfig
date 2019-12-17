@@ -1,4 +1,5 @@
 reconread ReconDataIn configfiles/SNTriggering/ReconDataInToolConfig
 reconrandom ReconRandomiser configfiles/SNTriggering/ReconRandomiserToolConfig
+reconfilter ReconFilter configfiles/SNTriggering/ReconFilterToolConfig
 dimfit1 dimfit configfiles/SNTriggering/dimfitToolConfig
 reconout ReconDataOut configfiles/SNTriggering/ReconDataOutToolConfig

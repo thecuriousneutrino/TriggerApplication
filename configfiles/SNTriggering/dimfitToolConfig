@@ -1,9 +1,5 @@
+input_filter_name filter1
 min_events 3
-reconstruction_algorithm Random_NoDirection
-min_recon_likelihood 0
-min_recon_time_likelihood 0
-max_z_pos 2700
-max_r_pos 3500
 time_window 20
 time_window_step 0.2
 R2MIN 300000
