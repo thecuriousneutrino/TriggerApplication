@@ -55,7 +55,11 @@ Pass-through information
 |  `TObjArray *`            | CurrentWCSimFiles     | The original WCSim files' filename(s) for the current event     | DataOut | WCSimReader |
 |  `WCSimRootEvent *`       | IDWCSimEvent_Raw      | The original, unmodified `WCSimRootEvent` for the ID | DataOut | WCSimReader |
 |  `WCSimRootEvent *`       | ODWCSimEvent_Raw      | The original, unmodified `WCSimRootEvent` for the OD | DataOut | WCSimReader |
-| Misc |
+
+Misc
+
+| Type                      | Name                | Purpose | Read by | Modified by | Reset by |
+| ------------------------- | ------------------- | ------- | ------- | ----------- | -------- |
 |  `bool`                   | IsMC              | Is the input MC? | | WCSimReader |
  
 TODO: setup to allow multiple types of PMT in the ID (e.g. 20" + mPMT hybrid geometry)
