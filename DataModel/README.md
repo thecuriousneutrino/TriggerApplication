@@ -9,7 +9,7 @@ A TTree map with getter and setter functions is provided and can be uncommented 
 
 The variables in this DataModel used by TriggerApplication tools are
 
-Digit Information
+### Digit Information
 
 | Type                      | Name                | Purpose | Read by | Modified by | Reset by |
 | ------------------------- | ------------------- | ------- | ------- | ----------- | -------- |
@@ -18,7 +18,7 @@ Digit Information
 |  `WCSimRootEvent *`       | IDWCSimEvent_Triggered      | The triggered `WCSimRootEvent` for the ID (digits are sorted into trigger windows) | BONSAI | DataOut |
 |  `WCSimRootEvent *`       | ODWCSimEvent_Triggered      | The triggered `WCSimRootEvent` for the OD (digits are sorted into trigger windows) | | DataOut |
 
- Geometry Information
+### Geometry Information
 
 | Type                      | Name                | Purpose | Read by | Modified by | Reset by |
 | ------------------------- | ------------------- | ------- | ------- | ----------- | -------- |
@@ -30,7 +30,7 @@ Digit Information
 |  `int`                    | ODNPMTs             | The number of OD PMTs     | nhits | WCSimReader |
 |  `bool`                   | HasOD             | Does the geometry include the OD? | DataOut | WCSimReader |
 
-Trigger Information
+### Trigger Information
 
 | Type                      | Name                | Purpose | Read by | Modified by | Reset by |
 | ------------------------- | ------------------- | ------- | ------- | ----------- | -------- |
@@ -38,13 +38,13 @@ Trigger Information
 |  `TriggerInfo`            | ODTriggers          | Store trigger type, time, readout window start/end times, additional info vector, for OD triggers | WCSimReader | nhits |
 |  `bool`                   | triggeroutput       | Did a trigger fire?       | TriggerOutput | nhits, test_vertices |
 
-Reconstruction information
+### Reconstruction information
 
 | Type                      | Name                | Purpose | Read by | Modified by | Reset by |
 | ------------------------- | ------------------- | ------- | ------- | ----------- | -------- |
 |  `ReconInfo`              | RecoInfo            | Store reconstruction information (vertex time/position, fit likelihoods, optionally direction) | dimfit, ReconDataOut | BONSAI, ReconRandomiser, ReconDataIn |
 
-Pass-through information
+### WCSim pass-through information
 
 | Type                      | Name                | Purpose | Read by | Modified by | Reset by |
 | ------------------------- | ------------------- | ------- | ------- | ----------- | -------- |
@@ -56,7 +56,7 @@ Pass-through information
 |  `WCSimRootEvent *`       | IDWCSimEvent_Raw      | The original, unmodified `WCSimRootEvent` for the ID | DataOut | WCSimReader |
 |  `WCSimRootEvent *`       | ODWCSimEvent_Raw      | The original, unmodified `WCSimRootEvent` for the OD | DataOut | WCSimReader |
 
-Misc
+### Misc
 
 | Type                      | Name                | Purpose | Read by | Modified by | Reset by |
 | ------------------------- | ------------------- | ------- | ------- | ----------- | -------- |
