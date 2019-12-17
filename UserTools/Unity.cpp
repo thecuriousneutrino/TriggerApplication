@@ -10,3 +10,5 @@
 #include "dimfit/dimfit.cpp"
 #include "ReconRandomiser/ReconRandomiser.cpp"
 #include "ReconDataIn/ReconDataIn.cpp"
+#include "pass_all/pass_all.cpp"
+

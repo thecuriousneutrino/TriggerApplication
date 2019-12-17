@@ -1,7 +1,12 @@
-*~
-lib/*.so
-include/*.h
 main
-RemoteControl
-NodeDaemon
+lib/*.so
+
+#files from the ToolDAQ framework
 ToolDAQ/
+include/*.h
+NodeDaemon
+RemoteControl
+
+#temp files
+*~
+.#*

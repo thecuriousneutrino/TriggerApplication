@@ -13,11 +13,12 @@ if (tool=="test_vertices") ret=new test_vertices;
 if (tool=="WCSimReader") ret=new WCSimReader;
 if (tool=="DataOut") ret=new DataOut;
 if (tool=="BONSAI") ret=new BONSAI;
-
 if (tool=="ReconDataOut") ret=new ReconDataOut;
 if (tool=="dimfit") ret=new dimfit;
 if (tool=="ReconRandomiser") ret=new ReconRandomiser;
-  if (tool=="ReconDataIn") ret=new ReconDataIn;
+if (tool=="ReconDataIn") ret=new ReconDataIn;
+if (tool=="pass_all") ret=new pass_all;
+
 return ret;
 }
 

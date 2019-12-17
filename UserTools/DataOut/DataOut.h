@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <map>
 
 #include "WCSimRootEvent.hh"
 #include "WCSimRootGeom.hh"
@@ -27,8 +28,11 @@ class DataOut: public Tool {
  private:
   void CreateSubEvents(WCSimRootEvent * WCSimEvent);
   void FinaliseSubEvents(WCSimRootEvent * WCSimEvent);
-  void RemoveDigits(WCSimRootEvent * WCSimEvent);
+  void RemoveDigits(WCSimRootEvent * WCSimEvent,
+		    std::map<int, std::map<int, bool> > & NDigitPerPMTPerTriggerMap);
+  void MoveTracks(WCSimRootEvent * WCSimEvent);
   int  TimeInTriggerWindow(double time);
+  unsigned int TimeInTriggerWindowNoDelete(double time);
 
   std::string fOutFilename;
   TFile fOutFile;
@@ -37,10 +41,15 @@ class DataOut: public Tool {
   TTree * fTreeOptions;
   TString * fWCSimFilename;
 
-  std::vector<std::pair<double, double> > fTriggerIntervals;
   TriggerInfo * fTriggers;
+  double fTriggerOffset;
 
   int fEvtNum;
+
+  bool fSaveOnlyFailedDigits;
+  bool fSaveMultiDigiPerTrigger;
+  std::map<int, std::map<int, bool> > fIDNDigitPerPMTPerTriggerMap;
+  std::map<int, std::map<int, bool> > fODNDigitPerPMTPerTriggerMap;
 
   int verbose;
 
