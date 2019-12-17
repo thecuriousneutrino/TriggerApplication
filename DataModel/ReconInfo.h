@@ -32,7 +32,7 @@ struct CherenkovCone
 class ReconInfo
 {
  public:
-   ReconInfo() : fNRecons(0) {}
+ ReconInfo() : fNRecons(0), fFirstTime(+9E20), fLastTime(-9E20) {}
 
   void AddRecon(Reconstructer_t reconstructer, int trigger_num, int nhits, double time, double * vertex, double goodness_of_fit, double goodness_of_time_fit, bool fill_has_direction = true) {
     if(fill_has_direction) {
@@ -53,6 +53,7 @@ class ReconInfo
     fGoodnessOfFit.push_back(goodness_of_fit);
     fGoodnessOfTimeFit.push_back(goodness_of_time_fit);
     fNRecons++;
+    UpdateTimeBoundaries(time);
   }
  
   void AddRecon(Reconstructer_t reconstructer, int trigger_num, int nhits, double time, double * vertex, double goodness_of_fit, double goodness_of_time_fit,
@@ -69,6 +70,24 @@ class ReconInfo
     cone.ellipticity = cherenkov_cone[1];
     fCherenkovCone.push_back(cone);
     fDirectionLikelihood.push_back(direction_likelihood);
+  }
+
+  void AddReconFrom(ReconInfo * in, const int irecon) {
+    fReconstructer.push_back(in->GetReconstructer(irecon));
+    fTriggerNum.push_back(in->GetTriggerNum(irecon));
+    fNHits.push_back(in->GetNHits(irecon));
+    fTime.push_back(in->GetTime(irecon));
+    fVertex.push_back(in->GetVertex(irecon));
+    fGoodnessOfFit.push_back(in->GetGoodnessOfFit(irecon));
+    fGoodnessOfTimeFit.push_back(in->GetGoodnessOfTimeFit(irecon));
+    fHasDirection.push_back(in->GetHasDirection(irecon));
+    if(in->GetHasDirection(irecon)) {
+      fDirectionEuler.push_back(in->GetDirectionEuler(irecon));
+      fCherenkovCone.push_back(in->GetCherenkovCone(irecon));
+      fDirectionLikelihood.push_back(in->GetDirectionLikelihood(irecon));
+    }
+    fNRecons++;
+    UpdateTimeBoundaries(in->GetTime(irecon));
   }
 
   static std::string EnumAsString(Reconstructer_t r) {
@@ -117,7 +136,9 @@ class ReconInfo
     return false;
   }
 
-  int             GetNRecons() { return fNRecons; }
+  int             GetNRecons  () { return fNRecons;   }
+  double          GetFirstTime() { return fFirstTime; }
+  double          GetLastTime () { return fFirstTime; }
   Reconstructer_t GetReconstructer    (int irecon) { return fReconstructer[irecon]; }
   int             GetTriggerNum       (int irecon) { return fTriggerNum[irecon]; }
   int             GetNHits            (int irecon) { return fNHits[irecon]; }
@@ -148,20 +169,35 @@ class ReconInfo
   }
 
  private:
-  int fNRecons;
+
+  //collection
+  int    fNRecons;
+  double fFirstTime;
+  double fLastTime;
+
+  //event
   std::vector<Reconstructer_t> fReconstructer;
   std::vector<int>             fTriggerNum;
   std::vector<int>             fNHits;
+
+  //vertex
   std::vector<double>          fTime;
   std::vector<Pos3D>           fVertex;
   std::vector<double>          fGoodnessOfFit;
   std::vector<double>          fGoodnessOfTimeFit;
+
   //direction
   std::vector<bool>            fHasDirection;
   std::vector<DirectionEuler>  fDirectionEuler;
   std::vector<CherenkovCone>   fCherenkovCone;
   std::vector<double>          fDirectionLikelihood;
 
+  void UpdateTimeBoundaries(double time) {
+    if(time < fFirstTime)
+      fFirstTime = time;
+    if(time > fLastTime)
+      fLastTime = time;
+  }
 };
 
 #endif //RECONINFO_H

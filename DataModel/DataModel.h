@@ -34,6 +34,16 @@ class DataModel {
   //void AddTTree(std::string name,TTree *tree);
   //void DeleteTTree(std::string name);
 
+  ReconInfo * GetFilter(std::string name)
+  {
+    if(name.compare("ALL") == 0) {
+      return &(this->RecoInfo);
+    }
+    if(this->RecoInfoMap.find(name) == this->RecoInfoMap.end())
+      this->RecoInfoMap.insert(std::pair<std::string, ReconInfo *>(name, new ReconInfo()));
+    return this->RecoInfoMap[name];
+  }
+
   Store vars;
   BoostStore CStore;
   std::map<std::string,BoostStore*> Stores;
@@ -50,7 +60,9 @@ class DataModel {
 
   TriggerInfo IDTriggers;
   TriggerInfo ODTriggers;
+
   ReconInfo RecoInfo;
+  std::map<std::string, ReconInfo*> RecoInfoMap;
 
   bool triggeroutput;
 
