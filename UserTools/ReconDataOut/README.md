@@ -21,10 +21,6 @@ Write out a new file with a `TTree` storing reconstruction information
 
 * For more information on the meaning of the output, see for example the [hk-BONSAI documentation](https://github.com/hyperk/hk-BONSAI)
 
-* WARNING `RecoInfo` is cleared by this tool. All tools that use `RecoInfo` (e.g. `dimfit`) should be run *BEFORE* this tool
-
-* WARNING If you don't use ReconDataOut on all your `RecoInfo` objects, then your `RecoInfo` objects won't reset
-
 ## Configuration
 
 ```

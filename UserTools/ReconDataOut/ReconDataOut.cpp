@@ -87,7 +87,6 @@ bool ReconDataOut::Execute(){
     //Fill the tree
     fTreeRecon->Fill();
   }
-  fInFilter->Reset();
 
   //increment event number
   fEvtNum++;
