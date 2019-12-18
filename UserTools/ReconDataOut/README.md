@@ -4,7 +4,7 @@ Write out a new file with a `TTree` storing reconstruction information
 
 ## Data
 
-* Sets up a `TTree` called `reconTree` which is filled with the result of every reconstruction taken from the data member `RecoInfo`
+* Sets up a `TTree` called `reconTree` which is filled with the result of every reconstruction taken from the data member `RecoInfo` (or `RecoInfoMap`)
     	* `EventNum` 
       	* `TriggerNum`
 	* `NDigits`
@@ -23,12 +23,17 @@ Write out a new file with a `TTree` storing reconstruction information
 
 * WARNING `RecoInfo` is cleared by this tool. All tools that use `RecoInfo` (e.g. `dimfit`) should be run *BEFORE* this tool
 
+* WARNING If you don't use ReconDataOut on all your `RecoInfo` objects, then your `RecoInfo` objects won't reset
+
 ## Configuration
 
 ```
+input_filter_name NAME
 outfilename /path/to/file
 verbose LEVEL
 ```
 
+* `input_filter_name` Name of the `ReconInfo` object to take from the map `RecoInfoMap`
+  * If ALL takes the all reconstructed events from the global object `RecoInfo`
 * `outfilename` File path to output file
 * `verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity)

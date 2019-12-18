@@ -42,6 +42,11 @@ The tools available are
 * (test_vertices)
   * TODO: add option (or similar tool) to test_vertices
 
+## SuperNova Filters
+
+* ReconFilter
+  * Filter out reconstructed events that don't pass cuts
+
 ## SuperNova Triggers
 
 * dimfit
