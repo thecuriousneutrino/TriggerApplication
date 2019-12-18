@@ -1,6 +1,26 @@
 # TriggerApplication tools
 
-The tools available are
+This is a list of tools with a brief description
+
+For more, see the README of each tool
+
+Table of Contents
+=================
+
+   * [TriggerApplication tools](#triggerapplication-tools)
+      * [Data input](#data-input)
+         * [Simulation/digit input](#simulationdigit-input)
+         * [Reconstruction input](#reconstruction-input)
+      * [Data output](#data-output)
+         * [Trigger output](#trigger-output)
+         * [Reconstruction output](#reconstruction-output)
+      * [Data resets](#data-resets)
+         * [Reconstruction reset](#reconstruction-reset)
+      * [Triggers](#triggers)
+      * [Reconstruction](#reconstruction)
+      * [SuperNova Filters](#supernova-filters)
+      * [SuperNova Triggers](#supernova-triggers)
+      * [Miscellaneous](#miscellaneous)
 
 ## Data input
 
