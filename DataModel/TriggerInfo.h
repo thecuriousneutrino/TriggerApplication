@@ -40,7 +40,7 @@ class TriggerInfo{
     m_info.clear();
   }
 
-  bool SortByStartTime()
+  void SortByStartTime()
   { 
     //borrowed from WCSimWCDigi::SortArrayByHitTime()
     int i, j;

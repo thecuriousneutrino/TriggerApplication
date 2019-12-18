@@ -154,9 +154,13 @@ class ReconInfo
   
   void Reset() {
     fNRecons = 0;
+    fFirstTime = +9E20;
+    fLastTime = -9E20;
+    //event
     fReconstructer.clear();
     fTriggerNum.clear();
     fNHits.clear();
+    //vertex
     fTime.clear();
     fVertex.clear();
     fGoodnessOfFit.clear();
