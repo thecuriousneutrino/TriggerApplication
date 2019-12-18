@@ -1,6 +1,10 @@
 # Data Model
 *************************
 
+Data Model Class can be defined how ever the User requires. A Store is provided which ineficently maps variables to string lkeys via conversion to stringstream and can be used for debuging or other useful vairables.
+
+A TTree map with getter and setter functions is provided and can be uncommented if required.
+
 Table of Contents
 =================
 
@@ -27,10 +31,6 @@ Table of Contents
             * [Important data members](#important-data-members-3)
             * [Important methods](#important-methods-3)
             * [Related things](#related-things)
-
-Data Model Class can be defined how ever the User requires. A Store is provided which ineficently maps variables to string lkeys via conversion to stringstream and can be used for debuging or other useful vairables.
-
-A TTree map with getter and setter functions is provided and can be uncommented if required.
 
 ## TriggerApplication data members
 
