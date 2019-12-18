@@ -171,12 +171,17 @@ std::vector<double>          fDirectionLikelihood;
 #### Important methods
 
 ```
+// Add vertex result
 void AddRecon(Reconstructer_t reconstructer, int trigger_num, int nhits, double time, double * vertex, double goodness_of_fit, double goodness_of_time_fit, bool fill_has\
-_direction = true) // Add vertex result
-void AddRecon(Reconstructer_t reconstructer, int trigger_num, int nhits, double time, double * vertex, double goodness_of_fit, double goodness_of_time_fit,
-                double * direction_euler, double * cherenkov_cone, double direction_likelihood) // Add vertex + direction result
+_direction = true)
 
-void AddReconFrom(ReconInfo * in, const int irecon) // Add vertex(+ direction) result from reconstruction irecon within in
+// Add vertex + direction result
+void AddRecon(Reconstructer_t reconstructer, int trigger_num, int nhits, double time, double * vertex, double goodness_of_fit, double goodness_of_time_fit,
+                double * direction_euler, double * cherenkov_cone, double direction_likelihood)
+
+// Add vertex(+ direction) result from reconstruction irecon within in
+void AddReconFrom(ReconInfo * in, const int irecon)
+
 void Reset()
 ```
 
