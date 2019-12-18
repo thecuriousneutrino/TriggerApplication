@@ -51,6 +51,13 @@ The variables in this DataModel used by TriggerApplication tools are
 | ---- | ------- |
 | ReconInfo * GetFilter(std::string name, bool can_create) | If `name == ALL`: pointer to all events (`RecoInfo`) <br> Otherwise, returns pointer to `RecoInfoMap` entry name <br> Caveat: if `!can_create` and `name` not found, return `0` |
 
+| Name | Returns |
+| ---- | ------- |
+
+| Name | Returns |
+| ---- | ------- |
+| Hello world | Hello <br> world |
+
 ### WCSim pass-through information
 
 | Type                      | Name                | Purpose | Read by | Modified by | Reset by |
