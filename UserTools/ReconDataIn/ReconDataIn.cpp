@@ -59,6 +59,11 @@ bool ReconDataIn::Execute(){
     }
   }//irecon
 
+  //All data in the chain is put into RecoInfo
+  // Therefore only need to call Execute() once
+  // Therefore set this data member appropriately
+  m_data->vars.Set("StopLoop",1);
+
   return true;
 }
 
