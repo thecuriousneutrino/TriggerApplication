@@ -187,7 +187,7 @@ void Reset()
 
 #### Related things
 
-* `Reconstructer_t` - an enumeration of reconstruction tools. E.g. `kReconBONSAI`
+* `enum Reconstructer_t` - an enumeration of reconstruction tools. E.g. `kReconBONSAI`
 * `struct Pos3D` holds x, y, z positions
 * `struct DirectionEuler` holds theta, phi, alpha directions
 * `struct CherenkovCone` holds cos_angle, ellipticity of the Chrenkov cone
