@@ -28,6 +28,12 @@ The tools available are
 * ReconDataOut
   * Write out reconstructed event data in a `TTree`
 
+## Data resets
+
+### Reconstruction reset
+* ReconReset
+  * `Reset()` all instances of `ReconInfo` in the data model
+
 ## Triggers
 
 * nhits
