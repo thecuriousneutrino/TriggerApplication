@@ -19,7 +19,8 @@ if (tool=="ReconRandomiser") ret=new ReconRandomiser;
 if (tool=="ReconDataIn") ret=new ReconDataIn;
 if (tool=="pass_all") ret=new pass_all;
 
-  if (tool=="ReconFilter") ret=new ReconFilter;
+if (tool=="ReconFilter") ret=new ReconFilter;
+  if (tool=="ReconReset") ret=new ReconReset;
 return ret;
 }
 
