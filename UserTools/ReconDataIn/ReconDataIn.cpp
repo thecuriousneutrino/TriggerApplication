@@ -13,12 +13,13 @@ bool ReconDataIn::Initialise(std::string configfile, DataModel &data){
 
   m_data= &data;
 
-  //can the filename(s)
+  //get the filename(s)
   std::string infilestr;
   if(! m_variables.Get("infilenames", infilestr)) {
     Log("ERROR: infilenames configuration not found. Cancelling initialisation", ERROR, verbose);
     return false;
   }
+  //TODO add ability to get filelist, like WCSimReader() - need to take functions out of there & put into a general utilties file? Library? namespace?`
 
   //open the chain
   fTreeRecon = new TChain("reconTree");

@@ -22,7 +22,7 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
     fNEvents = -1;
   }
   if(! (m_variables.Get("infile",   fInFile) != 
-     m_variables.Get("filelist", fFileList))) {
+	m_variables.Get("filelist", fFileList))) {
     Log("ERROR: You must use exactly one of the following options: infile filelist", ERROR, verbose);
     return false;
   }
@@ -347,6 +347,8 @@ bool WCSimReader::Execute(){
 
   //and finally, increment event counter
   fCurrEvent++;
+
+  //and flag to exit the Execute() loop, if appropriate
   if(fCurrEvent >= fNEvents)
     m_data->vars.Set("StopLoop",1);
 
