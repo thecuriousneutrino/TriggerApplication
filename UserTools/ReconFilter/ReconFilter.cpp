@@ -22,8 +22,13 @@ bool ReconFilter::Initialise(std::string configfile, DataModel &data){
     Log("WARN: output_filter_name not given. Using TEMP", WARN, verbose);
     fOutputFilterName = "TEMP";
   }
-  fInFilter  = m_data->GetFilter(fInputFilterName);
-  fOutFilter = m_data->GetFilter(fOutputFilterName);
+  fInFilter  = m_data->GetFilter(fInputFilterName, false);
+  if(!fInFilter) {
+    ss << "FATAL: no filter named " << fInputFilterName << " found. Returning false";
+    StreamToLog(FATAL);
+    return false;
+  }
+  fOutFilter = m_data->GetFilter(fOutputFilterName, true);
 
   if(fOutFilter == &(m_data->RecoInfo)) {
     Log("ERROR: Cannot use the full RecoInfo object to store filtered events", ERROR, verbose);

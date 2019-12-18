@@ -45,6 +45,12 @@ The variables in this DataModel used by TriggerApplication tools are
 |  `ReconInfo`              | RecoInfo            | Store reconstruction information (vertex time/position, fit likelihoods, optionally direction) | dimfit, ReconDataOut, ReconFilter | BONSAI, ReconRandomiser, ReconDataIn | ReconReset |
 | `std::map<std::string, ReconInfo *> | RecoInfoMap | Store filtered reconstruction information (vertex time/position, fit likelihoods, optionally direction)`| dimfit, ReconDataOut, ReconFilter | ReconFilter | ReconReset |
 
+#### Helper functions
+
+| Name | Returns |
+| ---- | ------- |
+| ReconInfo * GetFilter(std::string name, bool can_create) | If `name == ALL`: pointer to all events (`RecoInfo`)<br>Otherwise, returns pointer to `RecoInfoMap` entry name<br>Caveat: if `!can_create` and `name` not found, return `0` |
+
 ### WCSim pass-through information
 
 | Type                      | Name                | Purpose | Read by | Modified by | Reset by |

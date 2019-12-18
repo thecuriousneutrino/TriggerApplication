@@ -40,7 +40,12 @@ bool ReconDataOut::Initialise(std::string configfile, DataModel &data){
     Log("INFO: input_filter_name not given. Using ALL", WARN, verbose);
     fInputFilterName = "ALL";
   }
-  fInFilter  = m_data->GetFilter(fInputFilterName);
+  fInFilter  = m_data->GetFilter(fInputFilterName, false);
+  if(!fInFilter) {
+    ss << "FATAL: no filter named " << fInputFilterName << " found. Returning false";
+    StreamToLog(FATAL);
+    return false;
+  }
 
   fEvtNum = 0;
 

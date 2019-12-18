@@ -34,7 +34,7 @@ class DataModel {
   //void AddTTree(std::string name,TTree *tree);
   //void DeleteTTree(std::string name);
 
-  ReconInfo * GetFilter(std::string name);
+  ReconInfo * GetFilter(std::string name, bool can_create);
 
   Store vars;
   BoostStore CStore;
