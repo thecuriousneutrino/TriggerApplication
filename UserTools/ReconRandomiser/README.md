@@ -68,8 +68,10 @@ t_max TIME
 
 ### Misc
 ```
+nevents N
 seed SEED
 verbose LEVEL
 ```
-* `ssed` The random seed to use. Default 0 (always different, but not reproducable!)
+* `nevents` Run Execute() this number of times. If not given or negative, will revert to 1
+* `seed` The random seed to use. Default 0 (always different, but not reproducable!)
 * `verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity)

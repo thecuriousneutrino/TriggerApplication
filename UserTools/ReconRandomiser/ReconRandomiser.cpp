@@ -15,6 +15,18 @@ bool ReconRandomiser::Initialise(std::string configfile, DataModel &data){
 
   m_data= &data;
 
+   //set number of events
+  if(! m_variables.Get("nevents",  fNEvents) ) {
+    Log("WARN: nevents configuration not found. Producing 1 event", WARN, verbose);
+    fNEvents = 1;
+  }
+  else if(fNEvents <= 0) {
+    Log("WARN: Given negative or 0 nevents. Producing 1 event", WARN, verbose);
+    fNEvents = 1;
+  }
+  fCurrEvent = 0;
+
+  //Random distribution variables
   if(!m_variables.Get("n_vertices_mean", fNVerticesMean)) {
     Log("FATAL: Must specify n_vertices_mean", FATAL, verbose);
     return false;
@@ -111,6 +123,14 @@ bool ReconRandomiser::Execute(){
       //m_data->RecoInfo.AddRecon(kReconRandom, iv, nhits, time, pos, likelihood, likelihood, ....);
     }
   }//iv
+
+  //and finally, increment event counter
+  fCurrEvent++;
+
+  //and flag to exit the Execute() loop, if appropriate
+  if(fCurrEvent >= fNEvents)
+    m_data->vars.Set("StopLoop",1);
+
   return true;
 }
 

@@ -45,6 +45,9 @@ class ReconRandomiser: public Tool {
   double GetRandomNumber(Distribution_t dist, double max, double mean, double width, const int maxcount);
   Distribution_t GetDistributionType(double width, const char * axis);
 
+  long int fCurrEvent;
+  long int fNEvents;
+
   int fNVerticesMean;
 
   //vertex distribution
