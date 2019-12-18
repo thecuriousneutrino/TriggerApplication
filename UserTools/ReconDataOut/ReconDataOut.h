@@ -19,6 +19,9 @@ class ReconDataOut: public Tool {
 
  private:
 
+  ReconInfo * fInFilter;
+  std::string fInputFilterName;
+
   std::string fOutFilename;
   TFile fOutFile;
   TTree * fTreeRecon;

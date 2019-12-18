@@ -35,6 +35,13 @@ bool ReconDataOut::Initialise(std::string configfile, DataModel &data){
   fTreeRecon->Branch("CherenkovCone", fRTCherenkovCone, "CherenkovCone[2]/D");
   fTreeRecon->Branch("DirectionLikelihood", &fRTDirectionLikelihood);
 
+  //Get the reconstructed events filter you want to save
+  if(!m_variables.Get("input_filter_name", fInputFilterName)) {
+    Log("INFO: input_filter_name not given. Using ALL", WARN, verbose);
+    fInputFilterName = "ALL";
+  }
+  fInFilter  = m_data->GetFilter(fInputFilterName);
+
   fEvtNum = 0;
 
   return true;
@@ -45,31 +52,31 @@ bool ReconDataOut::Execute(){
 
   Log("DEBUG: ReconDataOut::Execute() Starting", DEBUG1, verbose);
 
-  const int nrecons = m_data->RecoInfo.GetNRecons();
+  const int nrecons = fInFilter->GetNRecons();
   ss << "DEBUG: Saving the result of " << nrecons << " reconstructions";
   StreamToLog(DEBUG1);
   for(int irecon = 0; irecon < nrecons; irecon++) {
-    fRTTriggerNum = m_data->RecoInfo.GetTriggerNum(irecon);
-    fRTNHits = m_data->RecoInfo.GetNHits(irecon);
-    fRTReconstructer = m_data->RecoInfo.GetReconstructer(irecon);
-    fRTTime = m_data->RecoInfo.GetTime(irecon);
-    Pos3D pos = m_data->RecoInfo.GetVertex(irecon);
+    fRTTriggerNum = fInFilter->GetTriggerNum(irecon);
+    fRTNHits = fInFilter->GetNHits(irecon);
+    fRTReconstructer = fInFilter->GetReconstructer(irecon);
+    fRTTime = fInFilter->GetTime(irecon);
+    Pos3D pos = fInFilter->GetVertex(irecon);
     fRTVertex[0] = pos.x;
     fRTVertex[1] = pos.y;
     fRTVertex[2] = pos.z;
-    fRTGoodnessOfFit = m_data->RecoInfo.GetGoodnessOfFit(irecon);
-    fRTGoodnessOfTimeFit = m_data->RecoInfo.GetGoodnessOfTimeFit(irecon);
+    fRTGoodnessOfFit = fInFilter->GetGoodnessOfFit(irecon);
+    fRTGoodnessOfTimeFit = fInFilter->GetGoodnessOfTimeFit(irecon);
     //Direction
-    fRTHasDirection = m_data->RecoInfo.GetHasDirection(irecon);
+    fRTHasDirection = fInFilter->GetHasDirection(irecon);
     if(fRTHasDirection) {
-      DirectionEuler direct = m_data->RecoInfo.GetDirectionEuler(irecon);
+      DirectionEuler direct = fInFilter->GetDirectionEuler(irecon);
       fRTDirectionEuler[0] = direct.theta;
       fRTDirectionEuler[1] = direct.phi;
       fRTDirectionEuler[2] = direct.alpha;
-      CherenkovCone cone = m_data->RecoInfo.GetCherenkovCone(irecon);
+      CherenkovCone cone = fInFilter->GetCherenkovCone(irecon);
       fRTCherenkovCone[0] = cone.cos_angle;
       fRTCherenkovCone[1] = cone.ellipticity;
-      fRTDirectionLikelihood = m_data->RecoInfo.GetDirectionLikelihood(irecon);
+      fRTDirectionLikelihood = fInFilter->GetDirectionLikelihood(irecon);
     }
     else {
       for(int i = 0; i < 3; i++)
@@ -80,7 +87,7 @@ bool ReconDataOut::Execute(){
     //Fill the tree
     fTreeRecon->Fill();
   }
-  m_data->RecoInfo.Reset();
+  fInFilter->Reset();
 
   //increment event number
   fEvtNum++;
