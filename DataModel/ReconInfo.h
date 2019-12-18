@@ -138,7 +138,7 @@ class ReconInfo
 
   int             GetNRecons  () { return fNRecons;   }
   double          GetFirstTime() { return fFirstTime; }
-  double          GetLastTime () { return fFirstTime; }
+  double          GetLastTime () { return fLastTime;  }
   Reconstructer_t GetReconstructer    (int irecon) { return fReconstructer[irecon]; }
   int             GetTriggerNum       (int irecon) { return fTriggerNum[irecon]; }
   int             GetNHits            (int irecon) { return fNHits[irecon]; }
