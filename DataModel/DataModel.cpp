@@ -25,3 +25,12 @@ void DataModel::DeleteTTree(std::string name){
 
 */
 
+ReconInfo * DataModel::GetFilter(std::string name)
+{
+  if(name.compare("ALL") == 0) {
+    return &(this->RecoInfo);
+  }
+  if(this->RecoInfoMap.find(name) == this->RecoInfoMap.end())
+    this->RecoInfoMap.insert(std::pair<std::string, ReconInfo *>(name, new ReconInfo()));
+  return this->RecoInfoMap[name];
+}
