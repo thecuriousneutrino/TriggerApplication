@@ -1,6 +1,33 @@
 # Data Model
 *************************
 
+Table of Contents
+=================
+
+   * [Data Model](#data-model)
+      * [TriggerApplication data members](#triggerapplication-data-members)
+         * [Digit Information](#digit-information)
+         * [Geometry Information](#geometry-information)
+         * [Trigger Information](#trigger-information)
+         * [Reconstruction information](#reconstruction-information)
+            * [Helper functions](#helper-functions)
+         * [WCSim pass-through information](#wcsim-pass-through-information)
+         * [Misc](#misc)
+      * [Related classes](#related-classes)
+         * [SubSample](#subsample)
+            * [Important data members](#important-data-members)
+            * [Important methods](#important-methods)
+         * [TriggerInfo](#triggerinfo)
+            * [Important data members](#important-data-members-1)
+            * [Important methods](#important-methods-1)
+         * [PMTInfo](#pmtinfo)
+            * [Important data members](#important-data-members-2)
+            * [Important methods](#important-methods-2)
+         * [ReconInfo](#reconinfo)
+            * [Important data members](#important-data-members-3)
+            * [Important methods](#important-methods-3)
+            * [Related things](#related-things)
+
 Data Model Class can be defined how ever the User requires. A Store is provided which ineficently maps variables to string lkeys via conversion to stringstream and can be used for debuging or other useful vairables.
 
 A TTree map with getter and setter functions is provided and can be uncommented if required.
@@ -50,13 +77,6 @@ The variables in this DataModel used by TriggerApplication tools are
 | Name | Returns |
 | ---- | ------- |
 | ReconInfo * GetFilter(std::string name, bool can_create) | If `name == ALL`: pointer to all events (`RecoInfo`) <br> Otherwise, returns pointer to `RecoInfoMap` entry name <br> Caveat: if `!can_create` and `name` not found, return `0` |
-
-| Name | Returns |
-| ---- | ------- |
-
-| Name | Returns |
-| ---- | ------- |
-| Hello world | Hello <br> world |
 
 ### WCSim pass-through information
 
