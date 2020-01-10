@@ -87,7 +87,7 @@ bool ReconRandomiser::Initialise(std::string configfile, DataModel &data){
 
   int seed = 0;
   if(!m_variables.Get("seed", seed)) {
-    Log("WARN: No seed specified. Using default 0. Your results are not reproducable!", FATAL, verbose);
+    Log("WARN: No seed specified. Using default 0. Your results are not reproducable!", WARN, verbose);
   }
   fRand = new TRandom3(seed);
 
