@@ -59,7 +59,8 @@ include/Tool.h:  $(ToolDAQPath)/ToolDAQFramework/src/Tool/Tool.h
 
 lib/libToolChain.so: $(ToolDAQPath)/ToolDAQFramework/src/ToolChain/* | lib/libLogging.so lib/libStore.so lib/libMyTools.so lib/libServiceDiscovery.so lib/libLogging.so lib/libDataModel.so
 	@echo -e "\n*************** Making " $@ "****************"
-	cp $(ToolDAQPath)/ToolDAQFramework/UserTools/Factory/*.h include/
+	cp $(ToolDAQPath)/ToolDAQFramework/UserTools/{Factory,Logger,ServiceAdd}/*.h include/
+	cp $(ToolDAQPath)/ToolDAQFramework/UserTools/Unity.h include/
 	cp $(ToolDAQPath)/ToolDAQFramework/src/ToolChain/*.h include/
 	g++ -g -fPIC -shared $(ToolDAQPath)/ToolDAQFramework/src/ToolChain/ToolChain.cpp -I include -lpthread -L lib -lStore -lDataModel -lServiceDiscovery -lMyTools -lLogging -o lib/libToolChain.so $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude) $(MyToolsInclude)  $(BoostLib) $(BoostInclude)
 
