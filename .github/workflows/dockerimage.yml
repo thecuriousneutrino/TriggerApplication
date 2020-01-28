@@ -10,9 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     container: docker://hkdaq/triggerapplication:base
     steps:
-    - run: ls ./ -al
-    - run: cd TriggerApplication; ls ./ -al
-    - run: pwd
-    - run: echo test
-    - run: ls /etc/*release*
+      - run:|
+        ls ./ -al
+        cd TriggerApplication; ls ./ -al
+        pwd
+        echo test
+        ls /etc/*release*
           
