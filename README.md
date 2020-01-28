@@ -2,7 +2,7 @@
 
 Trigger Application is designed as a modular trigger software to run successive triggers on WCSim data. 
 
-its built from ToolDAQ Application[1] which is an open source general DAQ Application template built using the modular ToolDAQ Framework core[2] to give separation between core and implementation code.
+It's built from ToolDAQ Application[1] which is an open source general DAQ Application template built using the modular ToolDAQ Framework core[2] to give separation between core and implementation code.
 
 ****************************
 
@@ -96,7 +96,10 @@ Notes:
   * Note the model used to commit to the main version of TriggerApplication is fork and pull request. So do fork if you need to!
 * Make sure you have sourced WCSim i.e. that you have `$WCSIMDIR` set
   * Note that this will work with the current WCSim develop branch. However if you want to compare WCSim/TriggerApplication output for equality, please use https://github.com/tdealtry/WCSim/tree/trigger - pull requests are pending
+    * Versions of WCSim older than v1.8.0 will almost certainly not work. (`kTriggerNoTrig` added in v1.8.0; `WCSimRootOptions` added in v1.7.0)
   * Note that you also need ROOT setup (a WCSim prerequisite)
+* Make sure you have sourced hk-BONSAI i.e. that you have `$BONSAIDIR` set
+  * TODO: in the future, this will not be required, and instead be a configuration option
 * Run `./GetToolDAQ.sh`
   * This gets and compiles the prerequisites: ToolDAQ, boost, and zmq
   * You can optionally install Root

@@ -38,8 +38,8 @@ WCSimReader
       * `WCSimOptionsTree` for the options
       * `WCSimEventTree` for the events
     * Additionally, the current `WCSimRootEvent *` are stored
-      *  `WCSimEventID` for the ID events
-      *  `WCSimEventOD` for the OD events
+      *  `IDWCSimEvent_Raw` for the ID events
+      *  `ODWCSimEvent_Raw` for the OD events
     
 
 ## Configuration

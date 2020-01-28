@@ -1,0 +1,9 @@
+input_filter_name filter1
+min_events 3
+time_window 20
+time_window_step 0.2
+R2MIN 300000
+LOWDBIAS 1.15
+GOODPOINT 40000
+MAXMEANPOS 350000
+verbose 3

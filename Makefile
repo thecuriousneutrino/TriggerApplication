@@ -13,8 +13,8 @@ ZMQInclude= -I $(ToolDAQPath)/zeromq-4.0.7/include/
 BoostLib= -L $(ToolDAQPath)/boost_1_66_0/install/lib -lboost_date_time -lboost_serialization -lboost_iostreams
 BoostInclude= -I $(ToolDAQPath)/boost_1_66_0/install/include
 
-DataModelInclude = $(RootInclude) $(WCSimInclude)
-DataModelLib =  $(RootLib) $(WCSimLib)
+DataModelInclude = $(RootInclude) $(WCSimInclude) $(BonsaiInclude)
+DataModelLib =  $(RootLib) $(WCSimLib) $(BonsaiLib)
 
 MyToolsInclude = 
 MyToolsLib = 
@@ -27,6 +27,9 @@ RootLib     := $(shell root-config --libs)
 
 WCSimInclude = -I$(WCSIMDIR)/include
 WCSimLib     = -L$(WCSIMDIR) -lWCSimRoot
+
+BonsaiInclude = -I$(BONSAIDIR)/bonsai
+BonsaiLib = -L$(BONSAIDIR) -lWCSimBonsai
 
 all: lib/libStore.so lib/libLogging.so lib/libDataModel.so include/Tool.h lib/libMyTools.so lib/libServiceDiscovery.so lib/libToolChain.so main RemoteControl  NodeDaemon
 
@@ -56,7 +59,8 @@ include/Tool.h:  $(ToolDAQPath)/ToolDAQFramework/src/Tool/Tool.h
 
 lib/libToolChain.so: $(ToolDAQPath)/ToolDAQFramework/src/ToolChain/* | lib/libLogging.so lib/libStore.so lib/libMyTools.so lib/libServiceDiscovery.so lib/libLogging.so lib/libDataModel.so
 	@echo -e "\n*************** Making " $@ "****************"
-	cp $(ToolDAQPath)/ToolDAQFramework/UserTools/{*/,}*.h include/
+	cp $(ToolDAQPath)/ToolDAQFramework/UserTools/{Factory,Logger,ServiceAdd}/*.h include/
+	cp $(ToolDAQPath)/ToolDAQFramework/UserTools/Unity.h include/
 	cp $(ToolDAQPath)/ToolDAQFramework/src/ToolChain/*.h include/
 	g++ -g -fPIC -shared $(ToolDAQPath)/ToolDAQFramework/src/ToolChain/ToolChain.cpp -I include -lpthread -L lib -lStore -lDataModel -lServiceDiscovery -lMyTools -lLogging -o lib/libToolChain.so $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude) $(MyToolsInclude)  $(BoostLib) $(BoostInclude)
 
