@@ -10,5 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     container: docker://hkdaq/triggerapplication:base
     steps:
-    - run: ls
+    - run: ls ./
+    - run: pwd
+    - run: echo test
+    - run: ls /etc/*release*
           
