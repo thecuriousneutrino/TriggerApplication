@@ -2,7 +2,7 @@
 
 Trigger Application is designed as a modular trigger software to run successive triggers on WCSim data. 
 
-It's built from ToolDAQ Application <sup>[1](#myfootnote1)</sup> which is an open source general DAQ Application template built using the modular ToolDAQ Framework core <sup>[2](#myfootnote2)</sup> to give separation between core and implementation code.
+It's built from ToolDAQ Application [[1]](#myfootnote1) which is an open source general DAQ Application template built using the modular ToolDAQ Framework core [[2]](#myfootnote2) to give separation between core and implementation code.
 
 ****************************
 
