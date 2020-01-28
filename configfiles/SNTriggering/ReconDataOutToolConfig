@@ -1,0 +1,3 @@
+input_filter_name ALL
+outfilename reconstructed_sntriggering.root
+verbose 3

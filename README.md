@@ -93,12 +93,16 @@ Notes:
 
 * Clone from https://github.com/HKDAQ/TriggerApplication
   * Note the model used to commit to the main version of TriggerApplication is fork and pull request. So do fork if you need to!
+* Make sure you have sourced WCSim i.e. that you have `$WCSIMDIR` set
+  * Note that if you're comparing WCSim files for consistency with TriggerApplication output, this currently has to be the following branch https://github.com/tdealtry/WCSim/tree/trigger (pull requests are pending)
+  * If you're not, the head of WCSim should be fine
+    * Versions of WCSim older than v1.8.0 will almost certainly not work. (`kTriggerNoTrig` added in v1.8.0; `WCSimRootOptions` added in v1.7.0)
 * Run `./GetToolDAQ.sh`
   * This gets and compiles the prerequistes: ToolDAQ, boost, and zmq
   * You can optionally install Root
   * `./GetToolDAQ.sh --help` for the flags to turn on/off each of the prerequsites
-* Make sure you have sourced WCSim i.e. that you have `$WCSIMDIR` set
-  * Note that this currently has to be the following branch https://github.com/tdealtry/WCSim/tree/trigger - pull requests are pending
+* Make sure you have sourced hk-BONSAI i.e. that you have `$BONSAIDIR` set
+  * TODO: in the future, this will not be required, and instead be a configuration option
 * `source Setup.sh`
 * `make`
   * If you are `make GPU` to compile the CUDA-GPU code (only for compatible systems)

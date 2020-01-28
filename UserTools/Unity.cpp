@@ -5,4 +5,12 @@
 #include "test_vertices/test_vertices.cpp"
 #include "WCSimReader/WCSimReader.cpp"
 #include "DataOut/DataOut.cpp"
+#include "BONSAI/BONSAI.cpp"
+#include "ReconDataOut/ReconDataOut.cpp"
+#include "dimfit/dimfit.cpp"
+#include "ReconRandomiser/ReconRandomiser.cpp"
+#include "ReconDataIn/ReconDataIn.cpp"
 #include "pass_all/pass_all.cpp"
+
+#include "ReconFilter/ReconFilter.cpp"
+#include "ReconReset/ReconReset.cpp"

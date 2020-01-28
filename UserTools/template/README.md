@@ -16,4 +16,6 @@ Describe any configuration variables for MyTool.
 ```
 param1 value1
 param2 value2
+verbose LEVEL
 ```
+* `verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity)

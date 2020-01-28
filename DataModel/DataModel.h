@@ -21,6 +21,7 @@
 #include <SubSample.h>
 #include <PMTInfo.h>
 #include <TriggerInfo.h>
+#include <ReconInfo.h>
 
 class DataModel {
 
@@ -32,6 +33,8 @@ class DataModel {
   //TTree* GetTTree(std::string name);
   //void AddTTree(std::string name,TTree *tree);
   //void DeleteTTree(std::string name);
+
+  ReconInfo * GetFilter(std::string name, bool can_create);
 
   Store vars;
   BoostStore CStore;
@@ -50,6 +53,9 @@ class DataModel {
   TriggerInfo IDTriggers;
   TriggerInfo ODTriggers;
 
+  ReconInfo RecoInfo;
+  std::map<std::string, ReconInfo*> RecoInfoMap;
+
   bool triggeroutput;
 
   double IDPMTDarkRate;
@@ -62,8 +68,11 @@ class DataModel {
   TChain * WCSimEventTree;
   std::vector<int> CurrentWCSimEventNums;
   TObjArray * CurrentWCSimFiles;
-  WCSimRootEvent * WCSimEventID;
-  WCSimRootEvent * WCSimEventOD;
+  WCSimRootEvent * IDWCSimEvent_Raw;
+  WCSimRootEvent * ODWCSimEvent_Raw;
+  WCSimRootEvent * IDWCSimEvent_Triggered;
+  WCSimRootEvent * ODWCSimEvent_Triggered;
+
 
   bool HasOD;
   bool IsMC;

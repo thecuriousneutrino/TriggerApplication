@@ -8,12 +8,7 @@ class PMTInfo{
  
  public:
   
-  PMTInfo(int tubeno, float x, float y, float z) {
-    m_tubeno = tubeno;
-    m_x = x;
-    m_y = y;
-    m_z = z;
-  }
+  PMTInfo(int tubeno, float x, float y, float z);
  
   int m_tubeno;
   float m_x, m_y, m_z;
