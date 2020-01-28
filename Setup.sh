@@ -9,7 +9,13 @@ source /root/HyperK/root/bin/thisroot.sh
 if [ -z "$WCSIMDIR" ]; then
     echo "Setup WCSim (i.e. set \$WCSIMDIR) before setting up TriggerApplication";
     echo "Also make sure ROOT is setup (requirement of setting up WCSim)";
-    echo "Also make sure BONSAI is setup (i.e. set \$BONSAIDIR)";
+    echo "And then run this script again!"
+    return;
+fi
+
+if [ -z "$BONSAIDIR" ]; then
+    echo "Setup BONSAI (i.e. set \$BONSAIDIR) before setting up TriggerApplication";
+    echo "Also make sure ROOT is setup (requirement of setting up WCSim)";
     echo "And then run this script again!"
     return;
 fi
