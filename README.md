@@ -188,4 +188,4 @@ Copyright (c) 2018 Hyper-k Collaboration
 
 <a name="myfootnote1">[1]</a> Benjamin Richards. (2018, November 11). ToolDAQ Application v2.1.2 (Version V2.1.2). Zenodo. http://doi.org/10.5281/zenodo.1482772
 
-<a name="myfootnote2">[2]</a> Benjamin Richards. (2018, November 11). ToolDAQ Framework v2.1.1 (Version V2.1.1). Zenodo. http://doi.org/10.5281/zenodo.1482767
+<a name="myfootnote2">[2]</a> Benjamin Richards. (2018, November 11). ToolDAQ Framework v2.1.1 (Version V2.1.1). Zenodo. http://doi.org/10.5281/zenodo.1482767 
