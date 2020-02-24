@@ -14,7 +14,11 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
 
   m_data= &data;
 
+  // Log needs m_data
+  Log("DEBUG: DataOut::Initialise starting", DEBUG1, verbose);
+
   //open the output file
+  Log("DEBUG: DataOut::Initialise opening output file...", DEBUG2, verbose);
   if(! m_variables.Get("outfilename", fOutFilename)) {
     Log("ERROR: outfilename configuration not found. Cancelling initialisation", ERROR, verbose);
     return false;
@@ -30,6 +34,7 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
   m_variables.Get("save_only_failed_digits", fSaveOnlyFailedDigits);
 
   //setup the out event tree
+  Log("DEBUG: DataOut::Initialise setting up output event tree...", DEBUG2, verbose);
   // Nevents unique event objects
   Int_t bufsize = 64000;
   fTreeEvent = new TTree("wcsimT","WCSim Tree");
@@ -47,13 +52,18 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
 
   //fill the output event-independent trees
   //There are 1 unique geom objects, so this is a simple clone of 1 entry
+  Log("DEBUG: DataOut::Initialise filling event-independent trees...", DEBUG2, verbose);
+  Log("DEBUG:   Geometry...", DEBUG2, verbose);
   fTreeGeom = m_data->WCSimGeomTree->CloneTree(1);
   fTreeGeom->Write();
   delete fTreeGeom;
 
   //There are Nfiles unique options objects, so this is a clone of all entries
   // plus a new branch with the wcsim filename 
+  Log("DEBUG:   Options & file names...", DEBUG2, verbose);
   fTreeOptions = m_data->WCSimOptionsTree->CloneTree();
+  ss << "DEBUG:     entries: " << fTreeOptions->GetEntries();
+  StreamToLog(DEBUG2);
   TObjString * wcsimfilename = new TObjString();
   TBranch * branch = fTreeOptions->Branch("wcsimfilename", &wcsimfilename);
   for(int i = 0; i < fTreeOptions->GetEntries(); i++) {
@@ -66,14 +76,22 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
   delete wcsimfilename;
   delete fTreeOptions;
 
+  Log("DEBUG: DataOut::Initialise creating trigger info...", DEBUG2, verbose);
   fTriggers = new TriggerInfo();
   fEvtNum = 0;
 
+  Log("DEBUG: DataOut::Initialise creating ID trigger maps...", DEBUG2, verbose);
+  ss << "DEBUG:   entries: " << m_data->IDNPMTs;
+  StreamToLog(DEBUG2);
   for(int i = 0; i <= m_data->IDNPMTs; i++)
     fIDNDigitPerPMTPerTriggerMap[i] = std::map<int, bool>();
+  Log("DEBUG: DataOut::Initialise creating OD trigger maps...", DEBUG2, verbose);
+  ss << "DEBUG:   entries: " << m_data->ODNPMTs;
+  StreamToLog(DEBUG2);
   for(int i = 0; i <= m_data->ODNPMTs; i++)
     fODNDigitPerPMTPerTriggerMap[i] = std::map<int, bool>();
 
+  Log("DEBUG: DataOut::Initialise done", DEBUG1, verbose);
   return true;
 }
 
