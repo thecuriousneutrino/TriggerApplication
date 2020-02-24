@@ -12,7 +12,9 @@ if (tool=="nhits") ret=new nhits;
 if (tool=="test_vertices") ret=new test_vertices;
 if (tool=="WCSimReader") ret=new WCSimReader;
 if (tool=="DataOut") ret=new DataOut;
+#ifdef BONSAIEXISTS
 if (tool=="BONSAI") ret=new BONSAI;
+#endif //BONSAIEXISTS
 if (tool=="ReconDataOut") ret=new ReconDataOut;
 if (tool=="dimfit") ret=new dimfit;
 if (tool=="ReconRandomiser") ret=new ReconRandomiser;

@@ -1,5 +1,6 @@
 main
 lib/*.so
+Build.h
 
 #files from the ToolDAQ framework
 ToolDAQ/
