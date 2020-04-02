@@ -112,7 +112,7 @@ To check it has built successfully:
 Some triggers have been developed to be run on CUDA-compatible GPUs.
 If you want to use these (and you have a compatible system)
 * `source Setup.sh`
-* `makeGPU`
+* `make GPU`
 * `./mainGPU`
 
 ## Running
