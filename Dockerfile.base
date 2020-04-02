@@ -34,9 +34,10 @@ WORKDIR /
 RUN mkdir TriggerApplicationPreReq
 WORKDIR /TriggerApplicationPreReq
 RUN wget https://raw.githubusercontent.com/HKDAQ/TriggerApplication/Application/GetToolDAQ.sh
+RUN chmod a+x GetToolDAQ.sh
 
 # Get ToolDAQ prerequisites
-WORKDIR /TriggerApplication
+WORKDIR /TriggerApplicationPreReq
 RUN ./GetToolDAQ.sh --ToolDAQ_ZMQ;
 RUN ./GetToolDAQ.sh --Boost;
 #RUN ./GetToolDAQ.sh --with_root --Root; #comes with WCSim image
