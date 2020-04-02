@@ -2,7 +2,7 @@
 
 #Application path location of applicaiton
 
-ToolDAQapp=`pwd`
+ToolDAQapp=$(readlink -f $(dirname $BASH_SOURCE))
 
 if [ $TrigGERAppinDOCKer = "indubitably" ]; then
     echo "You're running in docker. Setting up ROOT/WCSim/Geant4"
@@ -10,7 +10,7 @@ if [ $TrigGERAppinDOCKer = "indubitably" ]; then
     source /root/HyperK/env-WCSim.sh
 fi
 
-echo "" > Build.h
+echo "" > $ToolDAQapp/Build.h
 
 if [ -z "$WCSIMDIR" ]; then
     echo "Setup WCSim (i.e. set \$WCSIMDIR) before setting up TriggerApplication";
@@ -24,7 +24,7 @@ export LD_LIBRARY_PATH=${ToolDAQapp}/lib:${ToolDAQapp}/ToolDAQ/zeromq-4.0.7/lib:
 if [ -z "$BONSAIDIR" ]; then
     echo "Running without BONSAI";
 else
-    echo "#define BONSAIEXISTS" >> Build.h
+    echo "#define BONSAIEXISTS" >> $ToolDAQapp/Build.h
     export LD_LIBRARY_PATH=$BONSAIDIR:$LD_LIBRARY_PATH
 
     #energetic BONSAI requires BONSAI, therefore only set it up if we've got both
