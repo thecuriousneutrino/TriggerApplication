@@ -97,6 +97,9 @@ Notes:
     * Versions of WCSim older than v1.8.0 will almost certainly not work. (`kTriggerNoTrig` added in v1.8.0; `WCSimRootOptions` added in v1.7.0)
   * Note that you also need ROOT setup (a WCSim prerequisite)
 * (Optional) If you want to run the BONSAI tool, make sure you have sourced hk-BONSAI i.e. that you have `$BONSAIDIR` set
+* (Optional) If you want to run the EnergeticBONSAI tool, make sure you have sourced energetic-bonsai i.e. that you have `$EBONSAIDIR` set
+  * Note: you need to use the library branch at https://github.com/tdealtry/energetic-bonsai/tree/library (PR pending)
+  * Note that this also requires BONSAI to be setup
 * Run `./GetToolDAQ.sh`
   * This gets and compiles the prerequisites: ToolDAQ, boost, and zmq
   * You can optionally install Root

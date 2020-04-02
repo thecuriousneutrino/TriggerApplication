@@ -1,0 +1,8 @@
+input_filter_name ALL
+n_working_pmts 999999
+detector_name HyperK_40perCent
+nhitsmin 3
+nhitsmax 1000
+overwrite_nearest_neighbours false
+ebonsai_verbose 1
+verbose 3

@@ -26,23 +26,23 @@ class BONSAI: public Tool {
 
   bool FileExists(std::string pathname, std::string filename);
 
-  WCSimBonsai * _bonsai;
-  WCSimRootTrigger * _trigger;
-  int _in_nhits;
-  std::vector<int>   * _in_PMTIDs;
-  std::vector<float> * _in_Ts;
-  std::vector<float> * _in_Qs;
+  WCSimBonsai * m_bonsai;
+  WCSimRootTrigger * m_trigger;
+  int m_in_nhits;
+  std::vector<int>   * m_in_PMTIDs;
+  std::vector<float> * m_in_Ts;
+  std::vector<float> * m_in_Qs;
 
-  unsigned int fNHitsMin;
-  unsigned int fNHitsMax;
+  unsigned int m_nhits_min;
+  unsigned int m_nhits_max;
 
-  int verbose;
+  int m_verbose;
 
-  std::stringstream ss;
+  std::stringstream m_ss;
 
   void StreamToLog(int level) {
-    Log(ss.str(), level, verbose);
-    ss.str("");
+    Log(m_ss.str(), level, m_verbose);
+    m_ss.str("");
   }
 
   enum LogLevel {FATAL=-1, ERROR=0, WARN=1, INFO=2, DEBUG1=3, DEBUG2=4, DEBUG3=5};

@@ -17,3 +17,6 @@
 
 #include "ReconFilter/ReconFilter.cpp"
 #include "ReconReset/ReconReset.cpp"
+#ifdef EBONSAIEXISTS
+#include "EnergeticBONSAI/EnergeticBONSAI.cpp"
+#endif //EBONSAIEXISTS

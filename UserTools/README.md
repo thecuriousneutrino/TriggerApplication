@@ -65,6 +65,12 @@ Table of Contents
 
 * BONSAI
   * Reconstruct low-energy events with hk-BONSAI
+  * Requires a trigger
+  * Returns reconstructed vertex position and direction
+* EnergeticBONSAI
+  * Reconstruct low-energy events with energetic-BONSAI
+  * Requires a reconstructed vertex
+  * Returns reconstructed energy
 * (test_vertices)
   * TODO: add option (or similar tool) to test_vertices
 
