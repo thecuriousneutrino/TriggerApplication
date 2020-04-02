@@ -3,6 +3,7 @@
 Try to adhere to these coding conventions if possible. They ensure a cleanly
 readable code throughout the project:
 
+*   Do not use `auto`
 *   Use two spaces for indentation
 *   Use `UpperCamelCase` for class names
 *   Use `UpperCamelCase` for methods
