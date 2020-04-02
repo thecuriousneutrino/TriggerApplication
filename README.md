@@ -76,9 +76,7 @@ Docker is a platform independent container system which eases the headache of lo
 3) Run an instance of the container which will have the trigger application and all dependencies installed `docker run --name=TriggerApplication -it hkdaq/triggerapplication:latest` Note: only run once or you will make multiple contianers
 
 Once the container has started to run the software
-1) `cd TriggerApplication`
-2) `source Setup.sh`
-3) `./main`
+1) `./main`
   * This runs an example toolchain with two versions of the `dummy` tool. It's essentially a Hello World tool
 
 You're then free to install any applications in your container you wish for development

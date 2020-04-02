@@ -4,7 +4,11 @@
 
 ToolDAQapp=`pwd`
 
-source /root/HyperK/root/bin/thisroot.sh
+if [ $TrigGERAppinDOCKer = "indubitably" ]; then
+    echo "You're running in docker. Setting up ROOT/WCSim/Geant4"
+    echo "(If you're not, why have you set \$TrigGERAppinDOCKer to \"indubitably\"?!)"
+    source /root/HyperK/env-WCSim.sh
+fi
 
 echo "" > Build.h
 
