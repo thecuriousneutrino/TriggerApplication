@@ -16,6 +16,7 @@ Table of Contents
          * [Reconstruction information](#reconstruction-information)
             * [Helper functions](#helper-functions)
          * [WCSim pass-through information](#wcsim-pass-through-information)
+         * [Supernova Trigger](#supernova-trigger)
          * [Misc](#misc)
       * [Related classes](#related-classes)
          * [SubSample](#subsample)
@@ -89,6 +90,12 @@ The variables in this DataModel used by TriggerApplication tools are
 |  `TObjArray *`            | CurrentWCSimFiles     | The original WCSim files' filename(s) for the current event     | DataOut | WCSimReader | WCSimReader |
 |  `WCSimRootEvent *`       | IDWCSimEvent_Raw      | The original, unmodified `WCSimRootEvent` for the ID | DataOut | WCSimReader | - |
 |  `WCSimRootEvent *`       | ODWCSimEvent_Raw      | The original, unmodified `WCSimRootEvent` for the OD | DataOut | WCSimReader | - |
+
+### Supernova Trigger
+
+| Type                      | Name                | Purpose | Read by | Modified by | Reset by |
+| ------------------------- | ------------------- | ------- | ------- | ----------- | -------- |
+| `std::vector<SNWarningParams>` | SupernovaWarningParameters | Store the dimensionality, number of reconstructed vertices and the highest nclusters warning threshold passed | - | dimfit | - |
 
 ### Misc
 
@@ -221,6 +228,9 @@ void Reset()
 #### Related things
 
 * `enum Reconstructer_t` - an enumeration of reconstruction tools. E.g. `kReconBONSAI`
+* `enum NClustersWarning_t` - an enumeration of the nclusters warning thresholds used in the supernova trigger
+* `enum SNWarning_t` - an enumeration of supernova warning levels that are assigned based on the values of nclusters and dimensionality
+* `struct SNWarningParams` holds nclusters, dim and highest nclusters threshold passed
 * `struct Pos3D` holds x, y, z positions
 * `struct DirectionEuler` holds theta, phi, alpha directions
 * `struct CherenkovCone` holds cos_angle, ellipticity of the Chrenkov cone

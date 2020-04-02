@@ -19,6 +19,8 @@ Backgrounds should appear non-volume-like. e.g.
   * For reconstructed events that pass a filter (see `ReconFilter`), or all events, fill a vector of positions
   * If there are enough events that pass the criteria, run dimfit
   * Printout the result of dimfit
+  * Compare the number of reconstructed vertices to the thresholds for golden, normal and silent warnings
+  * Pass dimensionality, nclusters and highest nclusters_warning passed to data model
 
 
 ## Configuration
@@ -47,6 +49,16 @@ MAXMEANPOS NUM
 * `LOWDBIAS` Bias chisq towards/away from(???) volume-like
 * `GOODPOINT` If the chisq is less than this, always return point-like
 * `MAXMEANPOS` If the average vertex position is outside a sphere of radius `MAXMEANPOS`, don't return volume-like
+
+### nclusters running parameters
+```
+nclusters_silent_warning NUM
+nclusters_normal_warning NUM
+nclusters_golden_warning NUM
+```
+* `nclusters_silent_warning` The number of vertices needed to trigger a silent warning
+* `nclusters_normal_warning` The number of vertices needed to trigger a normal warning
+* `nclusters_golden_warning` The number of vertices needed to trigger a golden warning
 
 ### Misc
 ```

@@ -40,6 +40,10 @@ class dimfit: public Tool {
   double GOODPOINT;
   double MAXMEANPOS;
 
+  int nclusters_silent_warning;
+  int nclusters_normal_warning;
+  int nclusters_golden_warning;
+
   int dimfit_(int n,double *points,double *centr,double *rot,double *rmean, int &dim,int &exitpoint, bool verbose);
   double d_pythag(double a,double b);
   int d_iszero(double *matrix,int sta);

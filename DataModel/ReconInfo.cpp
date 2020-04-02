@@ -108,6 +108,70 @@ Reconstructer_t ReconInfo::ReconstructerFromString(std::string s)
   return kReconUndefined;
 }
 
+std::string ReconInfo::EnumAsString(NClustersWarning_t w)
+{
+  switch(w) {
+  case (kNClustersStandard):
+    return "NoNClustersWarning";
+    break;
+  case (kNClustersSilent):
+    return "NClustersSilentWarning";
+    break;
+  case (kNClustersNormal):
+    return "NClustersNormalWarning";
+    break;
+  case (kNClustersGolden):
+    return "NClustersGoldenWarning";
+    break;
+  default:
+    return "";
+  }
+  return "";
+}
+
+NClustersWarning_t ReconInfo::NClustersWarningFromString(std::string s)
+{
+  for(int i = int(kNClustersUndefined)+1; i <= kNClustersGolden; i++) {
+    if(s.compare(ReconInfo::EnumAsString((NClustersWarning_t)i)) == 0) {
+      return (NClustersWarning_t)i;
+    }
+  }
+  std::cerr << "ReconInfo::NClustersWarningFromString() Unknown string value " << s << std::endl;
+  return kNClustersUndefined;
+}
+
+std::string ReconInfo::EnumAsString(SNWarning_t w)
+{
+  switch(w) {
+  case (kSNWarningStandard):
+    return "NoSupernovaWarning";
+    break;
+  case (kSNWarningSilent):
+    return "SupernovaSilentWarning";
+    break;
+  case (kSNWarningNormal):
+    return "SupernovaNormalWarning";
+    break;
+  case (kSNWarningGolden):
+    return "SupernovaGoldenWarning";
+    break;
+  default:
+    return "";
+  }
+  return "";
+}
+
+SNWarning_t ReconInfo::SNWarningFromString(std::string s)
+{
+  for(int i = int(kSNWarningUndefined)+1; i <= kSNWarningGolden; i++) {
+    if(s.compare(ReconInfo::EnumAsString((SNWarning_t)i)) == 0) {
+      return (SNWarning_t)i;
+    }
+  }
+  std::cerr << "ReconInfo::SNWarningFromString() Unknown string value " << s << std::endl;
+  return kSNWarningUndefined;
+}
+
 bool ReconInfo::ShouldProvideDirection(Reconstructer_t r)
 {
   switch(r) {

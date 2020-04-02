@@ -84,6 +84,8 @@ Table of Contents
 * dimfit
   * Find the number of dimensions that a positional vertex distribution corresponds to
   * Algorithm inherited from SK
+  * Compare nclusters to thresholds for golden, normal and silent warnings
+  * Passes dimensionality, nclusters, and highest nclusters_warning level passed to data model
 
 ## Miscellaneous
 

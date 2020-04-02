@@ -14,6 +14,22 @@ typedef enum EReconstructers {
   kReconRandom //ensure this stays at the end, for looping purposes
 } Reconstructer_t;
 
+typedef enum NClustersWarnings {
+  kNClustersUndefined = -1,
+  kNClustersStandard,
+  kNClustersSilent,
+  kNClustersNormal,
+  kNClustersGolden //ensure this stays at the end, for looping purposes
+} NClustersWarning_t;
+
+typedef enum SNWarnings {
+  kSNWarningUndefined = -1,
+  kSNWarningStandard,
+  kSNWarningSilent,
+  kSNWarningNormal,
+  kSNWarningGolden //ensure this stays at the end, for looping purposes
+} SNWarning_t;
+
 struct Pos3D
 {
   double x, y, z;
@@ -28,6 +44,13 @@ struct DirectionEuler
 struct CherenkovCone
 {
   double cos_angle, ellipticity;
+};
+
+struct SNWarningParams
+{
+  int m_dim, m_nclusters;
+  NClustersWarning_t m_nclusters_warning;
+  SNWarningParams(int nclusters,int dim, NClustersWarning_t nclusters_warning){m_nclusters = nclusters; m_dim = dim; m_nclusters_warning = nclusters_warning;};
 };
 
 class ReconInfo
@@ -45,6 +68,14 @@ class ReconInfo
   static std::string EnumAsString(Reconstructer_t r);
   
   static Reconstructer_t ReconstructerFromString(std::string s);
+
+  static std::string EnumAsString(NClustersWarning_t w);
+
+  static NClustersWarning_t NClustersWarningFromString(std::string s);
+
+  static std::string EnumAsString(SNWarning_t w);
+
+  static SNWarning_t SNWarningFromString(std::string s);
 
   static bool ShouldProvideDirection(Reconstructer_t r);
 

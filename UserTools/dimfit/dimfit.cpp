@@ -59,6 +59,20 @@ bool dimfit::Initialise(std::string configfile, DataModel &data){
     Log("WARN: No MAXMEANPOS parameter found. Using a value of 250000", WARN, verbose);
   }
 
+  //nclusters parameters
+  if(!m_variables.Get("nclusters_silent_warning", nclusters_silent_warning)) {
+    nclusters_silent_warning = 200;
+    Log("WARN: No nclusters_silent_warning parameter found. Using a value of 200", WARN, verbose);
+  }
+  if(!m_variables.Get("nclusters_normal_warning", nclusters_normal_warning)) {
+    nclusters_normal_warning = 435;
+    Log("WARN: No nclusters_normal_warning parameter found. Using a value of 435", WARN, verbose);
+  }
+  if(!m_variables.Get("nclusters_golden_warning", nclusters_golden_warning)) {
+    nclusters_golden_warning = 630;
+    Log("WARN: No nclusters_golden_warning parameter found. Using a value of 630", WARN, verbose);
+  }
+
   //allocate memory for a relatively large number of events
   const int n_event_max = 10000;
   fEventPos = new std::vector<double>(n_event_max * 3);
@@ -84,7 +98,7 @@ bool dimfit::Execute(){
   while(tloopend <= tend) {
     fEventPos->clear();
 
-    unsigned int nvertices = 0;
+    unsigned int nclusters = 0;
     for(int irecon = 0; irecon < N; irecon++) {
       //skip events reconstructed outside the time window
       double t = fInFilter->GetTime(irecon);
@@ -98,22 +112,35 @@ bool dimfit::Execute(){
       fEventPos->push_back(pos.x);
       fEventPos->push_back(pos.y);
       fEventPos->push_back(pos.z);
-      nvertices++;
+      nclusters++;
 
       ss << "DEBUG: Adding vertex " << pos.x << ", " << pos.y << "\t" << pos.z << " to run through dimfit";
       StreamToLog(DEBUG3);
     }//irecon
 
     //only call dimfit if there are over (or equal to) the minimum number of vertices
-    if(nvertices >= min_events) {
-      ss << "DEBUG: Running " << nvertices << " event positions through dimfit";
+    if(nclusters >= min_events) {
+      ss << "DEBUG: Running " << nclusters << " event positions through dimfit";
       StreamToLog(DEBUG1);
 
-      dimfit_(nvertices, fEventPos->data(), fCentr, fRot, fRMean, fDim, fExitPoint, verbose);
+      dimfit_(nclusters, fEventPos->data(), fCentr, fRot, fRMean, fDim, fExitPoint, verbose);
 
       ss << "INFO: Dimfit returns " << fDim << " Exited at " << fExitPoint;
       StreamToLog(INFO);
     }
+
+    //compare nclusters to nclusters warning thresholds
+    NClustersWarning_t nclusters_warning = kNClustersUndefined;
+    if     (nclusters > nclusters_golden_warning) nclusters_warning = kNClustersGolden;
+    else if(nclusters > nclusters_normal_warning) nclusters_warning = kNClustersNormal;
+    else if(nclusters > nclusters_silent_warning) nclusters_warning = kNClustersSilent;
+    else if(nclusters)                            nclusters_warning = kNClustersStandard;
+
+    ss << "INFO: nclusters_warning = " << ReconInfo::EnumAsString(nclusters_warning) << ", nclusters = " << nclusters << " in " << time_window_s << "seconds";
+    StreamToLog(INFO);
+    
+    SNWarningParams supernova_warning_parameters(nclusters,fDim,nclusters_warning);
+    m_data->SupernovaWarningParameters.push_back(supernova_warning_parameters);
 
     //increment the sliding time window
     tloop += time_window_step_ns;
