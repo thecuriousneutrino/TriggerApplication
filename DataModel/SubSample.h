@@ -14,6 +14,10 @@ class SubSample{
 
   SubSample(std::vector<int> PMTid, std::vector<float> time, std::vector<float> charge);
 
+  void Append(SubSample & sub);
+
+  void Append(std::vector<int> PMTid, std::vector<float> time, std::vector<float> charge);
+
   std::vector<int> m_PMTid;
   std::vector<float> m_time;
   std::vector<float> m_charge;
