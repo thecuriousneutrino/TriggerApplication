@@ -14,7 +14,7 @@ RUN source ../env-WCSim.sh; git pull; make clean; make rootcint; make;
 WORKDIR /
 RUN git clone https://github.com/HKDAQ/TriggerApplication.git;
 WORKDIR /TriggerApplication/
-RUN ln -s /TriggerApplicationPreReq ToolDAQ
+RUN ln -s /TriggerApplicationPreReq/ToolDAQ/ ToolDAQ
 
 # Compile TriggerApp
 ENV TrigGERAppinDOCKer indubitably
