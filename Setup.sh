@@ -7,7 +7,8 @@ ToolDAQapp=$(readlink -f $(dirname $BASH_SOURCE))
 if [ $TrigGERAppinDOCKer = "indubitably" ]; then
     echo "You're running in docker. Setting up ROOT/WCSim/Geant4"
     echo "(If you're not, why have you set \$TrigGERAppinDOCKer to \"indubitably\"?!)"
-    source /root/HyperK/env-WCSim.sh
+    source $WCSIMDIR/../env-WCSim.sh
+
 fi
 
 echo "" > $ToolDAQapp/Build.h
