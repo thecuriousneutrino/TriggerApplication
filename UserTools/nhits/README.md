@@ -37,6 +37,8 @@ trigger_threshold_adjust_for_noise BOOL
 pretrigger_save_window PRETRIGGER
 posttrigger_save_window POSTTRIGGER
 trigger_od BOOL
+use_stopwatch BOOL
+stopwatch_file FILENAME
 verbose LEVEL
 ```
 * `trigger_search_window` Width of the sliding window, in ns
@@ -46,6 +48,8 @@ verbose LEVEL
 * `pretrigger_save_window` After a positive trigger is found, save digits from `trigger_time - pretrigger_save_window` to `trigger_time + posttrigger_save_window`
 * `posttrigger_save_window` After a positive trigger is found, save digits from `trigger_time - pretrigger_save_window` to `trigger_time + posttrigger_save_window`
 * `trigger_od` Trigger on OD digits, rather than ID digits?
+* `use_stopwatch` Use the Stopwatch functionality implemented for this tool?
+* `stopwatch_file` Save the time it takes for each run of `Execute()` to a histogram. Should end in .pdf, .eps, etc.
 * `verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity)
 
 There are also parameters used by the GPU version of the code

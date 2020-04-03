@@ -118,7 +118,6 @@ bool WCSimReader::Initialise(std::string configfile, DataModel &data){
     m_data->ODNPMTs = 0;
   }
 
-  Log("INFO: WCSimReader::Initialise() complete", INFO, m_verbose);
   return true;
 }
 

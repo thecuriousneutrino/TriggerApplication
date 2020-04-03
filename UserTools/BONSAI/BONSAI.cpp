@@ -49,7 +49,6 @@ bool BONSAI::Initialise(std::string configfile, DataModel &data){
 
 
 bool BONSAI::Execute(){
-  Log("DEBUG: BONSAI::Execute() Starting", DEBUG1, m_verbose);
 
   float out_vertex[4], out_direction[6], out_maxlike[500];
   int   out_nsel[2];
@@ -125,8 +124,6 @@ bool BONSAI::Execute(){
 			      &(dout_direction[0]), &(dout_cone[0]), out_direction[5]);
 
   }//itrigger
-
-  Log("DEBUG: BONSAI::Execute() Done", WARN, m_verbose);
 
   return true;
 }

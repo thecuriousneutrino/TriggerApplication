@@ -13,8 +13,6 @@ bool EnergeticBONSAI::Initialise(std::string configfile, DataModel &data){
 
   m_data= &data;
 
-  Log("DEBUG: EnergeticBONSAI::Initialise() Starting", DEBUG1, m_verbose);
-
   //setup energetic BONSAI with the geometry info
   int ebonsai_verbose = 0;
   m_variables.Get("ebonsai_verbose", ebonsai_verbose);
@@ -61,15 +59,11 @@ bool EnergeticBONSAI::Initialise(std::string configfile, DataModel &data){
   m_in_PMTIDs = new std::vector<int>  (m_nhits_max);
   m_in_Ts     = new std::vector<float>(m_nhits_max);
 
-  Log("DEBUG: EnergeticBONSAI::Initialise() Finished", DEBUG1, m_verbose);
-
   return true;
 }
 
 
 bool EnergeticBONSAI::Execute(){
-
-  Log("DEBUG: EnergeticBONSAI::Execute() Starting", DEBUG1, m_verbose);
 
   for(int ireco = 0; ireco < m_input_filter->GetNRecons(); ireco++) {
     //get the vertex
@@ -132,22 +126,15 @@ bool EnergeticBONSAI::Execute(){
 
   }//ireco
 
-  Log("DEBUG: EnergeticBONSAI::Execute() Finished", DEBUG1, m_verbose);
-
-
   return true;
 }
 
 
 bool EnergeticBONSAI::Finalise(){
 
-  Log("DEBUG: EnergeticBONSAI::Finalise() Starting", DEBUG1, m_verbose);
-
   delete m_ebonsai;
   delete m_in_PMTIDs;
   delete m_in_Ts;
-
-  Log("DEBUG: EnergeticBONSAI::Finalise() Finished", DEBUG1, m_verbose);
 
   return true;
 }

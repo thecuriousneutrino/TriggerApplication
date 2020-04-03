@@ -55,8 +55,6 @@ bool ReconDataOut::Initialise(std::string configfile, DataModel &data){
 
 bool ReconDataOut::Execute(){
 
-  Log("DEBUG: ReconDataOut::Execute() Starting", DEBUG1, verbose);
-
   const int nrecons = fInFilter->GetNRecons();
   ss << "DEBUG: Saving the result of " << nrecons << " reconstructions";
   StreamToLog(DEBUG1);
@@ -95,8 +93,6 @@ bool ReconDataOut::Execute(){
 
   //increment event number
   fEvtNum++;
-
-  Log("DEBUG: ReconDataOut::Execute() Done", DEBUG1, verbose);
 
   return true;
 }

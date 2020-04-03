@@ -7,6 +7,7 @@
 #include "Tool.h"
 
 #include "GPUFunctions.h"
+#include "Stopwatch.h"
 
 class nhits: public Tool {
 
@@ -30,6 +31,11 @@ class nhits: public Tool {
   void AlgNDigits(const SubSample * samples); ///< Modified from WCSim v1.7.0
  
   static const int kALongTime;      ///< An arbitrary long time to use in loops (ns)
+
+  /// The stopwatch, if we're using one
+  util::Stopwatch * m_stopwatch;
+  /// Image filename to save the histogram to, if required
+  std::string m_stopwatch_file;
 
   int verbose;
 

@@ -14,9 +14,6 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
 
   m_data= &data;
 
-  // Log needs m_data
-  Log("DEBUG: DataOut::Initialise starting", DEBUG1, verbose);
-
   //open the output file
   Log("DEBUG: DataOut::Initialise opening output file...", DEBUG2, verbose);
   if(! m_variables.Get("outfilename", fOutFilename)) {
@@ -91,7 +88,6 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
   for(int i = 0; i <= m_data->ODNPMTs; i++)
     fODNDigitPerPMTPerTriggerMap[i] = std::map<int, bool>();
 
-  Log("DEBUG: DataOut::Initialise done", DEBUG1, verbose);
   return true;
 }
 
@@ -161,7 +157,6 @@ bool DataOut::Execute(){
   //increment event number
   fEvtNum++;
 
-  Log("DEBUG: DataOut::Execute() Done", DEBUG1, verbose);
   return true;
 }
 /////////////////////////////////////////////////////////////////
