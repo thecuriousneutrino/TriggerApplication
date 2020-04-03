@@ -28,12 +28,13 @@ RootLib     := $(shell root-config --libs)
 WCSimInclude = -I$(WCSIMDIR)/include
 WCSimLib     = -L$(WCSIMDIR) -lWCSimRoot
 
-ifdef $(BONSAIDIR)
-   BonsaiInclude = -I$(BONSAIDIR)/bonsai
-   BonsaiLib = -L$(BONSAIDIR) -lWCSimBonsai
+ifdef BONSAIDIR
+	# if directory BONSAIDIR exists:
+	BonsaiInclude = -I$(BONSAIDIR)/bonsai
+	BonsaiLib = -L$(BONSAIDIR) -lWCSimBonsai
 endif
 
-ifdef $(EBONSAIDIR)
+ifdef EBONSAIDIR
     EBonsaiInclude = -I$(EBONSAIDIR)
     EBonsaiLib = -L$(EBONSAIDIR) -lWCSimEBonsai
 endif
