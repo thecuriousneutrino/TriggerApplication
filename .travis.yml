@@ -11,6 +11,6 @@ before_install:
 install: true
 
 script: 
-  - docker run --rm -v `pwd`:/root/buildtest hkdaq/triggerapplication:base /bin/sh -c "cd /root/HyperK/ ; source /root/HyperK/env-WCSim.sh ; cd WCSim ; git pull ;make clean; make rootcint; make; cd /root/buildtest ; ln -s /TriggerApplication/ToolDAQ ./ToolDAQ ; source ./Setup.sh ; make clean; make update; make "
+  - docker run --rm -a stdout -a stderr -v `pwd`:/root/buildtest --entrypoint /bin/sh hkdaq/triggerapplication:base -c 'cd $WCSIMDIR; source ../env-WCSim.sh; git pull; make clean; make rootcint; make; cd /root/buildtest; ln -s /TriggerApplicationPreReq/ToolDAQ/ ToolDAQ; source ./Setup.sh; make clean; make update; make'
 
 
