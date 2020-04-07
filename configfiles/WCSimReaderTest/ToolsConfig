@@ -1,4 +1,5 @@
 wcsim1 WCSimReader configfiles/WCSimReaderTest/WCSimReaderToolConfig
-nhits1 nhits configfiles/WCSimReaderTest/nhitsToolConfig
+prepare1 PrepareSubSamples configfiles/WCSimReaderTest/PrepareSubSamplesConfig
+nhits1 NHits configfiles/WCSimReaderTest/NHitsToolConfig
 #pass_all1 pass_all configfiles/WCSimReaderTest/pass_allToolConfig
 out1 DataOut configfiles/WCSimReaderTest/DataOutToolConfig

@@ -10,17 +10,11 @@ CPU and CUDA-GPU versions are available
 * Picks the relevant digits information from the data model (IDSample or ODSamples)
 * Calls the GPU or CPU algorithm
   * CPU version
-    * Loop over all digits to find first/last times
-    * Loop from first hit time to last hit time, with a sliding trigger decision window (size `trigger_search_window`, step `trigger_search_window_step`)
-        * For every digit in the trigger decision window, fill a vector with the digit time
-    	* If the number of digits is more than the threshold, issue a trigger
-	  * Store the trigger in the data model (IDTriggers or ODTriggers)
-	    * Trigger type `kTriggerNDigits`
-	    * Trigger readout window [trigger time - `pretrigger_save_window`, trigger time + `posttrigger_save_window`] ns
-	    * Trigger time: `trigger_threshold`'ed entry in the (sorted) digit time vector (the time of the first digit above threshold)
-	      * i.e. if the threshold is 25, the trigger time is taken as the time of the 26th digit
-	    * Trigger info: one entry with number of ID digits in the sliding window that issued the trigger
-        * Increment the loop by `posttrigger_save_window` (rather than `trigger_search_window_step`)
+    * Sort digits by time
+    * Loop over all digits
+    * Find digit with more than threshold digits in window preceding digit time
+      * If found, issue trigger with pre and post trigger window around that hit
+      * Continue with first hit outside the post-trigger window
   * GPU version
     * TODO add explanation here
     * TODO ensure the algorithm is similar (may not be identical due to GPU-related optimisations that can be made), the definitions of trigger time etc are identical, and the results are identical
@@ -31,7 +25,6 @@ CPU and CUDA-GPU versions are available
 
 ```
 trigger_search_window WINDOW
-trigger_search_window_step STEP
 trigger_threshold THRESHOLD
 trigger_threshold_adjust_for_noise BOOL
 pretrigger_save_window PRETRIGGER
@@ -42,11 +35,10 @@ stopwatch_file FILENAME
 verbose LEVEL
 ```
 * `trigger_search_window` Width of the sliding window, in ns
-* `trigger_search_window_step` Step size of the sliding window, in ns
 * `trigger_threshold` Trigger threshold - number of triggers must be above this value (equal to does not fire the trigger)
 * `trigger_threshold_adjust_for_noise` Add the average dark noise rate to the threshold?
-* `pretrigger_save_window` After a positive trigger is found, save digits from `trigger_time - pretrigger_save_window` to `trigger_time + posttrigger_save_window`
-* `posttrigger_save_window` After a positive trigger is found, save digits from `trigger_time - pretrigger_save_window` to `trigger_time + posttrigger_save_window`
+* `pretrigger_save_window` After a trigger is found, save digits from `trigger_time - pretrigger_save_window` to `trigger_time + posttrigger_save_window`
+* `posttrigger_save_window` After a trigger is found, save digits from `trigger_time - pretrigger_save_window` to `trigger_time + posttrigger_save_window`
 * `trigger_od` Trigger on OD digits, rather than ID digits?
 * `use_stopwatch` Use the Stopwatch functionality implemented for this tool?
 * `stopwatch_file` Save the time it takes for each run of `Execute()` to a histogram. Should end in .pdf, .eps, etc.

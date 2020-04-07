@@ -25,69 +25,88 @@
 
 class DataModel {
 
-
  public:
-  
+
   DataModel();
 
-  //TTree* GetTTree(std::string name);
-  //void AddTTree(std::string name,TTree *tree);
-  //void DeleteTTree(std::string name);
-
+  /// Get filtered reconstructed information.
+  ///
+  /// If `name == ALL`: pointer to all events (`RecoInfo`)
+  /// Otherwise, returns pointer to `RecoInfoMap` entry name
+  /// Caveat: if `!can_create` and `name` not found, return `0`
   ReconInfo * GetFilter(std::string name, bool can_create);
 
   Store vars;
   BoostStore CStore;
   std::map<std::string,BoostStore*> Stores;
-  
+
   Logging *Log;
 
   zmq::context_t* context;
 
+  /// Inner detector digit collections
   std::vector<SubSample> IDSamples;
+  /// Outer detector digit collections
   std::vector<SubSample> ODSamples;
 
+  /// Geometry information for the inner detector
   std::vector<PMTInfo> IDGeom;
+  /// Geometry information for the outer detector
   std::vector<PMTInfo> ODGeom;
 
+  /// Triggered time windows for the inner detector
   TriggerInfo IDTriggers;
+  /// Triggered time windows for the outer detector
   TriggerInfo ODTriggers;
 
-  ReconInfo RecoInfo;
-  std::map<std::string, ReconInfo*> RecoInfoMap;
-
+  /// DEPRECATED! Use IDTriggers and ODTriggers instead.
+  __attribute__((deprecated))
   bool triggeroutput;
 
+  /// Store reconstruction information (vertex time/position, fit likelihoods, optionally direction)
+  ReconInfo RecoInfo;
+  /// Store filtered reconstruction information
+  std::map<std::string, ReconInfo*> RecoInfoMap;
+
+  /// Dark noise rate of inner detector PMTs, unit: ?
   double IDPMTDarkRate;
+  /// Dark noise rate of outer detector PMTs, unit: ?
   double ODPMTDarkRate;
+
+  /// Number of inner detector PMTs
   int IDNPMTs;
+  /// Number of outer detector PMTs
   int ODNPMTs;
-  
+
+  /// The `WCSimRootGeom` tree from input WCSim file(s)
   TChain * WCSimGeomTree;
+  /// The `WCSimRootOptions` tree from input WCSim file(s)
   TChain * WCSimOptionsTree;
+  /// The `WCSimRootEvent` tree from input WCSim file(s)
   TChain * WCSimEventTree;
+  /// The original WCSim files' event number(s) for the current event
   std::vector<int> CurrentWCSimEventNums;
+  /// The original WCSim files' filename(s) for the current event
   TObjArray * CurrentWCSimFiles;
+  /// The original, unmodified `WCSimRootEvent` for the ID
   WCSimRootEvent * IDWCSimEvent_Raw;
+  /// The original, unmodified `WCSimRootEvent` for the OD
   WCSimRootEvent * ODWCSimEvent_Raw;
+  /// The triggered `WCSimRootEvent` for the ID (digits are sorted into trigger windows)
   WCSimRootEvent * IDWCSimEvent_Triggered;
+  /// The triggered `WCSimRootEvent` for the OD (digits are sorted into trigger windows)
   WCSimRootEvent * ODWCSimEvent_Triggered;
 
+  /// Store the dimensionality, number of reconstructed vertices and the highest nclusters warning threshold passed
   std::vector<SNWarningParams> SupernovaWarningParameters;
 
+  /// Does the geometry include the outer detector?
   bool HasOD;
+  /// Is this simulated data?
   bool IsMC;
 
  private:
 
-
-  
-  //std::map<std::string,TTree*> m_trees; 
-  
-  
-  
 };
-
-
 
 #endif

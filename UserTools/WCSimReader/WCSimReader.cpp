@@ -304,6 +304,7 @@ template <typename T> bool WCSimReader::CompareVariable(T v1, T v2, const char *
   else {
     m_ss << "WARN: Difference between strings " << v1 << " and " << v2 << " for variable " << tag;
     StreamToLog(WARN);
+    return true;
   }
 }
 
@@ -396,9 +397,12 @@ bool WCSimReader::Execute(){
 
 SubSample WCSimReader::GetDigits()
 {
+  // Store times relative to first hit time
+  TimeDelta first_time;
   //loop over the digits
   std::vector<int> PMTid;
-  std::vector<float>  time, charge;
+  std::vector<float> charge;
+  std::vector<TimeDelta::short_time_t> time;
   for(int idigi = 0; idigi < m_wcsim_trigger->GetNcherenkovdigihits(); idigi++) {
     //get a digit
     TObject *element = (m_wcsim_trigger->GetCherenkovDigiHits())->At(idigi);
@@ -406,7 +410,11 @@ SubSample WCSimReader::GetDigits()
       dynamic_cast<WCSimRootCherenkovDigiHit*>(element);
     //get the digit information
     int ID = digit->GetTubeId();
-    float T = digit->GetT();
+    if (idigi == 0){
+      // Store times relative to the first digit
+      first_time = TimeDelta(digit->GetT());
+    }
+    float T = (TimeDelta(digit->GetT()) - first_time) / TimeDelta::ns;
     float Q = digit->GetQ();
     PMTid.push_back(ID);
     time.push_back(T);
@@ -423,9 +431,19 @@ SubSample WCSimReader::GetDigits()
   m_ss << "DEBUG: Saved information on " << time.size() << " digits";
   StreamToLog(DEBUG1);
 
-  SubSample sub(PMTid, time, charge);
+  // Set the timestamp of the SubSample to the first digit time (the one every
+  // other time is relative to) plus the trigger time as reported by WCSim.
+  // WCSim stores all digit times relative to the trigger time.
+  //
+  // WCSim also adds a 950 ns offset to the digit times, if it no running in
+  // the NoTrigger mode. But we should not care about that here.
+  TimeDelta timestamp = TimeDelta(m_wcsim_trigger->GetHeader()->GetDate()) + first_time;
+  SubSample sub;
+  if (not sub.Append(PMTid, time, charge, timestamp)){
+    Log("ERROR: Appending hits failed!", ERROR, m_verbose);
+  }
 
-  return sub;  
+  return sub;
 }
 
 bool WCSimReader::Finalise(){

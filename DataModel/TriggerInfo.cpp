@@ -5,7 +5,11 @@ TriggerInfo::TriggerInfo()
   Clear();
 }
 
-void TriggerInfo::AddTrigger(TriggerType_t type, double starttime, double endtime, double triggertime, std::vector<float> info)
+void TriggerInfo::AddTrigger(TriggerType_t type, double starttime, double endtime, double triggertime, std::vector<float> info){
+  AddTrigger(type, TimeDelta(starttime), TimeDelta(endtime), TimeDelta(triggertime),  info);
+}
+
+void TriggerInfo::AddTrigger(TriggerType_t type, TimeDelta starttime, TimeDelta endtime, TimeDelta triggertime, std::vector<float> info)
 {
   m_type        .push_back(type);
   m_starttime   .push_back(starttime);
@@ -36,7 +40,7 @@ void TriggerInfo::SortByStartTime()
 { 
   //algorithm borrowed from WCSimWCDigi::SortArrayByHitTime()
   int i, j;
-  double save_starttime, save_endtime, save_triggertime;
+  TimeDelta save_starttime, save_endtime, save_triggertime;
   TriggerType_t save_type;
   std::vector<float> save_info;
   for (i = 1; i < (int) m_N; ++i) {
