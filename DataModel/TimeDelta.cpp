@@ -22,8 +22,10 @@ TimeDelta operator*(const TimeDelta& old_delta, double factor){
   new_delta.m_short_time *= factor;
   new_delta.m_long_time *= factor;
   // Make sure no information of m_long_time is lost
-  double remainder = old_delta.m_long_time - new_delta.m_long_time * (1. / factor);
-  new_delta.m_short_time += (remainder * TimeDelta::s_long_time_unit);
+  if (factor != 0){
+    double remainder = old_delta.m_long_time - new_delta.m_long_time * (1. / factor);
+    new_delta.m_short_time += (remainder * TimeDelta::s_long_time_unit);
+  }
   new_delta.Normalize();
   return new_delta;
 }
@@ -33,11 +35,11 @@ TimeDelta operator*(double factor, const TimeDelta& old_delta){
 }
 
 double operator/(const TimeDelta& left_delta, const TimeDelta& right_delta){
-  double ratio = (left_delta.m_long_time * TimeDelta::s_long_time_unit)
-                  + left_delta.m_short_time;
-  ratio /= (right_delta.m_long_time * TimeDelta::s_long_time_unit)
-                  + right_delta.m_short_time;
-  return ratio;
+  double left_ns = (left_delta.m_long_time * (double)TimeDelta::s_long_time_unit);
+  left_ns += left_delta.m_short_time;
+  double right_ns = (right_delta.m_long_time * (double)TimeDelta::s_long_time_unit);
+  right_ns += right_delta.m_short_time;
+  return left_ns / right_ns;
 }
 
 TimeDelta operator+(const TimeDelta& left_delta, const TimeDelta& right_delta){

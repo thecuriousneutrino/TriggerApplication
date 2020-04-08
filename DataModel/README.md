@@ -18,12 +18,10 @@ Set up to allow multiple types of PMT in the ID (e.g. 20" + mPMT hybrid geometry
 
 Stores (in vectors) relative digit time and PMTID. Optionally, store digit charge.
 
-Vectors must be complete at time of creating the SubSample (i.e. there is no `AddDigit()` method)
+Vectors of hit information are added using the `Append` method.
 
 All digit times are relative to the `m_timestamp`. When comparing times between
-different SubSamples, this needs to be taken into account. Since `m_timestamp`
-and `m_time` have different units, one should use the method `TimeDifference`
-to calculate time differences between relative times in different SubSamples.
+different SubSamples, this needs to be taken into account.
 
 ### TimeDelta
 
