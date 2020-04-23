@@ -1,3 +1,5 @@
 input_filter_name ALL
 outfilename reconstructed_sntriggering.root
+use_stopwatch 1
+#stopwatch_file recondataout_stopwatch.pdf
 verbose 3

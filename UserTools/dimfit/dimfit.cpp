@@ -8,14 +8,24 @@ bool dimfit::Initialise(std::string configfile, DataModel &data){
   if(configfile!="")  m_variables.Initialise(configfile);
   //m_variables.Print();
 
-  verbose = 0;
-  m_variables.Get("verbose", verbose);
+  m_verbose = 0;
+  m_variables.Get("verbose", m_verbose);
+
+  //Setup and start the stopwatch
+  bool use_stopwatch = false;
+  m_variables.Get("use_stopwatch", use_stopwatch);
+  m_stopwatch = use_stopwatch ? new util::Stopwatch("dimfit") : 0;
+
+  m_stopwatch_file = "";
+  m_variables.Get("stopwatch_file", m_stopwatch_file);
+
+  if(m_stopwatch) m_stopwatch->Start();
 
   m_data= &data;
 
   //parameters determining which events to read in
   if(!m_variables.Get("input_filter_name", fInputFilterName)) {
-    Log("INFO: input_filter_name not given. Using ALL", WARN, verbose);
+    Log("INFO: input_filter_name not given. Using ALL", WARN, m_verbose);
     fInputFilterName = "ALL";
   }
   fInFilter  = m_data->GetFilter(fInputFilterName, false);
@@ -29,61 +39,64 @@ bool dimfit::Initialise(std::string configfile, DataModel &data){
   double time_window_s;
   if(!m_variables.Get("time_window", time_window_s)) {
     time_window_s = 20;
-    Log("WARN: No time_window parameter found. Using a value of 20 (seconds)", WARN, verbose);
+    Log("WARN: No time_window parameter found. Using a value of 20 (seconds)", WARN, m_verbose);
   }
   m_time_window = time_window_s * TimeDelta::s;
   double time_window_step_s;
   if(!m_variables.Get("time_window_step", time_window_step_s)) {
     time_window_step_s = 0.2;
-    Log("WARN: No time_window_step parameter found. Using a value of 0.2 (seconds)", WARN, verbose);
+    Log("WARN: No time_window_step parameter found. Using a value of 0.2 (seconds)", WARN, m_verbose);
   }
   m_time_window_step = time_window_step_s * TimeDelta::s;
   if(!m_variables.Get("min_events", min_events)) {
     min_events = 3;
-    Log("WARN: No min_events parameter found. Using a value of 3", WARN, verbose);
+    Log("WARN: No min_events parameter found. Using a value of 3", WARN, m_verbose);
   }
 
   //dimfit parameters
   if(!m_variables.Get("R2MIN", R2MIN)) {
     R2MIN = 300000;
-    Log("WARN: No R2MIN parameter found. Using a value of 300000", WARN, verbose);
+    Log("WARN: No R2MIN parameter found. Using a value of 300000", WARN, m_verbose);
   }
   if(!m_variables.Get("LOWDBIAS", LOWDBIAS)) {
     LOWDBIAS = 1.15;
-    Log("WARN: No LOWDBIAS parameter found. Using a value of 1.15", WARN, verbose);
+    Log("WARN: No LOWDBIAS parameter found. Using a value of 1.15", WARN, m_verbose);
   }
   if(!m_variables.Get("GOODPOINT", GOODPOINT)) {
     GOODPOINT = 40000;
-    Log("WARN: No GOODPOINT parameter found. Using a value of 40000", WARN, verbose);
+    Log("WARN: No GOODPOINT parameter found. Using a value of 40000", WARN, m_verbose);
   }
   if(!m_variables.Get("MAXMEANPOS", MAXMEANPOS)) {
     MAXMEANPOS = 250000;
-    Log("WARN: No MAXMEANPOS parameter found. Using a value of 250000", WARN, verbose);
+    Log("WARN: No MAXMEANPOS parameter found. Using a value of 250000", WARN, m_verbose);
   }
 
   //nclusters parameters
   if(!m_variables.Get("nclusters_silent_warning", nclusters_silent_warning)) {
     nclusters_silent_warning = 200;
-    Log("WARN: No nclusters_silent_warning parameter found. Using a value of 200", WARN, verbose);
+    Log("WARN: No nclusters_silent_warning parameter found. Using a value of 200", WARN, m_verbose);
   }
   if(!m_variables.Get("nclusters_normal_warning", nclusters_normal_warning)) {
     nclusters_normal_warning = 435;
-    Log("WARN: No nclusters_normal_warning parameter found. Using a value of 435", WARN, verbose);
+    Log("WARN: No nclusters_normal_warning parameter found. Using a value of 435", WARN, m_verbose);
   }
   if(!m_variables.Get("nclusters_golden_warning", nclusters_golden_warning)) {
     nclusters_golden_warning = 630;
-    Log("WARN: No nclusters_golden_warning parameter found. Using a value of 630", WARN, verbose);
+    Log("WARN: No nclusters_golden_warning parameter found. Using a value of 630", WARN, m_verbose);
   }
 
   //allocate memory for a relatively large number of events
   const int n_event_max = 10000;
   fEventPos = new std::vector<double>(n_event_max * 3);
 
+  if(m_stopwatch) Log(m_stopwatch->Result("Initialise"), INFO, m_verbose);
+
   return true;
 }
 
 
 bool dimfit::Execute(){
+  if(m_stopwatch) m_stopwatch->Start();
 
   const int N = fInFilter->GetNRecons();
 
@@ -125,7 +138,7 @@ bool dimfit::Execute(){
       ss << "DEBUG: Running " << nclusters << " event positions through dimfit";
       StreamToLog(DEBUG1);
 
-      dimfit_(nclusters, fEventPos->data(), fCentr, fRot, fRMean, fDim, fExitPoint, verbose);
+      dimfit_(nclusters, fEventPos->data(), fCentr, fRot, fRMean, fDim, fExitPoint, m_verbose);
 
       ss << "INFO: Dimfit returns " << fDim << " Exited at " << fExitPoint;
       StreamToLog(INFO);
@@ -150,13 +163,24 @@ bool dimfit::Execute(){
 
   }//while(tloop < tend)
 
+  if(m_stopwatch) m_stopwatch->Stop();
+
   return true;
 }
 
 
 bool dimfit::Finalise(){
+  if(m_stopwatch) {
+    Log(m_stopwatch->Result("Execute", m_stopwatch_file), INFO, m_verbose);
+    m_stopwatch->Start();
+  }
 
   delete fEventPos;
+
+  if(m_stopwatch) {
+    Log(m_stopwatch->Result("Finalise"), INFO, m_verbose);
+    delete m_stopwatch;
+  }
 
   return true;
 }

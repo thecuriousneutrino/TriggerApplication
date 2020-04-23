@@ -1,2 +1,4 @@
 outfilename reconstructed.root
+use_stopwatch 1
+#stopwatch_file recondataout_stopwatch.pdf
 verbose 3

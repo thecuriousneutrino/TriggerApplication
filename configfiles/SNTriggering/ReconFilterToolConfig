@@ -5,4 +5,6 @@ max_z_pos 2700
 max_r_pos 3500
 input_filter_name ALL
 output_filter_name filter1
+use_stopwatch 1
+#stopwatch_file reconfilter_stopwatch.pdf
 verbose 3

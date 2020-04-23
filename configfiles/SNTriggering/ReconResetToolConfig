@@ -1,1 +1,3 @@
+use_stopwatch 1
+#stopwatch_file reconreset_stopwatch.pdf
 verbose 3

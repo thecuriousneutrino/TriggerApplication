@@ -1,3 +1,5 @@
 sample_width 2000000
 sample_overlap 1000000
+use_stopwatch 1
+#stopwatch_file nhits_stopwatch.pdf
 verbose 5

@@ -25,6 +25,11 @@ class PrepareSubSamples: public Tool {
   /// The desired SubSample overlap time
   TimeDelta m_sample_overlap;
 
+  /// The stopwatch, if we're using one
+  util::Stopwatch * m_stopwatch;
+  /// Image filename to save the histogram to, if required
+  std::string m_stopwatch_file;
+
   int m_verbose;
 
   std::stringstream m_ss;

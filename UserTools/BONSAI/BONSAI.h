@@ -36,6 +36,11 @@ class BONSAI: public Tool {
   unsigned int m_nhits_min;
   unsigned int m_nhits_max;
 
+  /// The stopwatch, if we're using one
+  util::Stopwatch * m_stopwatch;
+  /// Image filename to save the histogram to, if required
+  std::string m_stopwatch_file;
+
   int m_verbose;
 
   std::stringstream m_ss;

@@ -51,6 +51,11 @@ class EnergeticBONSAI: public Tool {
   /// Overwrite the precalculated nearest neighbours ROOT file that energetic-BONSAI uses?
   bool        m_overwrite_nearest;
 
+  /// The stopwatch, if we're using one
+  util::Stopwatch * m_stopwatch;
+  /// Image filename to save the histogram to, if required
+  std::string m_stopwatch_file;
+
   int m_verbose;
 
   std::stringstream m_ss;

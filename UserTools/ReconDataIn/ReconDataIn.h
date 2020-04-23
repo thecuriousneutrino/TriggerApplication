@@ -33,12 +33,17 @@ class ReconDataIn: public Tool {
   double fRTGoodnessOfFit;
   double fRTGoodnessOfTimeFit;
 
-  int verbose;
+  /// The stopwatch, if we're using one
+  util::Stopwatch * m_stopwatch;
+  /// Image filename to save the histogram to, if required
+  std::string m_stopwatch_file;
+
+  int m_verbose;
 
   std::stringstream ss;
 
   void StreamToLog(int level) {
-    Log(ss.str(), level, verbose);
+    Log(ss.str(), level, m_verbose);
     ss.str("");
   }
 

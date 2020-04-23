@@ -5,4 +5,6 @@ nhitsmin 3
 nhitsmax 1000
 overwrite_nearest_neighbours false
 ebonsai_verbose 1
+use_stopwatch 1
+#stopwatch_file energetic_bonsai_stopwatch.pdf
 verbose 3

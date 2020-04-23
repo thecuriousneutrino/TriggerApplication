@@ -53,12 +53,17 @@ class dimfit: public Tool {
   void d_swap(double *val,double *rot,int c1,int c2);
   void eigen(double *matrix,double *rot);
 
-  int verbose;
+  /// The stopwatch, if we're using one
+  util::Stopwatch * m_stopwatch;
+  /// Image filename to save the histogram to, if required
+  std::string m_stopwatch_file;
+
+  int m_verbose;
 
   std::stringstream ss;
 
   void StreamToLog(int level) {
-    Log(ss.str(), level, verbose);
+    Log(ss.str(), level, m_verbose);
     ss.str("");
   }
 

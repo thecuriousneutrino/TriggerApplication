@@ -1,2 +1,4 @@
+use_stopwatch 1
+#stopwatch_file dataout_stopwatch.pdf
 verbose 3
 outfilename triggered.root

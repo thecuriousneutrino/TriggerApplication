@@ -35,7 +35,7 @@ class MyTool: public Tool {
   /// Print the current value of the streamer at the set log level,
   ///  then clear the streamer
   void StreamToLog(int level) {
-    Log(m_ss.str(), level, verbose);
+    Log(m_ss.str(), level, m_verbose);
     m_ss.str("");
   }
 

@@ -71,6 +71,11 @@ class WCSimReader: public Tool {
   /// The input WCSim filelist filename from config file
   std::string m_input_filelist;
 
+  /// The stopwatch, if we're using one
+  util::Stopwatch * m_stopwatch;
+  /// Image filename to save the histogram to, if required
+  std::string m_stopwatch_file;
+
   /// Verbosity level
   int m_verbose;
 

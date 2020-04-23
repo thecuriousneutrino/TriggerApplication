@@ -11,6 +11,16 @@ bool EnergeticBONSAI::Initialise(std::string configfile, DataModel &data){
   m_verbose = 0;
   m_variables.Get("verbose", m_verbose);
 
+  //Setup and start the stopwatch
+  bool use_stopwatch = false;
+  m_variables.Get("use_stopwatch", use_stopwatch);
+  m_stopwatch = use_stopwatch ? new util::Stopwatch("EnergeticBONSAI") : 0;
+
+  m_stopwatch_file = "";
+  m_variables.Get("stopwatch_file", m_stopwatch_file);
+
+  if(m_stopwatch) m_stopwatch->Start();
+
   m_data= &data;
 
   //setup energetic BONSAI with the geometry info
@@ -59,11 +69,14 @@ bool EnergeticBONSAI::Initialise(std::string configfile, DataModel &data){
   m_in_PMTIDs = new std::vector<int>  (m_nhits_max);
   m_in_Ts     = new std::vector<float>(m_nhits_max);
 
+  if(m_stopwatch) Log(m_stopwatch->Result("Initialise"), INFO, m_verbose);
+
   return true;
 }
 
 
 bool EnergeticBONSAI::Execute(){
+  if(m_stopwatch) m_stopwatch->Start();
 
   for(int ireco = 0; ireco < m_input_filter->GetNRecons(); ireco++) {
     //get the vertex
@@ -126,15 +139,26 @@ bool EnergeticBONSAI::Execute(){
 
   }//ireco
 
+  if(m_stopwatch) m_stopwatch->Stop();
+
   return true;
 }
 
 
 bool EnergeticBONSAI::Finalise(){
+  if(m_stopwatch) {
+    Log(m_stopwatch->Result("Execute", m_stopwatch_file), INFO, m_verbose);
+    m_stopwatch->Start();
+  }
 
   delete m_ebonsai;
   delete m_in_PMTIDs;
   delete m_in_Ts;
+
+  if(m_stopwatch) {
+    Log(m_stopwatch->Result("Finalise"), INFO, m_verbose);
+    delete m_stopwatch;
+  }
 
   return true;
 }

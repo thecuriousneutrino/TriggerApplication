@@ -9,4 +9,6 @@ MAXMEANPOS 350000
 nclusters_silent_warning 200
 nclusters_normal_warning 435
 nclusters_golden_warning 630
+use_stopwatch 1
+#stopwatch_file dimfit_stopwatch.pdf
 verbose 3

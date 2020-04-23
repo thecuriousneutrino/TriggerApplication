@@ -12,4 +12,6 @@ flat_r 0
 t_min 0
 t_max 2.5E9 #2.5 seconds
 seed 512
+use_stopwatch 1
+#stopwatch_file reconrandomiser_stopwatch.pdf
 verbose 3
