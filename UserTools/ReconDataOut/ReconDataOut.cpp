@@ -1,4 +1,5 @@
 #include "ReconDataOut.h"
+#include "TimeDelta.h"
 
 ReconDataOut::ReconDataOut():Tool(){}
 
@@ -62,7 +63,7 @@ bool ReconDataOut::Execute(){
     fRTTriggerNum = fInFilter->GetTriggerNum(irecon);
     fRTNHits = fInFilter->GetNHits(irecon);
     fRTReconstructer = fInFilter->GetReconstructer(irecon);
-    fRTTime = fInFilter->GetTime(irecon);
+    fRTTime = fInFilter->GetTime(irecon) / TimeDelta::ns;
     Pos3D pos = fInFilter->GetVertex(irecon);
     fRTVertex[0] = pos.x;
     fRTVertex[1] = pos.y;

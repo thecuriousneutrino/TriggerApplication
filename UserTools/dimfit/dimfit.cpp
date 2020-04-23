@@ -26,16 +26,18 @@ bool dimfit::Initialise(std::string configfile, DataModel &data){
   }
 
   //sliding time window parameters
+  double time_window_s;
   if(!m_variables.Get("time_window", time_window_s)) {
     time_window_s = 20;
     Log("WARN: No time_window parameter found. Using a value of 20 (seconds)", WARN, verbose);
   }
-  time_window_ns = time_window_s * 1E9;
+  m_time_window = time_window_s * TimeDelta::s;
+  double time_window_step_s;
   if(!m_variables.Get("time_window_step", time_window_step_s)) {
     time_window_step_s = 0.2;
     Log("WARN: No time_window_step parameter found. Using a value of 0.2 (seconds)", WARN, verbose);
   }
-  time_window_step_ns = time_window_step_s * 1E9;
+  m_time_window_step = time_window_step_s * TimeDelta::s;
   if(!m_variables.Get("min_events", min_events)) {
     min_events = 3;
     Log("WARN: No min_events parameter found. Using a value of 3", WARN, verbose);
@@ -86,22 +88,22 @@ bool dimfit::Execute(){
   const int N = fInFilter->GetNRecons();
 
   //get first/last times
-  double tstart = fInFilter->GetFirstTime();
-  double tend   = fInFilter->GetLastTime();
-  ss << "DEBUG: dimfit looping in time from " << tstart << " to " << tend << " in steps of " << time_window_step_ns;
+  TimeDelta tstart = fInFilter->GetFirstTime();
+  TimeDelta tend   = fInFilter->GetLastTime();
+  ss << "DEBUG: dimfit looping in time from " << tstart << " to " << tend << " in steps of " << m_time_window_step;
   StreamToLog(DEBUG1);
 
   //use a sliding window to loop over the events
-  double tloop = tstart;
-  double tloopend = tloop + time_window_ns;
-  tloopend = TMath::Min(tloopend, tend); //ensure the loop runs at least once
+  TimeDelta tloop = tstart;
+  TimeDelta tloopend = tloop + m_time_window;
+  tloopend = tloopend < tend ? tloopend : tend; //ensure the loop runs at least once
   while(tloopend <= tend) {
     fEventPos->clear();
 
     unsigned int nclusters = 0;
     for(int irecon = 0; irecon < N; irecon++) {
       //skip events reconstructed outside the time window
-      double t = fInFilter->GetTime(irecon);
+      TimeDelta t = fInFilter->GetTime(irecon);
       if(t < tloop || t > tloopend)
 	continue;
 
@@ -136,15 +138,15 @@ bool dimfit::Execute(){
     else if(nclusters > nclusters_silent_warning) nclusters_warning = kNClustersSilent;
     else if(nclusters)                            nclusters_warning = kNClustersStandard;
 
-    ss << "INFO: nclusters_warning = " << ReconInfo::EnumAsString(nclusters_warning) << ", nclusters = " << nclusters << " in " << time_window_s << "seconds";
+    ss << "INFO: nclusters_warning = " << ReconInfo::EnumAsString(nclusters_warning) << ", nclusters = " << nclusters << " in " << m_time_window;
     StreamToLog(INFO);
     
     SNWarningParams supernova_warning_parameters(nclusters,fDim,nclusters_warning);
     m_data->SupernovaWarningParameters.push_back(supernova_warning_parameters);
 
     //increment the sliding time window
-    tloop += time_window_step_ns;
-    tloopend = tloop + time_window_ns;
+    tloop += m_time_window_step;
+    tloopend = tloop + m_time_window;
 
   }//while(tloop < tend)
 

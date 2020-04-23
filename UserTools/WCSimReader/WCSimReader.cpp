@@ -413,8 +413,10 @@ SubSample WCSimReader::GetDigits()
     if (idigi == 0){
       // Store times relative to the first digit
       first_time = TimeDelta(digit->GetT());
+      m_ss << "DEBUG: 1st digit time before shifting: " << first_time;
+      StreamToLog(DEBUG1);
     }
-    float T = (TimeDelta(digit->GetT()) - first_time) / TimeDelta::ns;
+    TimeDelta::short_time_t T = (TimeDelta(digit->GetT()) - first_time) / TimeDelta::ns;
     float Q = digit->GetQ();
     PMTid.push_back(ID);
     time.push_back(T);

@@ -31,8 +31,8 @@ class DataOut: public Tool {
   void RemoveDigits(WCSimRootEvent * WCSimEvent,
 		    std::map<int, std::map<int, bool> > & NDigitPerPMTPerTriggerMap);
   void MoveTracks(WCSimRootEvent * WCSimEvent);
-  int  TimeInTriggerWindow(double time);
-  unsigned int TimeInTriggerWindowNoDelete(double time);
+  int  TimeInTriggerWindow(TimeDelta time);
+  unsigned int TimeInTriggerWindowNoDelete(TimeDelta time);
 
   std::string fOutFilename;
   TFile fOutFile;

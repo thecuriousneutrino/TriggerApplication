@@ -164,6 +164,40 @@ bool DataOut::Execute(){
 void DataOut::CreateSubEvents(WCSimRootEvent * WCSimEvent)
 {
   const int n = fTriggers->m_N;
+  if (n==0) return;
+
+  // Move all digit times in trigger 0 to be relative to that trigger,
+  // i.e. move them by the difference of the old header date and the
+  // new taken from the trigger
+  WCSimRootTrigger * trig0 = WCSimEvent->GetTrigger(0);
+  // The new time
+  TimeDelta new_trigger_time = fTriggers->m_triggertime.at(0);
+  // The old time (stored in ns)
+  TimeDelta old_trigger_time = trig0->GetHeader()->GetDate() * TimeDelta::ns;
+  // The difference
+  TimeDelta time_shift = new_trigger_time - old_trigger_time;
+  ss << "DEBUG: Trigger date shift from " << old_trigger_time << " to " << new_trigger_time << ": " << time_shift;
+  StreamToLog(DEBUG2);
+
+  // Move all digits by the *negative* shift. If 5 seconds are added to the
+  // trigger time, the digit times (relative to the trigger) must be moved 5
+  // seonds back, so they remain at the same absolute time.
+  TClonesArray * digits = trig0->GetCherenkovDigiHits();
+  int ndigits_slots = trig0->GetNcherenkovdigihits_slots();
+  for(int i = 0; i < ndigits_slots; i++) {
+    WCSimRootCherenkovDigiHit * d = (WCSimRootCherenkovDigiHit*)digits->At(i);
+    if(!d)
+      continue;
+    double time = d->GetT();
+    ss << "DEBUG: Digit time before shift: " << time;
+    StreamToLog(DEBUG3);
+    time -= time_shift / TimeDelta::ns; // Hit times are stored in ns.
+    ss << "DEBUG: Digit time after shift: " << time;
+    StreamToLog(DEBUG3);
+    d->SetT(time);
+  }
+
+  // Change trigger times and create new SuEvents where necessary
   for(int i = 0; i < n; i++) {
     if(i)
       WCSimEvent->AddSubEvent();
@@ -210,27 +244,28 @@ void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent, std::map<int, std::map<i
     WCSimRootCherenkovDigiHit * d = (WCSimRootCherenkovDigiHit*)digits->At(i);
     if(!d)
       continue;
-    double time = d->GetT();
+    // Absolute time of the digit
+    TimeDelta time = TimeDelta(d->GetT()) + TimeDelta(trig0->GetHeader()->GetDate());
     int window = TimeInTriggerWindow(time);
     int pmt = d->GetTubeId();
     if(!fSaveOnlyFailedDigits) {
+      ss << "DEBUG: Digit at time " << d->GetT() << " belongs to trigger " << window;
+      StreamToLog(DEBUG3);
       //we're saving only things in the trigger window
-      if(window >= 0) {
-	//need to apply an offset to the digit time using the trigger time
-	//do it this slightly odd way to mirror what WCSim does
-	double t = time;
-	t += fTriggerOffset
-	  - (fTriggers->m_triggertime.at(window) / TimeDelta::ns);
-	d->SetT(t);
-      }
       if(window > 0 &&
 	 (fSaveMultiDigiPerTrigger ||
 	  (!fSaveMultiDigiPerTrigger && !NDigitPerPMTPerTriggerMap[pmt][window]))) {
 	//need to add digit to a new trigger window
 	//but not if we've already saved the 1 digit from this pmt in this window we're allowed
-	ss << "DEBUG: Adding digit to trigger " << window;
+	//need to store the digit time relative to the new trigger time
+        WCSimRootTrigger* new_trig = WCSimEvent->GetTrigger(window);
+        double old_time = trig0->GetHeader()->GetDate();
+        double new_time = new_trig->GetHeader()->GetDate();
+	d->SetT(d->GetT() + (old_time - new_time)); // Plus old minus new is correct!
+        // Add the digit
+	ss << "DEBUG: Adding digit to trigger " << window << " at new time " << d->GetT();
 	StreamToLog(DEBUG3);
-	WCSimEvent->GetTrigger(window)->AddCherenkovDigiHit(d);
+        new_trig->AddCherenkovDigiHit(d);
       }
       if(window ||
 	 (window == 0 && !fSaveMultiDigiPerTrigger && NDigitPerPMTPerTriggerMap[pmt][window])) {
@@ -270,7 +305,8 @@ void DataOut::MoveTracks(WCSimRootEvent * WCSimEvent)
     WCSimRootTrack * t = (WCSimRootTrack*)tracks->At(i);
     if(!t)
       continue;
-    double time = t->GetTime();
+    // Absolute time of the track
+    TimeDelta time = TimeDelta(t->GetTime()) + TimeDelta(trig0->GetHeader()->GetDate());
     int window = TimeInTriggerWindowNoDelete(time);
     if(window > 0) {
       ss << "DEBUG: Moving track from 0th  to " << window << " trigger";
@@ -286,18 +322,17 @@ void DataOut::MoveTracks(WCSimRootEvent * WCSimEvent)
   StreamToLog(INFO);
 }
 /////////////////////////////////////////////////////////////////
-int DataOut::TimeInTriggerWindow(double time) {
+int DataOut::TimeInTriggerWindow(TimeDelta time) {
   for(unsigned int i = 0; i < fTriggers->m_N; i++) {
     TimeDelta lo = fTriggers->m_starttime.at(i);
     TimeDelta hi = fTriggers->m_endtime.at(i);
-    TimeDelta delta_time(time);
-    if(delta_time >= lo && delta_time <= hi)
+    if(time >= lo && time <= hi)
       return i;
   }//it
   return -1;
 }
 /////////////////////////////////////////////////////////////////
-unsigned int DataOut::TimeInTriggerWindowNoDelete(double time) {
+unsigned int DataOut::TimeInTriggerWindowNoDelete(TimeDelta time) {
   //we can't return -1 in this (i.e. we don't want to delete tracks)
   //the logic is:
   // if it's anytime before the 0th trigger + postrigger readout window, store in 0th trigger
@@ -308,7 +343,7 @@ unsigned int DataOut::TimeInTriggerWindowNoDelete(double time) {
   const int N = fTriggers->m_N;
   for(unsigned int i = 0; i < N; i++) {
     TimeDelta hi = fTriggers->m_endtime.at(i);
-    if(TimeDelta(time) <= hi)
+    if(time <= hi)
       return i;
   }//it
   ss << "WARNING DataOut::TimeInTriggerWindowNoDelete() could not find a trigger that track with time " << time << " can live in. Returning maximum trigger number " << N - 1;

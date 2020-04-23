@@ -1,15 +1,15 @@
 #include "ReconInfo.h"
 
-ReconInfo::ReconInfo()
- : fNRecons(0),
-   fFirstTime(+9E20),
-   fLastTime(-9E20)
-{
+#include <limits>
+#include <cstdint>
 
+ReconInfo::ReconInfo()
+{
+  Reset();
 }
 
 void ReconInfo::AddRecon(Reconstructer_t reconstructer, int trigger_num,
-			 int nhits, double time, double * vertex,
+			 int nhits, TimeDelta time, double * vertex,
 			 double goodness_of_fit, double goodness_of_time_fit,
 			 bool fill_has_direction)
 {
@@ -35,7 +35,7 @@ void ReconInfo::AddRecon(Reconstructer_t reconstructer, int trigger_num,
 }
 
 void ReconInfo::AddRecon(Reconstructer_t reconstructer, int trigger_num,
-			 int nhits, double time, double * vertex,
+			 int nhits, TimeDelta time, double * vertex,
 			 double goodness_of_fit, double goodness_of_time_fit,
 			 double * direction_euler, double * cherenkov_cone,
 			 double direction_likelihood)
@@ -189,8 +189,8 @@ bool ReconInfo::ShouldProvideDirection(Reconstructer_t r)
 void ReconInfo::Reset()
 {
   fNRecons = 0;
-  fFirstTime = +9E20;
-  fLastTime = -9E20;
+  fFirstTime = std::numeric_limits<TimeDelta::long_time_t>::max() * TimeDelta::s_long_time_unit;
+  fLastTime = std::numeric_limits<TimeDelta::long_time_t>::min() * TimeDelta::s_long_time_unit;
   //event
   fReconstructer.clear();
   fTriggerNum.clear();
@@ -207,7 +207,7 @@ void ReconInfo::Reset()
   fDirectionLikelihood.clear();
 }
 
-void ReconInfo::UpdateTimeBoundaries(double time)
+void ReconInfo::UpdateTimeBoundaries(TimeDelta time)
 {
   if(time < fFirstTime)
     fFirstTime = time;

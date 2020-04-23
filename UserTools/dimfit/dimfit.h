@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "Tool.h"
+#include "TimeDelta.h"
 
 class dimfit: public Tool {
 
@@ -23,10 +24,8 @@ class dimfit: public Tool {
   std::string fInputFilterName;
 
   std::vector<double> * fEventPos;
-  double time_window_s;
-  double time_window_ns;
-  double time_window_step_s;
-  double time_window_step_ns;
+  TimeDelta m_time_window;
+  TimeDelta m_time_window_step;
   int min_events;
 
   double fCentr[15];
