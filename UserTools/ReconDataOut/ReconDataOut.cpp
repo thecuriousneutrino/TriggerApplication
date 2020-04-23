@@ -36,6 +36,7 @@ bool ReconDataOut::Initialise(std::string configfile, DataModel &data){
   fTreeRecon->Branch("EventNum", &fEvtNum);
   fTreeRecon->Branch("TriggerNum", &fRTTriggerNum);
   fTreeRecon->Branch("NDigits", &fRTNHits);
+  fTreeRecon->Branch("Energy", &fRTEnergy);
   fTreeRecon->Branch("Reconstructer", &fRTReconstructer, "Reconstruter/I");
   fTreeRecon->Branch("Time", &fRTTime);
   fTreeRecon->Branch("Vertex", fRTVertex, "Vertex[3]/D");
@@ -75,6 +76,7 @@ bool ReconDataOut::Execute(){
   for(int irecon = 0; irecon < nrecons; irecon++) {
     fRTTriggerNum = fInFilter->GetTriggerNum(irecon);
     fRTNHits = fInFilter->GetNHits(irecon);
+    fRTEnergy = fInFilter->GetEnergy(irecon);
     fRTReconstructer = fInFilter->GetReconstructer(irecon);
     fRTTime = fInFilter->GetTime(irecon) / TimeDelta::ns;
     Pos3D pos = fInFilter->GetVertex(irecon);

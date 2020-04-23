@@ -11,7 +11,7 @@ ReconInfo::ReconInfo()
 void ReconInfo::AddRecon(Reconstructer_t reconstructer, int trigger_num,
 			 int nhits, TimeDelta time, double * vertex,
 			 double goodness_of_fit, double goodness_of_time_fit,
-			 bool fill_has_direction)
+			 bool fill_has_direction, double energy)
 {
   if(fill_has_direction) {
     if(ReconInfo::ShouldProvideDirection(reconstructer)) {
@@ -22,6 +22,7 @@ void ReconInfo::AddRecon(Reconstructer_t reconstructer, int trigger_num,
   fReconstructer.push_back(reconstructer);
   fTriggerNum.push_back(trigger_num);
   fNHits.push_back(nhits);
+  fEnergy.push_back(energy);
   fTime.push_back(time);
   Pos3D pos;
   pos.x = vertex[0];
@@ -38,9 +39,9 @@ void ReconInfo::AddRecon(Reconstructer_t reconstructer, int trigger_num,
 			 int nhits, TimeDelta time, double * vertex,
 			 double goodness_of_fit, double goodness_of_time_fit,
 			 double * direction_euler, double * cherenkov_cone,
-			 double direction_likelihood)
+			 double direction_likelihood, double energy)
 {
-  AddRecon(reconstructer, trigger_num, nhits, time, vertex, goodness_of_fit, goodness_of_time_fit, false);
+  AddRecon(reconstructer, trigger_num, nhits, time, vertex, goodness_of_fit, goodness_of_time_fit, false, energy);
   fHasDirection.push_back(true);
   DirectionEuler direct;
   direct.theta = direction_euler[0];
@@ -59,6 +60,7 @@ void ReconInfo::AddReconFrom(ReconInfo * in, const int irecon)
   fReconstructer.push_back(in->GetReconstructer(irecon));
   fTriggerNum.push_back(in->GetTriggerNum(irecon));
   fNHits.push_back(in->GetNHits(irecon));
+  fEnergy.push_back(in->GetEnergy(irecon));
   fTime.push_back(in->GetTime(irecon));
   fVertex.push_back(in->GetVertex(irecon));
   fGoodnessOfFit.push_back(in->GetGoodnessOfFit(irecon));
@@ -195,6 +197,7 @@ void ReconInfo::Reset()
   fReconstructer.clear();
   fTriggerNum.clear();
   fNHits.clear();
+  fEnergy.clear();
   //vertex
   fTime.clear();
   fVertex.clear();

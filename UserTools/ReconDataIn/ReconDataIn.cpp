@@ -39,6 +39,7 @@ bool ReconDataIn::Initialise(std::string configfile, DataModel &data){
   //fTreeRecon->SetBranchAddress("EventNum", &fEvtNum); //Not usde
   fTreeRecon->SetBranchAddress("TriggerNum", &fRTTriggerNum);
   fTreeRecon->SetBranchAddress("NDigits", &fRTNHits);
+  fTreeRecon->SetBranchAddress("Energy", &fRTEnergy);
   fTreeRecon->SetBranchAddress("Reconstructer", &fRTReconstructerInt);
   fTreeRecon->SetBranchAddress("Time", &fRTTime);
   fTreeRecon->SetBranchAddress("Vertex", fRTVertex);
@@ -66,10 +67,10 @@ bool ReconDataIn::Execute(){
 
     if(fRTHasDirection) {
       m_data->RecoInfo.AddRecon((Reconstructer_t)fRTReconstructerInt, fRTTriggerNum, fRTNHits, fRTTime, &(fRTVertex[0]), fRTGoodnessOfFit, fRTGoodnessOfTimeFit, 
-				&(fRTDirectionEuler[0]), &(fRTCherenkovCone[0]), fRTDirectionLikelihood);
+				&(fRTDirectionEuler[0]), &(fRTCherenkovCone[0]), fRTDirectionLikelihood, fRTEnergy);
     }
     else {
-      m_data->RecoInfo.AddRecon((Reconstructer_t)fRTReconstructerInt, fRTTriggerNum, fRTNHits, fRTTime, &(fRTVertex[0]), fRTGoodnessOfFit, fRTGoodnessOfTimeFit, true);
+      m_data->RecoInfo.AddRecon((Reconstructer_t)fRTReconstructerInt, fRTTriggerNum, fRTNHits, fRTTime, &(fRTVertex[0]), fRTGoodnessOfFit, fRTGoodnessOfTimeFit, true, fRTEnergy);
     }
   }//irecon
 

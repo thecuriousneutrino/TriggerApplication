@@ -28,6 +28,7 @@ class ReconDataOut: public Tool {
 
   int    fRTTriggerNum;
   int    fRTNHits;
+  double fRTEnergy;
   Reconstructer_t fRTReconstructer;
   double fRTTime;
   double fRTVertex[4];  //x,y,z

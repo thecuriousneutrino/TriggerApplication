@@ -23,6 +23,7 @@ class ReconDataIn: public Tool {
 
   int    fRTTriggerNum;
   int    fRTNHits;
+  double fRTEnergy;
   int    fRTReconstructerInt; //TODO when the enum is actually save in the tree, replace casting from int with Reconstructer_t
   double fRTTime;
   double fRTVertex[4];  //x,y,z

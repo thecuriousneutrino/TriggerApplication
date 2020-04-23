@@ -60,10 +60,10 @@ class ReconInfo
  public:
   ReconInfo();
 
-  void AddRecon(Reconstructer_t reconstructer, int trigger_num, int nhits, TimeDelta time, double * vertex, double goodness_of_fit, double goodness_of_time_fit, bool fill_has_direction = true);
+  void AddRecon(Reconstructer_t reconstructer, int trigger_num, int nhits, TimeDelta time, double * vertex, double goodness_of_fit, double goodness_of_time_fit, bool fill_has_direction = true, double energy = -1.);
 
   void AddRecon(Reconstructer_t reconstructer, int trigger_num, int nhits, TimeDelta time, double * vertex, double goodness_of_fit, double goodness_of_time_fit,
-		double * direction_euler, double * cherenkov_cone, double direction_likelihood);
+		double * direction_euler, double * cherenkov_cone, double direction_likelihood, double energy = -1.);
 
   void AddReconFrom(ReconInfo * in, const int irecon);
 
@@ -87,6 +87,8 @@ class ReconInfo
   Reconstructer_t GetReconstructer    (int irecon) { return fReconstructer[irecon]; }
   int             GetTriggerNum       (int irecon) { return fTriggerNum[irecon]; }
   int             GetNHits            (int irecon) { return fNHits[irecon]; }
+  double          GetEnergy           (int irecon) { return fEnergy[irecon]; }
+  void            SetEnergy           (int irecon, double energy) { fEnergy[irecon] = energy; }
   TimeDelta       GetTime             (int irecon) { return fTime[irecon]; }
   Pos3D           GetVertex           (int irecon) { return fVertex[irecon]; }
   double          GetGoodnessOfFit    (int irecon) { return fGoodnessOfFit[irecon]; }
@@ -110,6 +112,7 @@ class ReconInfo
   std::vector<Reconstructer_t> fReconstructer;
   std::vector<int>             fTriggerNum;
   std::vector<int>             fNHits;
+  std::vector<double>          fEnergy;
 
   //vertex
   std::vector<TimeDelta>       fTime;
