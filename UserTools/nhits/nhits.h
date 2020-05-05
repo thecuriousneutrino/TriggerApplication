@@ -19,6 +19,7 @@ class NHits: public Tool {
   bool Finalise();
 
  private:
+ 
   /// Width of the sliding window
   TimeDelta m_trigger_search_window;
   /// Trigger threshold - number of digits must be above this value (equal to does not fire the trigger)
@@ -27,6 +28,10 @@ class NHits: public Tool {
   TimeDelta m_trigger_save_window_pre;
   /// Post-trigger time for saving digits
   TimeDelta m_trigger_save_window_post;
+  /// Pre-trigger time for masking digits from future tools
+  TimeDelta m_trigger_mask_window_pre;
+  /// Post-trigger time for masking digits from future tools
+  TimeDelta m_trigger_mask_window_post;
   /// Trigger on OD digits, rather than ID digits?
   bool m_trigger_OD;
 

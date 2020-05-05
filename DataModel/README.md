@@ -16,12 +16,15 @@ Set up to allow multiple types of PMT in the ID (e.g. 20" + mPMT hybrid geometry
 
 ### SubSample
 
-Stores (in vectors) relative digit time and PMTID. Optionally, store digit charge.
+Stores (in vectors) relative digit time, digit charge, and PMT ID.
 
 Vectors of hit information are added using the `Append` method.
 
 All digit times are relative to the `m_timestamp`. When comparing times between
 different SubSamples, this needs to be taken into account.
+
+Which trigger readout window(s) a digit is associated with, and whether a digit should be masked from future triggers
+are held in additional vectors, and are set with `TellMeAboutTheTriggers()`
 
 ### TimeDelta
 

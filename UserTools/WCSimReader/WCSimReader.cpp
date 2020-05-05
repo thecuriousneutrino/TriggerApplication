@@ -384,11 +384,14 @@ bool WCSimReader::Execute(){
 	  last  = time;
       }//ihit
       m_data->IDTriggers.AddTrigger(m_wcsim_trigger->GetTriggerType(),
-				    first,
-				    last,
+				    trigger_time - first, //readout
+				    last - trigger_time,
+				    trigger_time - first, //mask
+				    last - trigger_time,
 				    trigger_time,
 				    m_wcsim_trigger->GetTriggerInfo());
       subid_all.Append(subid_this);
+      Log("WARN: Trigger added to TriggerInfo. Note that the mask time has been set to the entire readout window", WARN, m_verbose);
     }//itrigger
     m_data->IDSamples.push_back(subid_all);
   }//
