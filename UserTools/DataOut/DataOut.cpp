@@ -4,7 +4,6 @@
 DataOut::DataOut():Tool(){}
 
 /////////////////////////////////////////////////////////////////
-
 bool DataOut::Initialise(std::string configfile, DataModel &data){
 
   if(configfile!="")  m_variables.Initialise(configfile);
@@ -27,77 +26,79 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
 
   //open the output file
   Log("DEBUG: DataOut::Initialise opening output file...", DEBUG2, m_verbose);
-  if(! m_variables.Get("outfilename", fOutFilename)) {
+  if(! m_variables.Get("outfilename", m_output_filename)) {
     Log("ERROR: outfilename configuration not found. Cancelling initialisation", ERROR, m_verbose);
     return false;
   }
-  fOutFile.Open(fOutFilename.c_str(), "RECREATE");
+  m_output_file = new TFile(m_output_filename.c_str(), "RECREATE");
 
   //other options
-  fSaveMultiDigiPerTrigger = true;
-  m_variables.Get("save_multiple_digits_per_trigger", fSaveMultiDigiPerTrigger);
-  fTriggerOffset = 0;
-  m_variables.Get("trigger_offset", fTriggerOffset);
-  fSaveOnlyFailedDigits = false;
-  m_variables.Get("save_only_failed_digits", fSaveOnlyFailedDigits);
+  m_save_multiple_hits_per_trigger = true;
+  m_variables.Get("save_multiple_hits_per_trigger", m_save_multiple_hits_per_trigger);
+  Log("WARN: TODO save_multiple_hits_per_trigger is not currently implemented", WARN, m_verbose);
+  double trigger_offset_temp = 0;
+  m_variables.Get("trigger_offset", trigger_offset_temp);
+  m_trigger_offset = TimeDelta(trigger_offset_temp);
+  m_save_only_failed_hits = false;
+  m_variables.Get("save_only_failed_hits", m_save_only_failed_hits);
+  Log("WARN: TODO save_only_failed_hits is not currently implemented", WARN, m_verbose);
 
   //setup the out event tree
   Log("DEBUG: DataOut::Initialise setting up output event tree...", DEBUG2, m_verbose);
   // Nevents unique event objects
   Int_t bufsize = 64000;
-  fTreeEvent = new TTree("wcsimT","WCSim Tree");
+  m_event_tree = new TTree("wcsimT","WCSim Tree");
   m_data->IDWCSimEvent_Triggered = new WCSimRootEvent();
-  fTreeEvent->Branch("wcsimrootevent", "WCSimRootEvent", &m_data->IDWCSimEvent_Triggered, bufsize,2);
+  m_data->IDWCSimEvent_Triggered->Initialize();
+  m_event_tree->Branch("wcsimrootevent", "WCSimRootEvent", &m_data->IDWCSimEvent_Triggered, bufsize,2);
   if(m_data->HasOD) {
     m_data->ODWCSimEvent_Triggered = new WCSimRootEvent();
-    fTreeEvent->Branch("wcsimrootevent_OD", "WCSimRootEvent", &m_data->ODWCSimEvent_Triggered, bufsize,2);
+    m_data->ODWCSimEvent_Triggered->Initialize();
+    m_event_tree->Branch("wcsimrootevent_OD", "WCSimRootEvent", &m_data->ODWCSimEvent_Triggered, bufsize,2);
   }
   else {
     m_data->ODWCSimEvent_Triggered = 0;
   }
-  fTreeEvent->Branch("wcsimfilename", &(m_data->CurrentWCSimFiles), bufsize, 0);
-  fTreeEvent->Branch("wcsimeventnums", &(m_data->CurrentWCSimEventNums), bufsize, 0);
+  m_event_tree->Branch("wcsimfilename", &(m_data->CurrentWCSimFile));
+  m_event_tree->Branch("wcsimeventnum", &(m_data->CurrentWCSimEventNum));
 
   //fill the output event-independent trees
-  //There are 1 unique geom objects, so this is a simple clone of 1 entry
   Log("DEBUG: DataOut::Initialise filling event-independent trees...", DEBUG2, m_verbose);
-  Log("DEBUG:   Geometry...", DEBUG2, m_verbose);
-  fTreeGeom = m_data->WCSimGeomTree->CloneTree(1);
-  fTreeGeom->Write();
-  delete fTreeGeom;
+
+  //There are 1 unique geom objects, so this is a simple clone of 1 entry
+  if(m_data->IsMC) {
+    Log("DEBUG:   Geometry...", DEBUG2, m_verbose);
+    TTree * geom_tree = m_data->WCSimGeomTree->CloneTree(1);
+    geom_tree->Write();
+    delete geom_tree;
+  }
+  else {
+    Log("WARN: TODO Geometry tree filling is not yet implemented for data");
+  }
 
   //There are Nfiles unique options objects, so this is a clone of all entries
   // plus a new branch with the wcsim filename 
-  Log("DEBUG:   Options & file names...", DEBUG2, m_verbose);
-  fTreeOptions = m_data->WCSimOptionsTree->CloneTree();
-  ss << "DEBUG:     entries: " << fTreeOptions->GetEntries();
-  StreamToLog(DEBUG2);
-  TObjString * wcsimfilename = new TObjString();
-  TBranch * branch = fTreeOptions->Branch("wcsimfilename", &wcsimfilename);
-  for(int i = 0; i < fTreeOptions->GetEntries(); i++) {
-    m_data->WCSimOptionsTree->GetEntry(i);
-    fTreeOptions->GetEntry(i);
-    wcsimfilename->SetString(m_data->WCSimOptionsTree->GetFile()->GetName());
-    branch->Fill();
-  }//i
-  fTreeOptions->Write();
-  delete wcsimfilename;
-  delete fTreeOptions;
+  if(m_data->IsMC) {
+    Log("DEBUG:   Options & file names...", DEBUG2, m_verbose);
+    TTree * options_tree = m_data->WCSimOptionsTree->CloneTree();
+    m_ss << "DEBUG:     entries: " << options_tree->GetEntries();
+    StreamToLog(DEBUG2);
+    TObjString * wcsimfilename = new TObjString();
+    TBranch * branch = options_tree->Branch("wcsimfilename", &wcsimfilename);
+    for(int i = 0; i < options_tree->GetEntries(); i++) {
+      m_data->WCSimOptionsTree->GetEntry(i);
+      options_tree->GetEntry(i);
+      wcsimfilename->SetString(m_data->WCSimOptionsTree->GetFile()->GetName());
+      branch->Fill();
+    }//i
+    options_tree->Write();
+    delete wcsimfilename;
+    delete options_tree;
+  }
 
   Log("DEBUG: DataOut::Initialise creating trigger info...", DEBUG2, m_verbose);
-  fTriggers = new TriggerInfo();
-  fEvtNum = 0;
-
-  Log("DEBUG: DataOut::Initialise creating ID trigger maps...", DEBUG2, m_verbose);
-  ss << "DEBUG:   entries: " << m_data->IDNPMTs;
-  StreamToLog(DEBUG2);
-  for(int i = 0; i <= m_data->IDNPMTs; i++)
-    fIDNDigitPerPMTPerTriggerMap[i] = std::map<int, bool>();
-  Log("DEBUG: DataOut::Initialise creating OD trigger maps...", DEBUG2, m_verbose);
-  ss << "DEBUG:   entries: " << m_data->ODNPMTs;
-  StreamToLog(DEBUG2);
-  for(int i = 0; i <= m_data->ODNPMTs; i++)
-    fODNDigitPerPMTPerTriggerMap[i] = std::map<int, bool>();
+  m_all_triggers = new TriggerInfo();
+  m_event_num = 0;
 
   if(m_stopwatch) Log(m_stopwatch->Result("Initialise"), INFO, m_verbose);
 
@@ -111,260 +112,306 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
 bool DataOut::Execute(){
   if(m_stopwatch) m_stopwatch->Start();
 
-  Log("DEBUG: DataOut::Execute Starting", DEBUG1, m_verbose);
-
-  for(int i = 0; i <= m_data->IDNPMTs; i++)
-    fIDNDigitPerPMTPerTriggerMap[i].clear();
-  for(int i = 0; i <= m_data->ODNPMTs; i++)
-    fODNDigitPerPMTPerTriggerMap[i].clear();
-
   //Gather together all the trigger windows
-  fTriggers->Clear();
-  fTriggers->AddTriggers(&(m_data->IDTriggers));
+  m_all_triggers->Clear();
+  m_all_triggers->AddTriggers(&(m_data->IDTriggers));
   if(m_data->HasOD)
-    fTriggers->AddTriggers(&(m_data->ODTriggers));
-  ss << "INFO: Have " << fTriggers->m_num_triggers << " triggers to save times:";
+    m_all_triggers->AddTriggers(&(m_data->ODTriggers));
+  m_ss << "INFO: Have " << m_all_triggers->m_num_triggers << " triggers to save times:";
   StreamToLog(INFO);
-  for(int i = 0; i < fTriggers->m_num_triggers; i++) {
-    ss << "INFO: \t[" << fTriggers->m_readout_start_time.at(i)
-       << ", " << fTriggers->m_readout_end_time.at(i) << "] "
-       << fTriggers->m_trigger_time.at(i) << " ns with type "
-       << WCSimEnumerations::EnumAsString(fTriggers->m_type.at(i)) << " extra info";
-    for(unsigned int ii = 0; ii < fTriggers->m_info.at(i).size(); ii++)
-      ss << " " << fTriggers->m_info.at(i).at(ii);
+  for(int i = 0; i < m_all_triggers->m_num_triggers; i++) {
+    m_ss << "INFO: \t[" << m_all_triggers->m_readout_start_time.at(i)
+       << ", " << m_all_triggers->m_readout_end_time.at(i) << "] "
+       << m_all_triggers->m_trigger_time.at(i) << " ns with type "
+       << WCSimEnumerations::EnumAsString(m_all_triggers->m_type.at(i)) << " extra info";
+    for(unsigned int ii = 0; ii < m_all_triggers->m_info.at(i).size(); ii++)
+      m_ss << " " << m_all_triggers->m_info.at(i).at(ii);
     StreamToLog(INFO);
   }//i
 
-  //Note: the ranges vector can contain overlapping ranges
+  //Note: the trigger ranges vector can contain overlapping ranges
   //we want to make sure the triggers output aren't overlapping
-  // This is actually handled in DataOut::RemoveDigits()
-  // It puts digits into the output event in the earliest trigger they belong to
+  // This is actually handled in DataOut::FillHits()
+  // It puts hits into the output event in the earliest trigger they belong to
 
-  //get the WCSim event
-  (*m_data->IDWCSimEvent_Triggered) = (*(m_data->IDWCSimEvent_Raw));
-  //prepare the subtriggers
-  CreateSubEvents(m_data->IDWCSimEvent_Triggered);
-  //remove the digits that aren't in the trigger window(s)
-  // also move digits from the 0th trigger to the trigger window it's in
-  RemoveDigits(m_data->IDWCSimEvent_Triggered, fIDNDigitPerPMTPerTriggerMap);
-  //also redistribute some true tracks
-  MoveTracks(m_data->IDWCSimEvent_Triggered);
-  //set some trigger header infromation that requires all the digits to be 
-  // present to calculate e.g. sumq
-  FinaliseSubEvents(m_data->IDWCSimEvent_Triggered);
-  
-  if(m_data->HasOD) {
-    (*m_data->ODWCSimEvent_Triggered) = (*(m_data->ODWCSimEvent_Raw));
-    CreateSubEvents(m_data->ODWCSimEvent_Triggered);
-    RemoveDigits(m_data->ODWCSimEvent_Triggered, fODNDigitPerPMTPerTriggerMap);
-    MoveTracks(m_data->ODWCSimEvent_Triggered);
-    FinaliseSubEvents(m_data->ODWCSimEvent_Triggered);
-  }
+  //Fill the WCSimRootEvent with hit/trigger information, and truth information (if available)
+  if(m_all_triggers->m_num_triggers) {
+    ExecuteSubDet(m_data->IDWCSimEvent_Triggered, m_data->IDSamples, m_data->IDWCSimEvent_Raw);
+    if(m_data->HasOD) {
+      ExecuteSubDet(m_data->ODWCSimEvent_Triggered, m_data->ODSamples, m_data->ODWCSimEvent_Raw);
+    }
+  }//>=1 trigger found
 
-  fTreeEvent->Fill();
+  //Fill the tree with what we've just created
+  m_event_tree->Fill();
 
   //make sure the triggers are reset for the next event
   m_data->IDTriggers.Clear();
   m_data->ODTriggers.Clear();
 
   //increment event number
-  fEvtNum++;
+  m_event_num++;
 
   if(m_stopwatch) m_stopwatch->Stop();
 
   return true;
 }
 /////////////////////////////////////////////////////////////////
-void DataOut::CreateSubEvents(WCSimRootEvent * WCSimEvent)
-{
-  const int n = fTriggers->m_num_triggers;
+void DataOut::ExecuteSubDet(WCSimRootEvent * wcsim_event, std::vector<SubSample> & samples, WCSimRootEvent * original_wcsim_event) {
+  //ReInitialise the WCSimRootEvent
+  // This clears the TObjArray of WCSimRootTrigger's,
+  // and creates a WCSimRootTrigger in the first slot
+  wcsim_event->ReInitialize();
+
+  //If there are multiple triggers in the event,
+  // create subevents (i.e. new WCSimRootTrigger's) in the WCSimRootEvent
+  //Also sets the time correctly
+  CreateSubEvents(wcsim_event);
+
+  //Get the WCSim "date", used later to give the hits the correct absolute time.
+  // Also add the trigger offset from the config file
+  TimeDelta time_shift = GetOffset(original_wcsim_event);
+
+  //For every hit, if it's in a trigger window,
+  //add it to the appropriate WCSimRootTrigger in the WCSimRootEvent
+  FillHits(wcsim_event, samples);
+
+  //If this is an MC file, we also need to add
+  // - true tracks
+  // - true hits
+  if(m_data->IsMC)
+    AddTruthInfo(wcsim_event, original_wcsim_event, time_shift);
+
+  //Set some trigger header infromation that requires all the hits to be 
+  // present to calculate e.g. sumq
+  FinaliseSubEvents(wcsim_event);  
+}
+/////////////////////////////////////////////////////////////////
+void DataOut::CreateSubEvents(WCSimRootEvent * wcsim_event) {
+  const int n = m_all_triggers->m_num_triggers;
   if (n==0) return;
-
-  // Move all digit times in trigger 0 to be relative to that trigger,
-  // i.e. move them by the difference of the old header date and the
-  // new taken from the trigger
-  WCSimRootTrigger * trig0 = WCSimEvent->GetTrigger(0);
-  // The new time
-  TimeDelta new_trigger_time = fTriggers->m_trigger_time.at(0);
-  // The old time (stored in ns)
-  TimeDelta old_trigger_time = trig0->GetHeader()->GetDate() * TimeDelta::ns;
-  // The difference
-  TimeDelta time_shift = new_trigger_time - old_trigger_time;
-  ss << "DEBUG: Trigger date shift from " << old_trigger_time << " to " << new_trigger_time << ": " << time_shift;
-  StreamToLog(DEBUG2);
-
-  // Move all digits by the *negative* shift. If 5 seconds are added to the
-  // trigger time, the digit times (relative to the trigger) must be moved 5
-  // seconds back, so they remain at the same absolute time.
-  TClonesArray * digits = trig0->GetCherenkovDigiHits();
-  int ndigits_slots = trig0->GetNcherenkovdigihits_slots();
-  for(int i = 0; i < ndigits_slots; i++) {
-    WCSimRootCherenkovDigiHit * d = (WCSimRootCherenkovDigiHit*)digits->At(i);
-    if(!d)
-      continue;
-    double time = d->GetT();
-    ss << "DEBUG: Digit time before shift: " << time;
-    StreamToLog(DEBUG3);
-    time -= time_shift / TimeDelta::ns; // Hit times are stored in ns.
-    ss << "DEBUG: Digit time after shift: " << time;
-    StreamToLog(DEBUG3);
-    d->SetT(time);
-  }
 
   // Change trigger times and create new SubEvents where necessary
   for(int i = 0; i < n; i++) {
     if(i)
-      WCSimEvent->AddSubEvent();
-    WCSimRootTrigger * trig = WCSimEvent->GetTrigger(i);
-    double offset = fTriggerOffset;
-    trig->SetHeader(fEvtNum, 0, (fTriggers->m_trigger_time.at(i) / TimeDelta::ns), i+1);
-    trig->SetTriggerInfo(fTriggers->m_type.at(i), fTriggers->m_info.at(i));
+      wcsim_event->AddSubEvent();
+    WCSimRootTrigger * trig = wcsim_event->GetTrigger(i);
+    trig->SetHeader(m_event_num, 0, (m_all_triggers->m_trigger_time.at(i) / TimeDelta::ns), i+1);
+    trig->SetTriggerInfo(m_all_triggers->m_type.at(i), m_all_triggers->m_info.at(i));
     trig->SetMode(0);
   }//i
 }
 /////////////////////////////////////////////////////////////////
-void DataOut::FinaliseSubEvents(WCSimRootEvent * WCSimEvent)
-{
-  const int n = fTriggers->m_num_triggers;
+TimeDelta DataOut::GetOffset(WCSimRootEvent * original_wcsim_event) {
+
+  TimeDelta time_shift(0);
+
+  if(m_data->IsMC) {
+    // Get the original event trigger time ("date"). Subtraction of this is used
+    // when we want to store the hits with their new trigger offsets
+    WCSimRootTrigger * trig0 = original_wcsim_event->GetTrigger(0);
+    // The old time (stored in ns)
+    TimeDelta old_trigger_time = trig0->GetHeader()->GetDate() * TimeDelta::ns;
+    time_shift += old_trigger_time;
+    m_ss << "DEBUG: Trigger date shift from input WCSim file is " << old_trigger_time;
+    StreamToLog(DEBUG2);
+  }
+
+  m_ss << "DEBUG: Adding additional user-defined time shift of "
+       << m_trigger_offset;
+  StreamToLog(DEBUG2);
+
+  time_shift += m_trigger_offset;
+  m_ss << "DEBUG: Total time shift is " << time_shift;
+  StreamToLog(DEBUG1);
+
+  return time_shift;
+}
+/////////////////////////////////////////////////////////////////
+void DataOut::FillHits(WCSimRootEvent * wcsim_event, std::vector<SubSample> & samples) {
+  unsigned int trigger_window_to_check;
+  TimeDelta time;
+  std::vector<int> photon_id_temp;
+  //Loop over all SubSamples
+  for(std::vector<SubSample>::iterator is=samples.begin(); is!=samples.end(); ++is){
+    trigger_window_to_check = 0;
+    // Make sure hit times are ordered in time
+    Log("WARN: TODO Sorting by time, and doing time window checks, will not be required after #49");
+    is->SortByTime();
+    //loop over every hit
+    const unsigned int nhits = is->m_time.size();
+    int counter = 0;
+    for(int ihit = 0; ihit < nhits; ihit++) {
+      time = is->AbsoluteDigitTime(ihit);
+      m_ss << "Hit " << ihit << " is at time " << time << std::endl
+	   << "Checking hit is in range [" << m_all_triggers->m_readout_start_time.at(trigger_window_to_check)
+	   << ", " << m_all_triggers->m_readout_end_time.at(trigger_window_to_check) << "]";
+      StreamToLog(DEBUG3);
+      
+      //hit time is before trigger window
+      if(time < m_all_triggers->m_readout_start_time.at(trigger_window_to_check)) {
+	Log("Too early", DEBUG3, m_verbose);
+	continue;
+      }
+      //hit time is after trigger window; check the next trigger window
+      else if(time > m_all_triggers->m_readout_end_time.at(trigger_window_to_check)) {
+	ihit--;
+	trigger_window_to_check++;
+	Log("Too late", DEBUG3, m_verbose);
+	if(trigger_window_to_check >= m_all_triggers->m_num_triggers) break;
+	continue;
+      }
+
+      // + m_trigger_offset adds the user-defined "offset"
+      // - trigger time ("Date") because hits are defined relative to their trigger time
+      time += m_trigger_offset -
+	(wcsim_event->GetTrigger(trigger_window_to_check)->GetHeader()->GetDate() * TimeDelta::ns);
+
+      //hit is in this window. Let's save it
+      wcsim_event->GetTrigger(trigger_window_to_check)->AddCherenkovDigiHit(is->m_charge[ihit],
+									    time / TimeDelta::ns,
+									    is->m_PMTid[ihit],
+									    photon_id_temp);
+      m_ss << "Saved hit " << counter++;
+      StreamToLog(DEBUG3);
+    }//ihit
+  }//loop over SubSamples
+}
+/////////////////////////////////////////////////////////////////
+void DataOut::AddTruthInfo(WCSimRootEvent * wcsim_event, WCSimRootEvent * original_wcsim_event, const TimeDelta & time_shift) {
+  //get the "triggers", where everything is stored
+  WCSimRootTrigger * new_trig = wcsim_event->GetTrigger(0);
+  WCSimRootTrigger * old_trig = original_wcsim_event->GetTrigger(0);
+
+  //set vertex info
+  const int nvtx = old_trig->GetNvtxs();
+  new_trig->SetNvtxs(nvtx);
+  for(int ivtx = 0; ivtx < nvtx; ivtx++) {
+    new_trig->SetVtxsvol(ivtx, old_trig->GetVtxsvol(ivtx));
+    for(int idim = 0; idim < 3; idim++) {
+      new_trig->SetVtxs(ivtx, idim, old_trig->GetVtxs(ivtx, idim));
+    }//idim
+  }//ivtx
+
+  //set generic event info
+  new_trig->SetMode(old_trig->GetMode());
+  new_trig->SetVecRecNumber(old_trig->GetVecRecNumber());
+  new_trig->SetJmu(old_trig->GetJmu());
+  new_trig->SetJp(old_trig->GetJp());
+  new_trig->SetNpar(old_trig->GetNpar());
+
+  //set pi0 info
+  const WCSimRootPi0 * pi0 = old_trig->GetPi0Info();
+  Float_t pi0_vtx[3];
+  Int_t   pi0_gamma_id[2];
+  Float_t pi0_gamma_e[2];
+  Float_t pi0_gamma_vtx[2][3];
+  for(int i = 0; i < 3; i++)
+    pi0_vtx[i] = pi0->GetPi0Vtx(i);
+  for(int i = 0; i < 2; i++) {
+    pi0_gamma_id[i] = pi0->GetGammaID(i);
+    pi0_gamma_e [i] = pi0->GetGammaE (i);
+    for(int j = 0; j < 3; j++)
+      pi0_gamma_vtx[i][j] = pi0->GetGammaVtx(i, j);
+  }//i
+  new_trig->SetPi0Info(pi0_vtx, pi0_gamma_id, pi0_gamma_e, pi0_gamma_vtx);
+
+  //set true hit info
+  new_trig->SetNumTubesHit(old_trig->GetNumTubesHit());
+  WCSimRootCherenkovHit * hit;
+  WCSimRootCherenkovHitTime * hit_time;
+  for(int ihit = 0; ihit < old_trig->GetNcherenkovhits(); ihit++) {
+    TObject * obj = old_trig->GetCherenkovHits()->At(ihit);
+    if(!obj) continue;
+    hit = dynamic_cast<WCSimRootCherenkovHit*>(obj);
+    int tube_id = hit->GetTubeID();
+    std::vector<float> true_times;
+    std::vector<int>   primary_parent_id;
+    for(int itime = hit->GetTotalPe(0); itime < hit->GetTotalPe(0) + hit->GetTotalPe(1); itime++) {
+      TObject * obj = old_trig->GetCherenkovHitTimes()->At(itime);
+      if(!obj) continue;
+      hit_time = dynamic_cast<WCSimRootCherenkovHitTime*>(obj);
+      true_times       .push_back(hit_time->GetTruetime());
+      primary_parent_id.push_back(hit_time->GetParentID());
+    }//itime
+    new_trig->AddCherenkovHit(tube_id, true_times, primary_parent_id);
+  }//ihit
+
+  //set true track info
+  WCSimRootTrack * track;
+  for(int itrack = 0; itrack < old_trig->GetNtrack_slots(); itrack++) {
+    TObject * obj = old_trig->GetTracks()->At(itrack);
+    if(!obj) continue;
+    track = dynamic_cast<WCSimRootTrack*>(obj);
+    new_trig->AddTrack(track);
+  }//itrack
+
+  //set true digit parent info
+  // This is messy, since the WCSim digit order
+  // is different to the TriggerApplication digit order
+  //we're looping over triggers here
+  for(int itrigger = 0; itrigger < m_all_triggers->m_num_triggers; itrigger++) {
+    if(itrigger)
+      new_trig = wcsim_event->GetTrigger(itrigger);
+    double this_trigger_time = new_trig->GetHeader()->GetDate();
+    WCSimRootCherenkovDigiHit * new_digit;
+    WCSimRootCherenkovDigiHit * old_digit;
+    //not looping over "slots", because we just wrote this file, so we know there are no gaps
+    for(int idigit = 0; idigit < new_trig->GetNcherenkovdigihits(); idigit++) {
+      TObject * obj = new_trig->GetCherenkovDigiHits()->At(idigit);
+      if(!obj) continue;
+      new_digit = dynamic_cast<WCSimRootCherenkovDigiHit*>(obj);
+      int tube_id = new_digit->GetTubeId();
+      //get the time
+      double time = new_digit->GetT();
+      //and convert it back to the original (i.e. relative to WCSim's Date(), rather than 
+      // TriggerApp's individual triggers' Date()s)
+      // - time_shift subtracts the WCSim Date, and subtracts the user-defined "offset"
+      // + this_trigger_time because hits are defined relative to their trigger time
+      time += - (time_shift / TimeDelta::ns) + this_trigger_time;
+
+      //Now we find the new digit
+      bool found = false;
+      for(int idigit_old = 0; idigit_old < old_trig->GetNcherenkovdigihits_slots(); idigit_old++) {
+	TObject * obj = old_trig->GetCherenkovDigiHits()->At(idigit_old);
+	if(!obj) continue;
+	old_digit = dynamic_cast<WCSimRootCherenkovDigiHit*>(obj);
+	// First check tube id
+	if(tube_id != old_digit->GetTubeId()) continue;
+	// Then the time. Assume if we're within 0.5 ns it's the same hit
+	if(abs(time - old_digit->GetT()) > 0.5) continue;
+	found = true;
+	break;
+      }//idigit_old
+      if(found) {
+	//new_digit->SetPhotonIds(old_digit->GetPhotonIds());
+      }
+    }//idigit
+  }//itrigger
+  Log("TODO after WCSim/WCSim#286 is merged, uncomment SetPhotonIds", WARN, m_verbose);
+}
+/////////////////////////////////////////////////////////////////
+void DataOut::FinaliseSubEvents(WCSimRootEvent * wcsim_event) {
+  const int n = m_all_triggers->m_num_triggers;
   for(int i = 0; i < n; i++) {
-    WCSimRootTrigger * trig = WCSimEvent->GetTrigger(i);
-    TClonesArray * digits = trig->GetCherenkovDigiHits();
+    WCSimRootTrigger * trig = wcsim_event->GetTrigger(i);
+    TClonesArray * hits = trig->GetCherenkovDigiHits();
     double sumq = 0;
-    int ntubeshit = 0;
+    int nhits = 0;
     for(int j = 0; j < trig->GetNcherenkovdigihits_slots(); j++) {
-      WCSimRootCherenkovDigiHit * digi = (WCSimRootCherenkovDigiHit *)digits->At(j);
+      WCSimRootCherenkovDigiHit * digi = (WCSimRootCherenkovDigiHit *)hits->At(j);
       if(digi) {
 	sumq += digi->GetQ();
-	ntubeshit++;
+	nhits++;
       }
     }//j
     trig->SetSumQ(sumq);
-    //this is actually number of digits, not number of unique PMTs with digits
-    trig->SetNumDigitizedTubes(ntubeshit);
-  }//i
-}
-/////////////////////////////////////////////////////////////////
-void DataOut::RemoveDigits(WCSimRootEvent * WCSimEvent, std::map<int, std::map<int, bool> > & NDigitPerPMTPerTriggerMap)
-{
-  if(!fTriggers->m_num_triggers) {
-    ss << "DEBUG: No trigger intervals to save";
+    //this is actually number of hits, not number of unique PMTs with hits
+    trig->SetNumDigitizedTubes(nhits);
+    m_ss << "DEBUG: Trigger " << i << " has " << nhits << " hits";
     StreamToLog(DEBUG1);
-  }
-  WCSimRootTrigger * trig0 = WCSimEvent->GetTrigger(0);
-  TClonesArray * digits = trig0->GetCherenkovDigiHits();
-  int ndigits = trig0->GetNcherenkovdigihits();
-  int ndigits_slots = trig0->GetNcherenkovdigihits_slots();
-  for(int i = 0; i < ndigits_slots; i++) {
-    WCSimRootCherenkovDigiHit * d = (WCSimRootCherenkovDigiHit*)digits->At(i);
-    if(!d)
-      continue;
-    // Absolute time of the digit
-    TimeDelta time = TimeDelta(d->GetT()) + TimeDelta(trig0->GetHeader()->GetDate());
-    int window = TimeInTriggerWindow(time);
-    int pmt = d->GetTubeId();
-    if(!fSaveOnlyFailedDigits) {
-      ss << "DEBUG: Digit at time " << d->GetT() << " belongs to trigger " << window;
-      StreamToLog(DEBUG3);
-      //we're saving only things in the trigger window
-      if(window > 0 &&
-	 (fSaveMultiDigiPerTrigger ||
-	  (!fSaveMultiDigiPerTrigger && !NDigitPerPMTPerTriggerMap[pmt][window]))) {
-	//need to add digit to a new trigger window
-	//but not if we've already saved the 1 digit from this pmt in this window we're allowed
-	//need to store the digit time relative to the new trigger time
-        WCSimRootTrigger* new_trig = WCSimEvent->GetTrigger(window);
-        double old_time = trig0->GetHeader()->GetDate();
-        double new_time = new_trig->GetHeader()->GetDate();
-	d->SetT(d->GetT() + (old_time - new_time)); // Plus old minus new is correct!
-        // Add the digit
-	ss << "DEBUG: Adding digit to trigger " << window << " at new time " << d->GetT();
-	StreamToLog(DEBUG3);
-        new_trig->AddCherenkovDigiHit(d);
-      }
-      if(window ||
-	 (window == 0 && !fSaveMultiDigiPerTrigger && NDigitPerPMTPerTriggerMap[pmt][window])) {
-	//either not in a trigger window (window = -1)
-	//or not in the 0th trigger window (window >= 1)
-	//or in 0th window but we've already saved the 1 digit from this pmt in this window we're allowed
-	trig0->RemoveCherenkovDigiHit(d);
-      }
-      if(window >= 0) {
-	//save the fact that we've used this PMT
-	NDigitPerPMTPerTriggerMap[pmt][window] = true;
-      }
-    }//!fSaveOnlyFailedDigits
-    else {
-      //We want to save digits that *haven't* passed any trigger
-      //To keep it simple:
-      // Remove anything that's in a trigger window
-      // Keep everything else in the 0th trigger
-      if(window >= 0)
-	trig0->RemoveCherenkovDigiHit(d);
-    }//fSaveOnlyFailedDigits
   }//i
-  ss << "INFO: RemoveDigits() has reduced number of digits in the 0th trigger from "
-     << ndigits << " to " << trig0->GetNcherenkovdigihits();
-  StreamToLog(INFO);
 }
-/////////////////////////////////////////////////////////////////
-void DataOut::MoveTracks(WCSimRootEvent * WCSimEvent)
-{
-  if(fTriggers->m_num_triggers < 2)
-    return;
-  WCSimRootTrigger * trig0 = WCSimEvent->GetTrigger(0);
-  TClonesArray * tracks = trig0->GetTracks();
-  int ntracks = trig0->GetNtrack();
-  int ntracks_slots = trig0->GetNtrack_slots();
-  for(int i = 0; i < ntracks_slots; i++) {
-    WCSimRootTrack * t = (WCSimRootTrack*)tracks->At(i);
-    if(!t)
-      continue;
-    // Absolute time of the track
-    TimeDelta time = TimeDelta(t->GetTime()) + TimeDelta(trig0->GetHeader()->GetDate());
-    int window = TimeInTriggerWindowNoDelete(time);
-    if(window > 0) {
-      ss << "DEBUG: Moving track from 0th  to " << window << " trigger";
-      StreamToLog(DEBUG3);
-      //need to add track to a new trigger window
-      WCSimEvent->GetTrigger(window)->AddTrack(t);
-      //and remove from the 0th
-      trig0->RemoveTrack(t);
-    }
-  }//i
-  ss << "INFO: MoveTracks() has reduced number of tracks in the 0th trigger from "
-     << ntracks << " to " << trig0->GetNtrack();
-  StreamToLog(INFO);
-}
-/////////////////////////////////////////////////////////////////
-int DataOut::TimeInTriggerWindow(TimeDelta time) {
-  for(unsigned int i = 0; i < fTriggers->m_num_triggers; i++) {
-    TimeDelta lo = fTriggers->m_readout_start_time.at(i);
-    TimeDelta hi = fTriggers->m_readout_end_time.at(i);
-    if(time >= lo && time <= hi)
-      return i;
-  }//i
-  return -1;
-}
-/////////////////////////////////////////////////////////////////
-unsigned int DataOut::TimeInTriggerWindowNoDelete(TimeDelta time) {
-  //we can't return -1 in this (i.e. we don't want to delete tracks)
-  //the logic is:
-  // if it's anytime before the 0th trigger + postrigger readout window, store in 0th trigger
-  // if it's anytime after the 0th trigger readout window and before the end of the 1st trigger readout window, store in the 1st trigger
-  // etc
-  //with the caveat that we don't create a WCSimRootTrigger just to store some tracks
-  // therefore return value is at maximum the number of triggers
-  const int num_triggers = fTriggers->m_num_triggers;
-  for(unsigned int i = 0; i < num_triggers; i++) {
-    TimeDelta hi = fTriggers->m_readout_end_time.at(i);
-    if(time <= hi)
-      return i;
-  }//i
-  ss << "WARNING DataOut::TimeInTriggerWindowNoDelete() could not find a trigger that track with time " << time << " can live in. Returning maximum trigger number " << num_triggers - 1;
-  StreamToLog(WARN);
-  return num_triggers - 1;
-}
-
 /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -376,16 +423,18 @@ bool DataOut::Finalise(){
   }
 
   //multiple TFiles may be open. Ensure we save to the correct one
-  fOutFile.cd(TString::Format("%s:/", fOutFilename.c_str()));
-  fTreeEvent->Write();
-  fOutFile.Close();
+  m_output_file->cd(TString::Format("%s:/", m_output_filename.c_str()));
+  m_event_tree->Write();
 
-  delete fTreeEvent;
+  delete m_event_tree;
   delete m_data->IDWCSimEvent_Triggered;
   if(m_data->ODWCSimEvent_Triggered)
     delete m_data->ODWCSimEvent_Triggered;
 
-  delete fTriggers;
+  delete m_all_triggers;
+
+  m_output_file->Close();
+  delete m_output_file;
 
   if(m_stopwatch) {
     Log(m_stopwatch->Result("Finalise"), INFO, m_verbose);
