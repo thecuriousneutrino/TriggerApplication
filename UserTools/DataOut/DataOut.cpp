@@ -229,49 +229,40 @@ TimeDelta DataOut::GetOffset(WCSimRootEvent * original_wcsim_event) {
 }
 /////////////////////////////////////////////////////////////////
 void DataOut::FillHits(WCSimRootEvent * wcsim_event, std::vector<SubSample> & samples) {
-  unsigned int trigger_window_to_check;
+  unsigned int trigger_window;
   TimeDelta time;
   std::vector<int> photon_id_temp;
+  WCSimRootTrigger * wcsim_trigger;
   //Loop over all SubSamples
   for(std::vector<SubSample>::iterator is=samples.begin(); is!=samples.end(); ++is){
-    trigger_window_to_check = 0;
-    // Make sure hit times are ordered in time
-    Log("WARN: TODO Sorting by time, and doing time window checks, will not be required after #49");
-    is->SortByTime();
-    //loop over every hit
     const unsigned int nhits = is->m_time.size();
     int counter = 0;
     for(int ihit = 0; ihit < nhits; ihit++) {
-      time = is->AbsoluteDigitTime(ihit);
-      m_ss << "Hit " << ihit << " is at time " << time << std::endl
-	   << "Checking hit is in range [" << m_all_triggers->m_readout_start_time.at(trigger_window_to_check)
-	   << ", " << m_all_triggers->m_readout_end_time.at(trigger_window_to_check) << "]";
-      StreamToLog(DEBUG3);
-      
-      //hit time is before trigger window
-      if(time < m_all_triggers->m_readout_start_time.at(trigger_window_to_check)) {
-	Log("Too early", DEBUG3, m_verbose);
+      //skip if hit is not in a readout window
+      if(!is->m_trigger_readout_windows[ihit].size())
 	continue;
-      }
-      //hit time is after trigger window; check the next trigger window
-      else if(time > m_all_triggers->m_readout_end_time.at(trigger_window_to_check)) {
-	ihit--;
-	trigger_window_to_check++;
-	Log("Too late", DEBUG3, m_verbose);
-	if(trigger_window_to_check >= m_all_triggers->m_num_triggers) break;
-	continue;
-      }
 
+      //Find out which window it's in.
+      // We're taking the first one it's associated with
+      trigger_window = is->m_trigger_readout_windows[ihit][0];
+      wcsim_trigger = wcsim_event->GetTrigger(trigger_window);
+
+      //Get the time
+      time = is->AbsoluteDigitTime(ihit);
+      m_ss << "Hit " << ihit << " is at time " << time << std::endl;
+      StreamToLog(DEBUG3);
+
+      //Apply the time offsets
       // + m_trigger_offset adds the user-defined "offset"
       // - trigger time ("Date") because hits are defined relative to their trigger time
       time += m_trigger_offset -
-	(wcsim_event->GetTrigger(trigger_window_to_check)->GetHeader()->GetDate() * TimeDelta::ns);
+	(wcsim_trigger->GetHeader()->GetDate() * TimeDelta::ns);
 
       //hit is in this window. Let's save it
-      wcsim_event->GetTrigger(trigger_window_to_check)->AddCherenkovDigiHit(is->m_charge[ihit],
-									    time / TimeDelta::ns,
-									    is->m_PMTid[ihit],
-									    photon_id_temp);
+      wcsim_trigger->AddCherenkovDigiHit(is->m_charge[ihit],
+					 time / TimeDelta::ns,
+					 is->m_PMTid[ihit],
+					 photon_id_temp);
       m_ss << "Saved hit " << counter++;
       StreamToLog(DEBUG3);
     }//ihit
