@@ -1,6 +1,7 @@
 infile FILES/wcsim.root
 #filelist wcsimfilelist
 nevents -1
+first_event 0
 use_stopwatch 1
 #stopwatch_file wcsimreader_stopwatch.pdf
 verbose 3

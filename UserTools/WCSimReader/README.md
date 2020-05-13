@@ -48,10 +48,12 @@ WCSimReader
 infile /path/to/file(s)
 filelist /path/to/txt/file/list
 nevents N
+first_event N
 verbose LEVEL
 ```
 
 * `infile` File path to WCSim root file. Can use wildcards to pickup multiple files
 * `filelist` File path to a text file with a filepath to a WCSim root file on each line. Can also contain wildcards
 * `nevents` will read only this number of events. If `N <= 0`, read all. If `N > number of available events`, read all.
+* `first_event` will skip to this event number. If `N > number of available events`, will read the final event only. If `N < 0`, will set it to 0. Default is 0
 * `verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity)
