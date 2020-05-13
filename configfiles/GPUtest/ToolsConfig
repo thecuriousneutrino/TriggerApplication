@@ -1,7 +1,4 @@
-#test1 DummyTool configfiles/DummyToolConfig
-#test2 DummyTool configfiles/DummyToolConfig
-WCSim_ASCI_Reader WCSimASCIReader configfiles/GPUtest/WCSimASCIReaderConfig
-#GPU_Processor GPUProcessor configfiles/GPUtest/GPUProcessorConfig
-GPU_Processor nhits configfiles/GPUtest/GPUProcessorConfig
-#GPU_Processor test_vertices configfiles/GPUtest/GPUProcessorConfig
-Trigger_Output TriggerOutput configfiles/GPUtest/TriggerOutputConfig
+wcsim1 WCSimReader configfiles/GPUtest/WCSimReaderToolConfig
+test_vertices1 test_vertices configfiles/GPUtest/GPUProcessorConfig
+out1 DataOut configfiles/GPUtest/DataOutToolConfig
+

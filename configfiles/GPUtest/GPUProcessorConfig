@@ -2,7 +2,27 @@
 #
 # Paths to files
 #
-PMTFile inputfiles/all_pmts.txt
+
+ distance_between_vertices 500.
+ wall_like_distance 0
+ water_like_threshold_number_of_pmts 18
+ wall_like_threshold_number_of_pmts 18
+ coalesce_time 500.
+ trigger_gate_up 950.0
+ trigger_gate_down -400.0
+ max_n_hits_per_job 5000
+ output_txt 0
+ correct_mode 8
+ num_blocks_y 1
+ num_threads_per_block_y 1024
+ num_threads_per_block_x 1
+ n_direction_bins_theta 3
+ cylindrical_grid 1
+ costheta_cone_cut 0.2
+ select_based_on_cone 1
+ write_output_mode 1
+ trigger_threshold_adjust_for_noise 1
+
 DetectorFile inputfiles/detector.txt
 ParameterFile inputfiles/parameters.txt
 

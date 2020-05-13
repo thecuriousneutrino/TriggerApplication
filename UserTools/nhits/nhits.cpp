@@ -1,7 +1,5 @@
 #include "nhits.h"
 
-#include <deque>
-
 NHits::NHits():Tool(){}
 
 bool NHits::Initialise(std::string configfile, DataModel &data){
@@ -24,82 +22,57 @@ bool NHits::Initialise(std::string configfile, DataModel &data){
 
   m_data= &data;
 
-#ifdef GPU
-  // TODO: The geometry should be taken from the DataModel, not from a separate file
-  std::string PMTFile;
-  std::string DetectorFile;
-  std::string ParameterFile;
+  double temp_trigger_search_window;
+  double temp_trigger_search_window_step;
+  double temp_trigger_save_window_pre;
+  double temp_trigger_save_window_post;
 
-  m_variables.Get("PMTFile",PMTFile);
-  m_variables.Get("DetectorFile",DetectorFile);
-  m_variables.Get("ParameterFile",ParameterFile);
-
-  GPU_daq::nhits_initialize_ToolDAQ(PMTFile,DetectorFile,ParameterFile);
-#endif
-
-  double temp_m_trigger_search_window;
-  double temp_m_trigger_save_window_pre;
-  double temp_m_trigger_save_window_post;
-  double temp_m_trigger_mask_window_pre;
-  double temp_m_trigger_mask_window_post;
-
-  m_variables.Get("trigger_search_window",   temp_m_trigger_search_window);
+  m_variables.Get("trigger_search_window",   temp_trigger_search_window);
+  m_variables.Get("trigger_search_window_step",   temp_trigger_search_window_step);
   m_variables.Get("trigger_threshold",            m_trigger_threshold);
-  m_variables.Get("pretrigger_save_window",  temp_m_trigger_save_window_pre);
-  m_variables.Get("posttrigger_save_window", temp_m_trigger_save_window_post);
+  m_variables.Get("pretrigger_save_window",  temp_trigger_save_window_pre);
+  m_variables.Get("posttrigger_save_window", temp_trigger_save_window_post);
   m_variables.Get("trigger_od",                   m_trigger_OD);
+  m_variables.Get("degrade_CPU",                   m_degrade_CPU);
 
-  m_trigger_search_window    = TimeDelta(temp_m_trigger_search_window);
-  m_trigger_save_window_pre  = TimeDelta(temp_m_trigger_save_window_pre);
-  m_trigger_save_window_post = TimeDelta(temp_m_trigger_save_window_post);
-
-  //Set the masks to sensible values
-  //pretrigger
-  if(!m_variables.Get("pretrigger_mask_window",  temp_m_trigger_mask_window_pre)) {
-    m_ss << "WARN: pretrigger_mask_window parameter not given. Setting it to pretrigger_save_window value: " << temp_m_trigger_save_window_pre;
-    StreamToLog(WARN);
-    m_trigger_mask_window_pre = TimeDelta(temp_m_trigger_save_window_pre);
-  } else if(temp_m_trigger_mask_window_pre > temp_m_trigger_save_window_pre) {
-    m_ss << "WARN: pretrigger_mask_window parameter value: " << temp_m_trigger_mask_window_pre 
-	 << " larger than pretrigger_save_window value: " << temp_m_trigger_save_window_pre
-	 << " Setting it to pretrigger_save_window value";
-    StreamToLog(WARN);
-    m_trigger_mask_window_pre = TimeDelta(temp_m_trigger_save_window_pre);
-  } else
-    m_trigger_mask_window_pre  = TimeDelta(temp_m_trigger_mask_window_pre);
-  //posttrigger
-  if(!m_variables.Get("posttrigger_mask_window", temp_m_trigger_mask_window_post)) {
-    m_ss << "WARN: posttrigger_mask_window parameter not given. Setting it to posttrigger_save_window value: " << temp_m_trigger_save_window_post;
-    StreamToLog(WARN);
-    m_trigger_mask_window_post = TimeDelta(temp_m_trigger_save_window_post);
-  } else if(temp_m_trigger_mask_window_post > temp_m_trigger_save_window_post) {
-    m_ss << "WARN: posttrigger_mask_window parameter value: " << temp_m_trigger_mask_window_post 
-	 << " larger than posttrigger_save_window value: " << temp_m_trigger_save_window_post
-	 << " Setting it to posttrigger_save_window value";
-    StreamToLog(WARN);
-    m_trigger_mask_window_post = TimeDelta(temp_m_trigger_save_window_post);
-  } else
-    m_trigger_mask_window_post  = TimeDelta(temp_m_trigger_mask_window_post);
+  m_trigger_search_window = TimeDelta(temp_trigger_search_window);
+  m_trigger_save_window_pre = TimeDelta(temp_trigger_save_window_pre);
+  m_trigger_save_window_post = TimeDelta(temp_trigger_save_window_post);
 
   bool adjust_for_noise;
   m_variables.Get("trigger_threshold_adjust_for_noise", adjust_for_noise);
-  if(adjust_for_noise) {
-    int npmts = m_trigger_OD ? m_data->ODNPMTs : m_data->IDNPMTs;
-    double dark_rate_kHZ = m_trigger_OD ? m_data->ODPMTDarkRate : m_data->IDPMTDarkRate;
-    double trigger_window_seconds = m_trigger_search_window / TimeDelta::s;
-    double dark_rate_Hz = dark_rate_kHZ * 1000;
-    double average_occupancy = dark_rate_Hz * trigger_window_seconds * npmts;
-
-    m_ss << "INFO: Average number of PMTs in detector active in a " << m_trigger_search_window
+  int npmts = m_trigger_OD ? m_data->ODNPMTs : m_data->IDNPMTs;
+  double dark_rate_kHZ = m_trigger_OD ? m_data->ODPMTDarkRate : m_data->IDPMTDarkRate;
+  double trigger_window_seconds = m_trigger_search_window / TimeDelta::s;
+  double dark_rate_Hz = dark_rate_kHZ * 1000;
+  double average_occupancy = dark_rate_Hz * trigger_window_seconds * npmts;
+  
+  m_ss << "INFO: Average number of PMTs in detector active in a " << m_trigger_search_window
        << "ns window with a dark noise rate of " << dark_rate_kHZ
        << "kHz is " << average_occupancy
        << " (" << npmts << " total PMTs)";
-    StreamToLog(INFO);
+  StreamToLog(INFO);
+
+  m_ss << "INFO: m_degrade_CPU " << m_degrade_CPU; StreamToLog(INFO);
+
+  if(adjust_for_noise) {
     m_ss << "INFO: Updating the NDigits threshold, from " << m_trigger_threshold
        << " to " << m_trigger_threshold + round(average_occupancy) << std::endl;
     StreamToLog(INFO);
     m_trigger_threshold += round(average_occupancy);
   }
+
+#ifdef GPU
+  std::string ParameterFile;
+
+  m_variables.Get("ParameterFile",ParameterFile);
+
+  GPU_daq::nhits_initialize_ToolDAQ(ParameterFile,m_data->IDGeom.size(),temp_trigger_search_window, temp_trigger_search_window_step, m_trigger_threshold, temp_trigger_save_window_pre, temp_trigger_save_window_post);
+
+
+  m_time_int.reserve(2*(int)average_occupancy);
+
+#endif
 
   if(m_stopwatch) Log(m_stopwatch->Result("Initialise"), INFO, m_verbose);
 
@@ -113,21 +86,36 @@ bool NHits::Execute(){
 
   std::vector<SubSample> & samples = m_trigger_OD ? (m_data->ODSamples) : (m_data->IDSamples);
 
-  m_ss << " qqq Number of data samples " << samples.size();
+  m_ss << " Number of data samples " << samples.size();
   StreamToLog(DEBUG1);
 
   for( std::vector<SubSample>::iterator is=samples.begin(); is!=samples.end(); ++is){
 #ifdef GPU
-    GPU_daq::nhits_execute(is->m_PMTid, is->m_time);
-    m_ss << " qqq qqq Look at " << is - samples.begin();
-    StreamToLog(DEBUG1);
+
+    std::vector<int> trigger_ns;
+    std::vector<int> trigger_ts;
+    m_time_int.clear();
+    for(unsigned int i = 0; i < is->m_time.size(); i++) {
+      m_time_int.push_back(is->m_time[i]);
+    }
+    GPU_daq::nhits_execute(is->m_PMTid, m_time_int, &trigger_ns, &trigger_ts);
+    for(int i=0; i<trigger_ns.size(); i++){
+      m_data->IDTriggers.AddTrigger(kTriggerNDigits,
+                                    TimeDelta(trigger_ts[i]) - m_trigger_save_window_pre + is->m_timestamp,
+                                    TimeDelta(trigger_ts[i]) + m_trigger_save_window_post + is->m_timestamp,
+                                    TimeDelta(trigger_ts[i]) - m_trigger_save_window_pre + is->m_timestamp,
+                                    TimeDelta(trigger_ts[i]) + m_trigger_save_window_post + is->m_timestamp,
+                                    TimeDelta(trigger_ts[i]) + is->m_timestamp,
+                                    std::vector<float>(1, trigger_ns[i]));
+
+      m_ss << "trigger! time  " << trigger_ts[i] << " nhits " <<  trigger_ns[i]; StreamToLog(INFO);
+    }
 #else
-    // Make sure digit times are ordered in time
-    is->SortByTime();
-    AlgNDigits(&(*is));
+  // Make sure digit times are ordered in time
+  is->SortByTime();
+  AlgNDigits(&(*is));
 #endif
   }//loop over SubSamples
-
   //Now we have all the triggers, get the SubSample to determine
   // - which trigger readout windows each hit is associated with
   // - which hits should be masked from future triggers
@@ -145,71 +133,68 @@ void NHits::AlgNDigits(const SubSample * sample)
   //we will try to find triggers
   //loop over PMTs, and Digits in each PMT.  If ndigits > Threshhold in a time window, then we have a trigger
 
-  const unsigned int n_hits = sample->m_time.size();
-  m_ss << "DEBUG: NHits::AlgNDigits(). Number of entries in input digit collection: " << n_hits;
+  const unsigned int ndigits = sample->m_time.size();
+  m_ss << "DEBUG: NHits::AlgNDigits(). Number of entries in input digit collection: " << ndigits;
   StreamToLog(DEBUG1);
 
   // Where to store the triggers we find
   TriggerInfo * triggers = m_trigger_OD ? &(m_data->ODTriggers) : &(m_data->IDTriggers);
 
   // Loop over all digits
-  std::deque<TimeDelta> times;
-  TimeDelta hit_time;
-  for(int idigit = 0; idigit < n_hits; idigit++) {
-    // Skip if the current digit should be ignored
-    if(sample->m_masked[idigit]) continue;
+  // But we can start with an offset of at least the threhshold to save some time
+  int current_digit = std::min(m_trigger_threshold, ndigits);
+  int first_digit_in_window = 0;
+  for(;current_digit < ndigits; ++current_digit) {
+    // Update first digit in trigger window
 
-    // Add the current digit to the back of the queue
-    hit_time = sample->m_time[idigit];
-    times.push_back(hit_time);
-
-    // Remove any digits that are at the start of the queue,
-    //  and no longer in the trigger search window
-    for(std::deque<TimeDelta>::iterator it = times.begin();
-	  it != times.end(); ++it) {
-      if(*it < hit_time - m_trigger_search_window) {
-	times.pop_front();
-	m_ss << "DEBUG: Removing hit with time " << *it
-	     << " from times deque. Search window starts at "
-	     << hit_time - m_trigger_search_window;
-	StreamToLog(DEBUG3);
+    if( !m_degrade_CPU ){
+      TimeDelta::short_time_t digit_time = sample->m_time.at(current_digit);
+      while(TimeDelta(sample->m_time[first_digit_in_window]) < TimeDelta(digit_time) - m_trigger_search_window){
+	++first_digit_in_window;
       }
-      break;
+    }else{
+      //F. Nova degrade info from float to int to match GPU run
+      int digit_time = (int)sample->m_time.at(current_digit);
+      while(TimeDelta((int)sample->m_time[first_digit_in_window]) <= TimeDelta(digit_time) - m_trigger_search_window){
+	++first_digit_in_window;
+      }
     }
+   
 
     // if # of digits in window over threshold, issue trigger
-    const int n_digits_in_search_window = times.size();
-    if(n_digits_in_search_window > m_trigger_threshold) {
-      const TimeDelta triggertime = sample->AbsoluteDigitTime(idigit);
+    int n_digits_in_window = current_digit - first_digit_in_window + 1; // +1 because difference is 0 when first digit is the only digit in window
+
+    if( n_digits_in_window > m_trigger_threshold) {
+      TimeDelta triggertime = sample->AbsoluteDigitTime(current_digit);
+      
+      if( m_degrade_CPU )	
+	triggertime = ((uint64_t) (triggertime /TimeDelta::ns)) * TimeDelta::ns;
+      
       m_ss << "DEBUG: Found NHits trigger in SubSample at " << triggertime;
       StreamToLog(DEBUG2);
       m_ss << "DEBUG: Advancing search by posttrigger_save_window " << m_trigger_save_window_post;
       StreamToLog(DEBUG2);
-      while(sample->AbsoluteDigitTime(idigit) <
-	    triggertime + m_trigger_save_window_post){
-        ++idigit;
-        if (idigit >= n_hits){
-          // Break if we run out of digits
-          break;
-        }
-      }//advance to end of post trigger window
-      idigit--; // We want the last digit *within* post-trigger-window (because we're looping over this in the for loop, so the first digit into the deque will be the first *after* post-trigger-window)
-      m_ss << "DEBUG: Number of digits in trigger search window: " << n_digits_in_search_window;
+      while(sample->AbsoluteDigitTime(current_digit) < triggertime + m_trigger_save_window_post){
+	++current_digit;
+	if (current_digit >= ndigits){
+	  // Break if we run out of digits
+	  break;
+	}
+      }
+      --current_digit; // We want the last digit *within* post-trigger-window
+      int n_digits = current_digit - first_digit_in_window + 1;
+      m_ss << "DEBUG: Number of digits between (trigger_time - trigger_search_window) and (trigger_time + posttrigger_save_window):" << n_digits;
       StreamToLog(DEBUG2);
-
+      
       triggers->AddTrigger(kTriggerNDigits,
-                           triggertime - m_trigger_save_window_pre,
-                           triggertime + m_trigger_save_window_post,
-			   triggertime - m_trigger_mask_window_pre,
-			   triggertime + m_trigger_mask_window_post,
-                           triggertime,
-                           std::vector<float>(1, n_digits_in_search_window));
-
-      //clear the deque
-      times.clear();
-    }//trigger found
+			   triggertime - m_trigger_save_window_pre + sample->m_timestamp,
+			   triggertime + m_trigger_save_window_post + sample->m_timestamp,
+			   triggertime - m_trigger_save_window_pre + sample->m_timestamp,
+			   triggertime + m_trigger_save_window_post + sample->m_timestamp,
+			   triggertime + sample->m_timestamp,
+			   std::vector<float>(1, n_digits));
+    }
   }//loop over Digits
-  
   m_ss << "INFO: Found " << triggers->m_num_triggers << " NDigit trigger(s) from " << (m_trigger_OD ? "OD" : "ID");
   StreamToLog(INFO);
 }

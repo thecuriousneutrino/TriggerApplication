@@ -78,6 +78,13 @@ class DataModel {
   /// Number of outer detector PMTs
   int ODNPMTs;
 
+  /// height of water tank
+  double detector_length;
+  /// radius of water tank
+  double detector_radius;
+  /// radius of each PMT
+  double pmt_radius;
+
   /// The `WCSimRootGeom` tree from input WCSim file(s)
   TChain * WCSimGeomTree;
   /// The `WCSimRootOptions` tree from input WCSim file(s)

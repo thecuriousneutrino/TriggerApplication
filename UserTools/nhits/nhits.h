@@ -34,9 +34,16 @@ class NHits: public Tool {
   TimeDelta m_trigger_mask_window_post;
   /// Trigger on OD digits, rather than ID digits?
   bool m_trigger_OD;
+  /// degrade data type from float to int
+  bool m_degrade_CPU;
 
   /// CPU version of the NDigits algorithm
   void AlgNDigits(const SubSample * samples);
+
+#ifdef GPU   
+  /// integer times to run over GPU card
+  std::vector<int> m_time_int;
+#endif
 
   /// The stopwatch, if we're using one
   util::Stopwatch * m_stopwatch;

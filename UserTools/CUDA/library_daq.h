@@ -248,7 +248,7 @@ unsigned int read_number_of_input_hits(){
 
   FILE *f=fopen(event_file.c_str(), "r");
   if (f == NULL){
-    printf(" cannot read input file \n");
+    printf(" [2] cannot read input file \n");
     fclose(f);
     return 0;
   }
@@ -275,7 +275,7 @@ bool read_input(){
   int max = INT_MIN;
   for( unsigned int i=0; i<n_hits; i++){
     if( fscanf(f, "%d %lf", &id, &timef) != 2 ){
-      printf(" problem scanning hit %d from input \n", i);
+      printf(" [2] problem scanning hit %d from input \n", i);
       fclose(f);
       return false;
     }
@@ -287,7 +287,10 @@ bool read_input(){
   }
 
   if( min < 0 ){
-    time_offset -= min;
+    for(int i=0; i<n_hits; i++){
+      host_times[i] -= min;
+    }
+    max -= min;
   }
 
 
@@ -304,7 +307,7 @@ bool read_detector(){
   FILE *f=fopen(detector_file.c_str(), "r");
   double pmt_radius;
   if( fscanf(f, "%lf %lf %lf", &detector_height, &detector_radius, &pmt_radius) != 3 ){
-    printf(" problem scanning detector \n");
+    printf(" [2] problem scanning detector \n");
     fclose(f);
     return false;
   }
@@ -318,43 +321,43 @@ bool read_detector(){
 
 void print_parameters(){
 
-  printf(" n_test_vertices = %d \n", n_test_vertices);
-  printf(" n_water_like_test_vertices = %d \n", n_water_like_test_vertices);
-  printf(" n_PMTs = %d \n", n_PMTs);
-  printf(" number_of_kernel_blocks = %d \n", number_of_kernel_blocks);
-  printf(" number_of_threads_per_block = %d \n", number_of_threads_per_block);
-  printf(" grid size = %d -> %d \n", number_of_kernel_blocks*number_of_threads_per_block, grid_size);
+  printf(" [2] n_test_vertices = %d \n", n_test_vertices);
+  printf(" [2] n_water_like_test_vertices = %d \n", n_water_like_test_vertices);
+  printf(" [2] n_PMTs = %d \n", n_PMTs);
+  printf(" [2] number_of_kernel_blocks = %d \n", number_of_kernel_blocks);
+  printf(" [2] number_of_threads_per_block = %d \n", number_of_threads_per_block);
+  printf(" [2] grid size = %d -> %d \n", number_of_kernel_blocks*number_of_threads_per_block, grid_size);
 
 }
 
 void print_parameters_2d(){
 
-  printf(" n_test_vertices = %d \n", n_test_vertices);
-  printf(" n_water_like_test_vertices = %d \n", n_water_like_test_vertices);
-  printf(" n_PMTs = %d \n", n_PMTs);
-  printf(" number_of_kernel_blocks = (%d, %d) = %d \n", number_of_kernel_blocks_3d.x, number_of_kernel_blocks_3d.y, number_of_kernel_blocks_3d.x * number_of_kernel_blocks_3d.y);
-  printf(" number_of_threads_per_block = (%d, %d) = %d \n", number_of_threads_per_block_3d.x, number_of_threads_per_block_3d.y, number_of_threads_per_block_3d.x * number_of_threads_per_block_3d.y);
-  printf(" grid size = %d -> %d \n", number_of_kernel_blocks_3d.x*number_of_kernel_blocks_3d.y*number_of_threads_per_block_3d.x*number_of_threads_per_block_3d.y, grid_size);
+  printf(" [2] n_test_vertices = %d \n", n_test_vertices);
+  printf(" [2] n_water_like_test_vertices = %d \n", n_water_like_test_vertices);
+  printf(" [2] n_PMTs = %d \n", n_PMTs);
+  printf(" [2] number_of_kernel_blocks = (%d, %d) = %d \n", number_of_kernel_blocks_3d.x, number_of_kernel_blocks_3d.y, number_of_kernel_blocks_3d.x * number_of_kernel_blocks_3d.y);
+  printf(" [2] number_of_threads_per_block = (%d, %d) = %d \n", number_of_threads_per_block_3d.x, number_of_threads_per_block_3d.y, number_of_threads_per_block_3d.x * number_of_threads_per_block_3d.y);
+  printf(" [2] grid size = %d -> %d \n", number_of_kernel_blocks_3d.x*number_of_kernel_blocks_3d.y*number_of_threads_per_block_3d.x*number_of_threads_per_block_3d.y, grid_size);
 
 }
 
 void print_input(){
 
   for(unsigned int i=0; i<n_hits; i++)
-    printf(" hit %d time %d id %d \n", i, host_times[i], host_ids[i]);
+    printf(" [2] hit %d time %d id %d \n", i, host_times[i], host_ids[i]);
 
 }
 
 void print_pmts(){
 
   for(unsigned int i=0; i<n_PMTs; i++)
-    printf(" pmt %d x %f y %f z %f  \n", i, PMT_x[i], PMT_y[i], PMT_z[i]);
+    printf(" [2] pmt %d x %f y %f z %f  \n", i, PMT_x[i], PMT_y[i], PMT_z[i]);
 
 }
 
 void print_times_of_flight(){
 
-  printf(" times_of_flight: (vertex, PMT) \n");
+  printf(" [2] times_of_flight: (vertex, PMT) \n");
   unsigned int distance_index;
   for(unsigned int iv=0; iv<n_test_vertices; iv++){
     printf(" ( ");
@@ -369,7 +372,7 @@ void print_times_of_flight(){
 
 void print_directions(){
 
-  printf(" directions: (vertex, PMT) \n");
+  printf(" [2] directions: (vertex, PMT) \n");
   for(unsigned int iv=0; iv<n_test_vertices; iv++){
     printf(" [ ");
     for(unsigned int ip=0; ip<n_PMTs; ip++){
@@ -386,10 +389,10 @@ void print_directions(){
 
 bool read_the_pmts(){
 
-  printf(" --- read pmts \n");
+  printf(" [2] --- read pmts \n");
   n_PMTs = read_number_of_pmts();
   if( !n_PMTs ) return false;
-  printf(" detector contains %d PMTs \n", n_PMTs);
+  printf(" [2] detector contains %d PMTs \n", n_PMTs);
   PMT_x = (double *)malloc(n_PMTs*sizeof(double));
   PMT_y = (double *)malloc(n_PMTs*sizeof(double));
   PMT_z = (double *)malloc(n_PMTs*sizeof(double));
@@ -401,16 +404,16 @@ bool read_the_pmts(){
 
 bool read_the_detector(){
 
-  printf(" --- read detector \n");
+  printf(" [2] --- read detector \n");
   if( !read_detector() ) return false;
-  printf(" detector height %f cm, radius %f cm \n", detector_height, detector_radius);
+  printf(" [2] detector height %f cm, radius %f cm \n", detector_height, detector_radius);
   return true;
 
 }
 
 void make_test_vertices(){
 
-  printf(" --- make test vertices \n");
+  printf(" [2] --- make test vertices \n");
   float semiheight = detector_height/2.;
   n_test_vertices = 0;
 
@@ -485,7 +488,7 @@ void make_test_vertices(){
     int n_angular;
     double distance_angular;
     
-    printf(" distance_between_vertices %f, distance_vertical %f, distance_radial %f \n",
+    printf(" [2] distance_between_vertices %f, distance_vertical %f, distance_radial %f \n",
 	   distance_between_vertices, distance_vertical, distance_radial);
     
     double the_r, the_z, the_phi;
@@ -647,6 +650,8 @@ void make_test_vertices(){
 
   }
 
+  printf(" [2] made %d test vertices \n", n_test_vertices);
+
   return;
 
 }
@@ -661,12 +666,12 @@ bool setup_threads_for_tof(){
   print_parameters();
 
   if( number_of_threads_per_block > max_n_threads_per_block ){
-    printf(" warning: number_of_threads_per_block = %d cannot exceed max value %d \n", number_of_threads_per_block, max_n_threads_per_block );
+    printf(" [2] warning: number_of_threads_per_block = %d cannot exceed max value %d \n", number_of_threads_per_block, max_n_threads_per_block );
     return false;
   }
 
   if( number_of_kernel_blocks > max_n_blocks ){
-    printf(" warning: number_of_kernel_blocks = %d cannot exceed max value %d \n", number_of_kernel_blocks, max_n_blocks );
+    printf(" [2] warning: number_of_kernel_blocks = %d cannot exceed max value %d \n", number_of_kernel_blocks, max_n_blocks );
     return false;
   }
 
@@ -684,12 +689,12 @@ bool setup_threads_for_tof_biparallel(){
   print_parameters();
 
   if( number_of_threads_per_block > max_n_threads_per_block ){
-    printf(" --------------------- warning: number_of_threads_per_block = %d cannot exceed max value %d \n", number_of_threads_per_block, max_n_threads_per_block );
+    printf(" [2] --------------------- warning: number_of_threads_per_block = %d cannot exceed max value %d \n", number_of_threads_per_block, max_n_threads_per_block );
     return false;
   }
 
   if( number_of_kernel_blocks > max_n_blocks ){
-    printf(" warning: number_of_kernel_blocks = %d cannot exceed max value %d \n", number_of_kernel_blocks, max_n_blocks );
+    printf(" [2] warning: number_of_kernel_blocks = %d cannot exceed max value %d \n", number_of_kernel_blocks, max_n_blocks );
     return false;
   }
 
@@ -700,7 +705,7 @@ bool setup_threads_for_tof_biparallel(){
 bool setup_threads_for_tof_2d(unsigned int A, unsigned int B){
 
   if( std::numeric_limits<unsigned int>::max() / B  < A ){
-    printf(" --------------------- warning: B = %d times A = %d cannot exceed max value %u \n", B, A, std::numeric_limits<unsigned int>::max() );
+    printf(" [2] --------------------- warning: B = %d times A = %d cannot exceed max value %u \n", B, A, std::numeric_limits<unsigned int>::max() );
     return false;
   }
 
@@ -716,27 +721,27 @@ bool setup_threads_for_tof_2d(unsigned int A, unsigned int B){
   print_parameters_2d();
 
   if( number_of_threads_per_block_3d.x > max_n_threads_per_block_2d ){
-    printf(" --------------------- warning: number_of_threads_per_block x = %d cannot exceed max value %d \n", number_of_threads_per_block_3d.x, max_n_threads_per_block_2d );
+    printf(" [2] --------------------- warning: number_of_threads_per_block x = %d cannot exceed max value %d \n", number_of_threads_per_block_3d.x, max_n_threads_per_block_2d );
     return false;
   }
 
   if( number_of_threads_per_block_3d.y > max_n_threads_per_block_2d ){
-    printf(" --------------------- warning: number_of_threads_per_block y = %d cannot exceed max value %d \n", number_of_threads_per_block_3d.y, max_n_threads_per_block_2d );
+    printf(" [2] --------------------- warning: number_of_threads_per_block y = %d cannot exceed max value %d \n", number_of_threads_per_block_3d.y, max_n_threads_per_block_2d );
     return false;
   }
 
   if( number_of_kernel_blocks_3d.x > max_n_blocks ){
-    printf(" warning: number_of_kernel_blocks x = %d cannot exceed max value %d \n", number_of_kernel_blocks_3d.x, max_n_blocks );
+    printf(" [2] warning: number_of_kernel_blocks x = %d cannot exceed max value %d \n", number_of_kernel_blocks_3d.x, max_n_blocks );
     return false;
   }
 
   if( number_of_kernel_blocks_3d.y > max_n_blocks ){
-    printf(" warning: number_of_kernel_blocks y = %d cannot exceed max value %d \n", number_of_kernel_blocks_3d.y, max_n_blocks );
+    printf(" [2] warning: number_of_kernel_blocks y = %d cannot exceed max value %d \n", number_of_kernel_blocks_3d.y, max_n_blocks );
     return false;
   }
 
   if( std::numeric_limits<int>::max() / (number_of_kernel_blocks_3d.x*number_of_kernel_blocks_3d.y)  < number_of_threads_per_block_3d.x*number_of_threads_per_block_3d.y ){
-    printf(" --------------------- warning: grid size cannot exceed max value %u \n", std::numeric_limits<int>::max() );
+    printf(" [2] --------------------- warning: grid size cannot exceed max value %u \n", std::numeric_limits<int>::max() );
     return false;
   }
 
@@ -751,7 +756,7 @@ bool setup_threads_to_find_candidates(){
   number_of_threads_per_block = ( number_of_kernel_blocks > 1 ? max_n_threads_per_block : n_time_bins);
 
   if( number_of_threads_per_block > max_n_threads_per_block ){
-    printf(" warning: number_of_threads_per_block = %d cannot exceed max value %d \n", number_of_threads_per_block, max_n_threads_per_block );
+    printf(" [2] warning: number_of_threads_per_block = %d cannot exceed max value %d \n", number_of_threads_per_block, max_n_threads_per_block );
     return false;
   }
 
@@ -776,17 +781,17 @@ bool setup_threads_nhits(){
 
 bool read_the_input(){
 
-  printf(" --- read input \n");
+  printf(" [2] --- read input \n");
   n_hits = read_number_of_input_hits();
   if( !n_hits ) return false;
-  printf(" input contains %d hits \n", n_hits);
+  printf(" [2] input contains %d hits \n", n_hits);
   host_ids = (unsigned int *)malloc(n_hits*sizeof(unsigned int));
   host_times = (unsigned int *)malloc(n_hits*sizeof(unsigned int));
   if( !read_input() ) return false;
   //time_offset = 600.; // set to constant to match trevor running
   n_time_bins = int(floor((the_max_time + time_offset)/time_step_size))+1; // floor returns the integer below
-  printf(" input max_time %d, n_time_bins %d \n", the_max_time, n_time_bins);
-  printf(" time_offset = %f ns \n", time_offset);
+  printf(" [2] input max_time %d, n_time_bins %d \n", the_max_time, n_time_bins);
+  printf(" [2] time_offset = %f ns \n", time_offset);
   //print_input();
 
   checkCudaErrors( cudaMemcpyToSymbol(constant_n_time_bins, &n_time_bins, sizeof(n_time_bins)) );
@@ -795,16 +800,16 @@ bool read_the_input(){
   return true;
 }
 
-bool read_the_input_ToolDAQ(std::vector<int> PMTids, std::vector<int> times){
+bool read_the_input_ToolDAQ(std::vector<int> PMTids, std::vector<int> times, int * earliest_time){
 
-  printf(" --- read input \n");
+  printf(" [2] --- read input \n");
   n_hits = PMTids.size();
   if( !n_hits ) return false;
   if( n_hits != times.size() ){
-    printf(" n PMT ids %d but n times %d \n", n_hits, times.size());
+    printf(" [2] n PMT ids %d but n times %d \n", n_hits, times.size());
     return false;
   }
-  printf(" input contains %d hits \n", n_hits);
+  printf(" [2] input contains %d hits \n", n_hits);
   host_ids = (unsigned int *)malloc(n_hits*sizeof(unsigned int));
   host_times = (unsigned int *)malloc(n_hits*sizeof(unsigned int));
 
@@ -818,19 +823,26 @@ bool read_the_input_ToolDAQ(std::vector<int> PMTids, std::vector<int> times){
       time = int(floor(times[i]));
       host_times[i] = time;
       host_ids[i] = PMTids[i];
+      //      printf(" [2] input %d PMT %d time %d \n", i, host_ids[i], host_times[i]);
       if( time > max ) max = time;
       if( time < min ) min = time;
     }
     if( min < 0 ){
-      time_offset -= min;
+      for(int i=0; i<PMTids.size(); i++){
+	host_times[i] -= min;
+      }
+      max -= min;
+      min -= min;
     }
     the_max_time = max;
+    *earliest_time = min - min % time_step_size;
   }
+
 
   //time_offset = 600.; // set to constant to match trevor running
   n_time_bins = int(floor((the_max_time + time_offset)/time_step_size))+1; // floor returns the integer below
-  printf(" input max_time %d, n_time_bins %d \n", the_max_time, n_time_bins);
-  printf(" time_offset = %f ns \n", time_offset);
+  printf(" [2] input max_time %d, n_time_bins %d \n", the_max_time, n_time_bins);
+  printf(" [2] time_offset = %f ns \n", time_offset);
   //print_input();
 
   checkCudaErrors( cudaMemcpyToSymbol(constant_n_time_bins, &n_time_bins, sizeof(n_time_bins)) );
@@ -841,7 +853,7 @@ bool read_the_input_ToolDAQ(std::vector<int> PMTids, std::vector<int> times){
 
 void allocate_tofs_memory_on_device(){
 
-  printf(" --- allocate memory tofs \n");
+  printf(" [2] --- allocate memory tofs \n");
   check_cudamalloc_float(n_test_vertices*n_PMTs);
   checkCudaErrors(cudaMalloc((void **)&device_times_of_flight, n_test_vertices*n_PMTs*sizeof(float)));
 
@@ -856,7 +868,7 @@ void allocate_tofs_memory_on_device(){
   }
   /*
   if( n_hits*n_test_vertices > available_memory ){
-    printf(" cannot allocate vector of %d, available_memory %d \n", n_hits*n_test_vertices, available_memory);
+    printf(" [2] cannot allocate vector of %d, available_memory %d \n", n_hits*n_test_vertices, available_memory);
     return 0;
   }
   */
@@ -866,7 +878,7 @@ void allocate_tofs_memory_on_device(){
     
     unsigned int max = max_n_threads_per_block;
     greatest_divisor = find_greatest_divisor ( n_test_vertices , max);
-    printf(" greatest divisor of %d below %d is %d \n", n_test_vertices, max, greatest_divisor);
+    printf(" [2] greatest divisor of %d below %d is %d \n", n_test_vertices, max, greatest_divisor);
     
   }
 
@@ -876,12 +888,12 @@ void allocate_tofs_memory_on_device(){
 
 void allocate_directions_memory_on_device(){
 
-  printf(" --- allocate memory directions \n");
+  printf(" [2] --- allocate memory directions \n");
   check_cudamalloc_bool( n_test_vertices*n_direction_bins*n_PMTs);
   checkCudaErrors(cudaMalloc((void **)&device_directions_for_vertex_and_pmt, n_test_vertices*n_direction_bins*n_PMTs*sizeof(bool)));
   /*
   if( n_hits*n_test_vertices > available_memory ){
-    printf(" cannot allocate vector of %d, available_memory %d \n", n_hits*n_test_vertices, available_memory);
+    printf(" [2] cannot allocate vector of %d, available_memory %d \n", n_hits*n_test_vertices, available_memory);
     return 0;
   }
   */
@@ -892,10 +904,10 @@ void allocate_directions_memory_on_device(){
 
 void allocate_correct_memory_on_device(){
 
-  printf(" --- allocate memory \n");
+  printf(" [2] --- allocate memory \n");
   /*
   if( n_hits > available_memory ){
-    printf(" cannot allocate vector of %d, available_memory %d \n", n_hits, available_memory);
+    printf(" [2] cannot allocate vector of %d, available_memory %d \n", n_hits, available_memory);
     return 0;
   }
   */
@@ -906,7 +918,7 @@ void allocate_correct_memory_on_device(){
   checkCudaErrors(cudaMalloc((void **)&device_times, n_hits*sizeof(unsigned int)));
   /*
   if( n_test_vertices*n_PMTs > available_memory ){
-    printf(" cannot allocate vector of %d, available_memory %d \n", n_test_vertices*n_PMTs, available_memory);
+    printf(" [2] cannot allocate vector of %d, available_memory %d \n", n_test_vertices*n_PMTs, available_memory);
     return 0;
   }
   */
@@ -990,10 +1002,10 @@ void allocate_correct_memory_on_device(){
 
 void allocate_correct_memory_on_device_nhits(){
 
-  printf(" --- allocate memory \n");
+  printf(" [2] --- allocate memory \n");
   /*
   if( n_hits > available_memory ){
-    printf(" cannot allocate vector of %d, available_memory %d \n", n_hits, available_memory);
+    printf(" [2] cannot allocate vector of %d, available_memory %d \n", n_hits, available_memory);
     return 0;
   }
   */
@@ -1004,7 +1016,7 @@ void allocate_correct_memory_on_device_nhits(){
   checkCudaErrors(cudaMalloc((void **)&device_times, n_hits*sizeof(unsigned int)));
   /*
   if( n_test_vertices*n_PMTs > available_memory ){
-    printf(" cannot allocate vector of %d, available_memory %d \n", n_test_vertices*n_PMTs, available_memory);
+    printf(" [2] cannot allocate vector of %d, available_memory %d \n", n_test_vertices*n_PMTs, available_memory);
     return 0;
   }
   */
@@ -1022,7 +1034,7 @@ void allocate_correct_memory_on_device_nhits(){
 
 void allocate_candidates_memory_on_host(){
 
-  printf(" --- allocate candidates memory on host \n");
+  printf(" [2] --- allocate candidates memory on host \n");
 
   host_max_number_of_pmts_in_time_bin = (unsigned int *)malloc(n_time_bins*sizeof(unsigned int));
   host_vertex_with_max_n_pmts = (unsigned int *)malloc(n_time_bins*sizeof(unsigned int));
@@ -1037,7 +1049,7 @@ void allocate_candidates_memory_on_host(){
 
 void allocate_candidates_memory_on_device(){
 
-  printf(" --- allocate candidates memory on device \n");
+  printf(" [2] --- allocate candidates memory on device \n");
 
   check_cudamalloc_unsigned_int(n_time_bins);
   checkCudaErrors(cudaMalloc((void **)&device_max_number_of_pmts_in_time_bin, n_time_bins*sizeof(unsigned int)));
@@ -1056,9 +1068,9 @@ void allocate_candidates_memory_on_device(){
 
 void make_table_of_tofs(){
 
-  printf(" --- fill times_of_flight \n");
+  printf(" [2] --- fill times_of_flight \n");
   host_times_of_flight = (float*)malloc(n_test_vertices*n_PMTs * sizeof(double));
-  printf(" speed_light_water %f \n", speed_light_water);
+  printf(" [2] speed_light_water %f \n", speed_light_water);
   if( correct_mode == 10 ){
     host_light_dx = (float*)malloc(n_test_vertices*n_PMTs * sizeof(double));
     host_light_dy = (float*)malloc(n_test_vertices*n_PMTs * sizeof(double));
@@ -1090,8 +1102,8 @@ void make_table_of_tofs(){
 
 void make_table_of_directions(){
 
-  printf(" --- fill directions \n");
-  printf(" cerenkov_angle_water %f \n", cerenkov_angle_water);
+  printf(" [2] --- fill directions \n");
+  printf(" [2] cerenkov_angle_water %f \n", cerenkov_angle_water);
   host_directions_for_vertex_and_pmt = (bool*)malloc(n_test_vertices*n_PMTs*n_direction_bins * sizeof(bool));
   float dx, dy, dz, dr, phi, cos_theta, sin_theta;
   float phi2, cos_theta2, angle;
@@ -1121,7 +1133,7 @@ void make_table_of_directions(){
 	  dir_index_at_angles = get_direction_index_at_angles(iphi, itheta);
 	  dir_index_at_pmt = get_direction_index_at_pmt(ip, iv, dir_index_at_angles);
 
-	  //printf(" phi %f ctheta %f phi' %f ctheta' %f angle %f dir_index_at_angles %d dir_index_at_pmt %d \n", 
+	  //printf(" [2] phi %f ctheta %f phi' %f ctheta' %f angle %f dir_index_at_angles %d dir_index_at_pmt %d \n", 
 	  //	 phi, cos_theta, phi2, cos_theta2, angle, dir_index_at_angles, dir_index_at_pmt);
 
 	  host_directions_for_vertex_and_pmt[dir_index_at_pmt] 
@@ -1138,7 +1150,7 @@ void make_table_of_directions(){
 
 void fill_tofs_memory_on_device(){
 
-  printf(" --- copy tofs from host to device \n");
+  printf(" [2] --- copy tofs from host to device \n");
   checkCudaErrors(cudaMemcpy(device_times_of_flight,
 			     host_times_of_flight,
 			     n_test_vertices*n_PMTs*sizeof(float),
@@ -1173,7 +1185,7 @@ void fill_tofs_memory_on_device(){
 
 void fill_directions_memory_on_device(){
 
-  printf(" --- copy directions from host to device \n");
+  printf(" [2] --- copy directions from host to device \n");
   checkCudaErrors(cudaMemcpy(device_directions_for_vertex_and_pmt,
 			     host_directions_for_vertex_and_pmt,
 			     n_test_vertices*n_PMTs*n_direction_bins*sizeof(bool),
@@ -1193,7 +1205,7 @@ void fill_directions_memory_on_device(){
 
 void fill_tofs_memory_on_device_nhits(){
 
-  printf(" --- copy tofs from host to device \n");
+  printf(" [2] --- copy tofs from host to device \n");
   checkCudaErrors( cudaMemcpyToSymbol(constant_time_step_size, &time_step_size, sizeof(time_step_size)) );
   checkCudaErrors( cudaMemcpyToSymbol(constant_n_PMTs, &n_PMTs, sizeof(n_PMTs)) );
 
@@ -1204,7 +1216,7 @@ void fill_tofs_memory_on_device_nhits(){
 
 void fill_correct_memory_on_device(){
 
-  printf(" --- copy from host to device \n");
+  printf(" [2] --- copy from host to device \n");
   checkCudaErrors(cudaMemcpy(device_ids,
 			     host_ids,
 			     n_hits*sizeof(unsigned int),
@@ -1230,7 +1242,7 @@ unsigned int read_number_of_pmts(){
 
   FILE *f=fopen(pmts_file.c_str(), "r");
   if (f == NULL){
-    printf(" cannot read pmts file %s \n", pmts_file.c_str());
+    printf(" [2] cannot read pmts file %s \n", pmts_file.c_str());
     fclose(f);
     return 0;
   }
@@ -1254,7 +1266,7 @@ bool read_pmts(){
   unsigned int id;
   for( unsigned int i=0; i<n_PMTs; i++){
     if( fscanf(f, "%d %lf %lf %lf", &id, &x, &y, &z) != 4 ){
-      printf(" problem scanning pmt %d \n", i);
+      printf(" [2] problem scanning pmt %d \n", i);
       fclose(f);
       return false;
     }
@@ -1340,7 +1352,7 @@ void coalesce_triggers(){
   }
 
   for(std::vector<std::pair<unsigned int,unsigned int> >::const_iterator itrigger=trigger_pair_vertex_time.begin(); itrigger != trigger_pair_vertex_time.end(); ++itrigger)
-    printf(" coalesced trigger timebin %d vertex index %d \n", itrigger->first, itrigger->second);
+    printf(" [2] coalesced trigger timebin %d vertex index %d \n", itrigger->first, itrigger->second);
 
   return;
 
@@ -1367,7 +1379,7 @@ void separate_triggers_into_gates(){
       output_trigger_information.push_back(trigger_npmts_in_time_bin.at(trigger_index));
       output_trigger_information.push_back(triggertime);
 
-      printf(" triggertime: %d, npmts: %d, x: %f, y: %f, z: %f \n", triggertime, trigger_npmts_in_time_bin.at(trigger_index), vertex_x[itrigger->first], vertex_y[itrigger->first], vertex_z[itrigger->first]);
+      printf(" [2] triggertime: %d, npmts: %d, x: %f, y: %f, z: %f \n", triggertime, trigger_npmts_in_time_bin.at(trigger_index), vertex_x[itrigger->first], vertex_y[itrigger->first], vertex_z[itrigger->first]);
 
       /* if( output_txt ){ */
       /* 	FILE *of=fopen(output_file.c_str(), "w"); */
@@ -1527,12 +1539,12 @@ void print_gpu_properties(){
 
   int devCount;
   cudaGetDeviceCount(&devCount);
-  printf(" CUDA Device Query...\n");
-  printf(" There are %d CUDA devices.\n", devCount);
+  printf(" [2] CUDA Device Query...\n");
+  printf(" [2] There are %d CUDA devices.\n", devCount);
   cudaDeviceProp devProp;
   for (int i = 0; i < devCount; ++i){
     // Get device properties
-    printf(" CUDA Device #%d\n", i);
+    printf(" [2] CUDA Device #%d\n", i);
     cudaGetDeviceProperties(&devProp, i);
     printf("Major revision number:          %d\n",  devProp.major);
     printf("Minor revision number:          %d\n",  devProp.minor);
@@ -1568,7 +1580,7 @@ void print_gpu_properties(){
   cudaDeviceGetLimit(&fifo_memory, cudaLimitPrintfFifoSize);
   size_t heap_memory;
   cudaDeviceGetLimit(&heap_memory, cudaLimitMallocHeapSize);
-  printf(" memgetinfo: available_memory %f MB, total_memory %f MB, stack_memory %f MB, fifo_memory %f MB, heap_memory %f MB \n", (double)available_memory/1.e6, (double)total_memory/1.e6, (double)stack_memory/1.e6, (double)fifo_memory/1.e6, (double)heap_memory/1.e6);
+  printf(" [2] memgetinfo: available_memory %f MB, total_memory %f MB, stack_memory %f MB, fifo_memory %f MB, heap_memory %f MB \n", (double)available_memory/1.e6, (double)total_memory/1.e6, (double)stack_memory/1.e6, (double)fifo_memory/1.e6, (double)heap_memory/1.e6);
 
 
   return;
@@ -1851,7 +1863,7 @@ void choose_candidates_above_threshold(){
     if(number_of_pmts_to_cut_on > the_threshold) {
 
       if( use_verbose ){
-	printf(" time %f vertex (%f, %f, %f) npmts %d \n", (time_bin + 2)*time_step_size - time_offset, vertex_x[host_vertex_with_max_n_pmts[time_bin]], vertex_y[host_vertex_with_max_n_pmts[time_bin]], vertex_z[host_vertex_with_max_n_pmts[time_bin]], number_of_pmts_to_cut_on);
+	printf(" [2] time %f vertex (%f, %f, %f) npmts %d \n", (time_bin + 2)*time_step_size - time_offset, vertex_x[host_vertex_with_max_n_pmts[time_bin]], vertex_y[host_vertex_with_max_n_pmts[time_bin]], vertex_z[host_vertex_with_max_n_pmts[time_bin]], number_of_pmts_to_cut_on);
       }
 
       candidate_trigger_pair_vertex_time.push_back(std::make_pair(host_vertex_with_max_n_pmts[time_bin],time_bin+1));
@@ -1864,7 +1876,7 @@ void choose_candidates_above_threshold(){
   }
 
   if( use_verbose )
-    printf(" n candidates: %d \n", candidate_trigger_pair_vertex_time.size());
+    printf(" [2] n candidates: %d \n", candidate_trigger_pair_vertex_time.size());
 }
 
 bool set_input_file_for_event(int n){
@@ -2040,7 +2052,7 @@ float read_value_from_file(std::string paramname, std::string filename){
     }
   }
 
-  printf(" warning: could not find parameter %s in file %s \n", paramname.c_str(), filename.c_str());
+  printf(" [2] warning: could not find parameter %s in file %s \n", paramname.c_str(), filename.c_str());
 
   fclose(pFile);
   exit(0);
@@ -2127,7 +2139,7 @@ void check_cudamalloc_float(unsigned int size){
   size_t available_memory, total_memory;
   cudaMemGetInfo(&available_memory, &total_memory);
   if( size*bytes_per_float > available_memory*1000/1024 ){
-    printf(" cannot allocate %d floats, or %d B, available %d B \n", 
+    printf(" [2] cannot allocate %d floats, or %d B, available %d B \n", 
 	   size, size*bytes_per_float, available_memory*1000/1024);
   }
 
@@ -2139,7 +2151,7 @@ void check_cudamalloc_int(unsigned int size){
   size_t available_memory, total_memory;
   cudaMemGetInfo(&available_memory, &total_memory);
   if( size*bytes_per_int > available_memory*1000/1024 ){
-    printf(" cannot allocate %d ints, or %d B, available %d B \n", 
+    printf(" [2] cannot allocate %d ints, or %d B, available %d B \n", 
 	   size, size*bytes_per_int, available_memory*1000/1024);
   }
 
@@ -2151,7 +2163,7 @@ void check_cudamalloc_unsigned_int(unsigned int size){
   size_t available_memory, total_memory;
   cudaMemGetInfo(&available_memory, &total_memory);
   if( size*bytes_per_unsigned_int > available_memory*1000/1024 ){
-    printf(" cannot allocate %d unsigned_ints, or %d B, available %d B \n", 
+    printf(" [2] cannot allocate %d unsigned_ints, or %d B, available %d B \n", 
 	   size, size*bytes_per_unsigned_int, available_memory*1000/1024);
   }
 
@@ -2164,7 +2176,7 @@ void check_cudamalloc_bool(unsigned int size){
   size_t available_memory, total_memory;
   cudaMemGetInfo(&available_memory, &total_memory);
   if( size*bytes_per_bool > available_memory*1000/1024 ){
-    printf(" cannot allocate %d unsigned_ints, or %d B, available %d B \n", 
+    printf(" [2] cannot allocate %d unsigned_ints, or %d B, available %d B \n", 
 	   size, size*bytes_per_bool, available_memory*1000/1024);
   }
 
@@ -2245,19 +2257,19 @@ void setup_threads_for_histo_per(unsigned int n){
   print_parameters_2d();
 
   if( number_of_threads_per_block_3d.x * number_of_threads_per_block_3d.y > max_n_threads_per_block ){
-    printf(" --------------------- warning: number_of_threads_per_block (x*y) = %d cannot exceed max value %d \n", number_of_threads_per_block_3d.x * number_of_threads_per_block_3d.y, max_n_threads_per_block );
+    printf(" [2] --------------------- warning: number_of_threads_per_block (x*y) = %d cannot exceed max value %d \n", number_of_threads_per_block_3d.x * number_of_threads_per_block_3d.y, max_n_threads_per_block );
   }
 
   if( number_of_kernel_blocks_3d.x > max_n_blocks ){
-    printf(" warning: number_of_kernel_blocks x = %d cannot exceed max value %d \n", number_of_kernel_blocks_3d.x, max_n_blocks );
+    printf(" [2] warning: number_of_kernel_blocks x = %d cannot exceed max value %d \n", number_of_kernel_blocks_3d.x, max_n_blocks );
   }
 
   if( number_of_kernel_blocks_3d.y > max_n_blocks ){
-    printf(" warning: number_of_kernel_blocks y = %d cannot exceed max value %d \n", number_of_kernel_blocks_3d.y, max_n_blocks );
+    printf(" [2] warning: number_of_kernel_blocks y = %d cannot exceed max value %d \n", number_of_kernel_blocks_3d.y, max_n_blocks );
   }
 
   if( std::numeric_limits<int>::max() / (number_of_kernel_blocks_3d.x*number_of_kernel_blocks_3d.y)  < number_of_threads_per_block_3d.x*number_of_threads_per_block_3d.y ){
-    printf(" --------------------- warning: grid size cannot exceed max value %u \n", std::numeric_limits<int>::max() );
+    printf(" [2] --------------------- warning: grid size cannot exceed max value %u \n", std::numeric_limits<int>::max() );
   }
 
 }
