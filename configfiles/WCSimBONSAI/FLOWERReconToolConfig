@@ -4,7 +4,7 @@ detector_name HyperK_40perCent
 nhitsmin 3
 nhitsmax 1000
 overwrite_nearest_neighbours false
-ebonsai_verbose 1
+flower_verbose 1
 use_stopwatch 1
-#stopwatch_file energetic_bonsai_stopwatch.pdf
+#stopwatch_file flower_recon_stopwatch.pdf
 verbose 3

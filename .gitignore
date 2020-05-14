@@ -3,7 +3,7 @@ lib/*.so
 Build.h
 
 #files from the ToolDAQ framework
-ToolDAQ/
+ToolDAQ
 include/*.h
 NodeDaemon
 RemoteControl

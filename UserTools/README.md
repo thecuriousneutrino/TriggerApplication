@@ -67,8 +67,8 @@ Table of Contents
   * Reconstruct low-energy events with hk-BONSAI
   * Requires a trigger
   * Returns reconstructed vertex position and direction
-* EnergeticBONSAI
-  * Reconstruct low-energy events with energetic-BONSAI
+* FLOWERRecon
+  * Reconstruct energy of low-energy events with FLOWER
   * Requires a reconstructed vertex
   * Returns reconstructed energy
 * (test_vertices)

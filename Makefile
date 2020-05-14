@@ -34,9 +34,9 @@ ifdef BONSAIDIR
 	BonsaiLib = -L$(BONSAIDIR) -lWCSimBonsai
 endif
 
-ifdef EBONSAIDIR
-    EBonsaiInclude = -I$(EBONSAIDIR)
-    EBonsaiLib = -L$(EBONSAIDIR) -lWCSimEBonsai
+ifdef FLOWERDIR
+    FlowerInclude = -I$(FLOWERDIR)
+    FlowerLib = -L$(FLOWERDIR) -lWCSimFLOWER
 endif
 
 CXXFLAGS = -g -std=c++11 -Wpedantic
@@ -95,7 +95,7 @@ lib/libMyTools.so: UserTools/*/* UserTools/* | include/Tool.h lib/libDataModel.s
 	@echo "\n*************** Making " $@ "****************"
 	cp UserTools/*/*.h include/
 	cp UserTools/Factory/*.h include/
-	g++ $(CXXFLAGS) -fPIC -shared  UserTools/Factory/Factory.cpp -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib) $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude) $(BonsaiLib) $(BonsaiInclude) $(EBonsaiLib) $(EBonsaiInclude)
+	g++ $(CXXFLAGS) -fPIC -shared  UserTools/Factory/Factory.cpp -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib) $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude) $(BonsaiLib) $(BonsaiInclude) $(FlowerLib) $(FlowerInclude)
 
 lib/libMyToolsGPU.so: UserTools/*/* UserTools/* UserTools/CUDA/GPU_link.o | include/Tool.h lib/libDataModel.so lib/libLogging.so lib/libStore.so
 	@echo "\n*************** Making " $@ "****************"

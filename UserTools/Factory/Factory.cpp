@@ -24,9 +24,9 @@ if (tool=="pass_all") ret=new pass_all;
 if (tool=="ReconFilter") ret=new ReconFilter;
 if (tool=="ReconReset") ret=new ReconReset;
 if (tool=="PrepareSubSamples") ret=new PrepareSubSamples;
-#ifdef EBONSAIEXISTS
-if (tool=="EnergeticBONSAI") ret=new EnergeticBONSAI;
-#endif //EBONSAIEXISTS
+#ifdef FLOWEREXISTS
+if (tool=="FLOWERRecon") ret=new FLOWERRecon;
+#endif //FLOWEREXISTS
 return ret;
 }
 

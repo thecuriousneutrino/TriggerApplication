@@ -3,6 +3,6 @@ prepare1 PrepareSubSamples configfiles/WCSimBONSAI/PrepareSubSamplesConfig
 nhits1 NHits configfiles/WCSimBONSAI/NHitsToolConfig
 out1 DataOut configfiles/WCSimBONSAI/DataOutToolConfig
 bonsai1 BONSAI configfiles/WCSimBONSAI/BONSAIToolConfig
-enerbonsai1 EnergeticBONSAI configfiles/WCSimBONSAI/EnergeticBONSAIToolConfig
+flower1 FLOWERRecon configfiles/WCSimBONSAI/FLOWERReconToolConfig
 reconout ReconDataOut configfiles/WCSimBONSAI/ReconDataOutToolConfig
 reconreset ReconReset configfiles/WCSimBONSAI/ReconResetToolConfig

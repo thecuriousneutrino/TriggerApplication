@@ -30,14 +30,11 @@ RUN yum install -y \
     && rm -rf /var/cache/yum
 
 # Get TriggerApp prerequists script
-WORKDIR /
-RUN mkdir TriggerApplicationPreReq
-WORKDIR /TriggerApplicationPreReq
+WORKDIR $HYPERKDIR
 RUN wget https://raw.githubusercontent.com/HKDAQ/TriggerApplication/Application/GetToolDAQ.sh
 RUN chmod a+x GetToolDAQ.sh
 
 # Get ToolDAQ prerequisites
-WORKDIR /TriggerApplicationPreReq
 RUN ./GetToolDAQ.sh --ToolDAQ_ZMQ;
 RUN ./GetToolDAQ.sh --Boost;
 #RUN ./GetToolDAQ.sh --with_root --Root; #comes with WCSim image
