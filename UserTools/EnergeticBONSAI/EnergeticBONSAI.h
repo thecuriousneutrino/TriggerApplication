@@ -23,8 +23,6 @@ class EnergeticBONSAI: public Tool {
 
   /// Instance of energetic-BONSAI
   WCSimEBonsai * m_ebonsai;
-  /// Read in the digits in each trigger period to here
-  WCSimRootTrigger * m_trigger;
   /// Read in the total number of hits in the given trigger
   int m_in_nhits;
   /// Read in the PMT IDs of all hits in the given trigger
@@ -56,17 +54,21 @@ class EnergeticBONSAI: public Tool {
   /// Image filename to save the histogram to, if required
   std::string m_stopwatch_file;
 
+  /// Verbosity level, as defined in tool parameter file
   int m_verbose;
 
+  /// For easy formatting of Log messages
   std::stringstream m_ss;
 
+  /// Print the current value of the streamer at the set log level,
+  ///  then clear the streamer
   void StreamToLog(int level) {
     Log(m_ss.str(), level, m_verbose);
     m_ss.str("");
   }
 
+  /// Log level enumerations
   enum LogLevel {FATAL=-1, ERROR=0, WARN=1, INFO=2, DEBUG1=3, DEBUG2=4, DEBUG3=5};
-
 
 };
 

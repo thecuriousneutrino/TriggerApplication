@@ -49,6 +49,9 @@ class SubSample{
   /// Is each hit masked from future trigger decisions?
   std::vector<bool> m_masked;
 
+  /// Position of the first hit that isn't overlapping with the previous SubSample
+  unsigned int m_first_unique;
+
   /// Return the absolute time (timestamp + digit time) of a digit
   TimeDelta AbsoluteDigitTime(int index) const;
 

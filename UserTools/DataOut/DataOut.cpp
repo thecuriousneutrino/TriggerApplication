@@ -48,16 +48,16 @@ bool DataOut::Initialise(std::string configfile, DataModel &data){
   // Nevents unique event objects
   Int_t bufsize = 64000;
   m_event_tree = new TTree("wcsimT","WCSim Tree");
-  m_data->IDWCSimEvent_Triggered = new WCSimRootEvent();
-  m_data->IDWCSimEvent_Triggered->Initialize();
-  m_event_tree->Branch("wcsimrootevent", "WCSimRootEvent", &m_data->IDWCSimEvent_Triggered, bufsize,2);
+  m_id_wcsimevent_triggered = new WCSimRootEvent();
+  m_id_wcsimevent_triggered->Initialize();
+  m_event_tree->Branch("wcsimrootevent", "WCSimRootEvent", &m_id_wcsimevent_triggered, bufsize,2);
   if(m_data->HasOD) {
-    m_data->ODWCSimEvent_Triggered = new WCSimRootEvent();
-    m_data->ODWCSimEvent_Triggered->Initialize();
-    m_event_tree->Branch("wcsimrootevent_OD", "WCSimRootEvent", &m_data->ODWCSimEvent_Triggered, bufsize,2);
+    m_od_wcsimevent_triggered = new WCSimRootEvent();
+    m_od_wcsimevent_triggered->Initialize();
+    m_event_tree->Branch("wcsimrootevent_OD", "WCSimRootEvent", &m_od_wcsimevent_triggered, bufsize,2);
   }
   else {
-    m_data->ODWCSimEvent_Triggered = 0;
+    m_od_wcsimevent_triggered = 0;
   }
   m_event_tree->Branch("wcsimfilename", &(m_data->CurrentWCSimFile));
   m_event_tree->Branch("wcsimeventnum", &(m_data->CurrentWCSimEventNum));
@@ -136,18 +136,14 @@ bool DataOut::Execute(){
 
   //Fill the WCSimRootEvent with hit/trigger information, and truth information (if available)
   if(m_all_triggers->m_num_triggers) {
-    ExecuteSubDet(m_data->IDWCSimEvent_Triggered, m_data->IDSamples, m_data->IDWCSimEvent_Raw);
+    ExecuteSubDet(m_id_wcsimevent_triggered, m_data->IDSamples, m_data->IDWCSimEvent_Raw);
     if(m_data->HasOD) {
-      ExecuteSubDet(m_data->ODWCSimEvent_Triggered, m_data->ODSamples, m_data->ODWCSimEvent_Raw);
+      ExecuteSubDet(m_od_wcsimevent_triggered, m_data->ODSamples, m_data->ODWCSimEvent_Raw);
     }
   }//>=1 trigger found
 
   //Fill the tree with what we've just created
   m_event_tree->Fill();
-
-  //make sure the triggers are reset for the next event
-  m_data->IDTriggers.Clear();
-  m_data->ODTriggers.Clear();
 
   //increment event number
   m_event_num++;
@@ -235,9 +231,9 @@ void DataOut::FillHits(WCSimRootEvent * wcsim_event, std::vector<SubSample> & sa
   WCSimRootTrigger * wcsim_trigger;
   //Loop over all SubSamples
   for(std::vector<SubSample>::iterator is=samples.begin(); is!=samples.end(); ++is){
-    const unsigned int nhits = is->m_time.size();
-    int counter = 0;
-    for(int ihit = 0; ihit < nhits; ihit++) {
+    const size_t nhits = is->m_time.size();
+    unsigned int counter = 0;
+    for(size_t ihit = 0; ihit < nhits; ihit++) {
       //skip if hit is not in a readout window
       if(!is->m_trigger_readout_windows[ihit].size())
 	continue;
@@ -418,9 +414,9 @@ bool DataOut::Finalise(){
   m_event_tree->Write();
 
   delete m_event_tree;
-  delete m_data->IDWCSimEvent_Triggered;
-  if(m_data->ODWCSimEvent_Triggered)
-    delete m_data->ODWCSimEvent_Triggered;
+  delete m_id_wcsimevent_triggered;
+  if(m_od_wcsimevent_triggered)
+    delete m_od_wcsimevent_triggered;
 
   delete m_all_triggers;
 

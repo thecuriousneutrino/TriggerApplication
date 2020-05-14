@@ -332,6 +332,11 @@ template <typename T> bool WCSimReader::CompareVariable(T v1, T v2, const char *
 bool WCSimReader::Execute(){
   if(m_stopwatch) m_stopwatch->Start();
 
+  //Clear the triggers
+  m_data->IDTriggers.Clear();
+  m_data->ODTriggers.Clear();
+
+  //Clear the samples
   m_data->IDSamples.clear();
   m_data->ODSamples.clear();
 

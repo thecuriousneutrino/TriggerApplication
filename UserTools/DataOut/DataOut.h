@@ -52,6 +52,10 @@ class DataOut: public Tool {
   TFile * m_output_file;
   /// Tree contain WCSimRootEvent(s), and the original WCSim filename / event number
   TTree * m_event_tree;
+  /// Output ROOT event structure for ID
+  WCSimRootEvent * m_id_wcsimevent_triggered;
+  /// Output ROOT event structure for OD
+  WCSimRootEvent * m_od_wcsimevent_triggered;
 
   /// Combined list of triggers from all sources (ID+OD)
   TriggerInfo * m_all_triggers;

@@ -63,7 +63,7 @@ bool EnergeticBONSAI::Initialise(std::string configfile, DataModel &data){
     return false;
   }
 
-  //allocate memory for the digit vectors
+  //allocate memory for the hit vectors
   m_variables.Get("nhitsmin", m_nhits_min);
   m_variables.Get("nhitsmax", m_nhits_max);
   m_in_PMTIDs = new std::vector<int>  (m_nhits_max);
@@ -78,6 +78,7 @@ bool EnergeticBONSAI::Initialise(std::string configfile, DataModel &data){
 bool EnergeticBONSAI::Execute(){
   if(m_stopwatch) m_stopwatch->Start();
 
+  //Loop over reconstructed objects. Each should have a vertex associated to a trigger
   for(int ireco = 0; ireco < m_input_filter->GetNRecons(); ireco++) {
     //get the vertex
     Pos3D vertex = m_input_filter->GetVertex(ireco);
@@ -85,50 +86,46 @@ bool EnergeticBONSAI::Execute(){
     m_vertex[1] = vertex.y;
     m_vertex[2] = vertex.z;
 
-    //get the trigger this reconstructed object is associated with
-    m_trigger = m_data->IDWCSimEvent_Triggered->GetTrigger(m_input_filter->GetTriggerNum(ireco));
+    //get the trigger number this reconstructed object is associated with
+    const int trigger_num = m_input_filter->GetTriggerNum(ireco);
 
-    //clear the previous triggers' digit information
+    //clear the previous triggers' hit information
     m_in_PMTIDs->clear();
     m_in_Ts->clear();
 
-    //get the number of digits
-    m_in_nhits = m_trigger->GetNcherenkovdigihits();
-    int nhits_slots = m_trigger->GetNcherenkovdigihits_slots();
+    //fill the inputs to BONSAI with the current triggers' hit information
+    //Loop over SubSamples
+    for(std::vector<SubSample>::iterator is = m_data->IDSamples.begin(); is != m_data->IDSamples.end(); ++is){
+      //loop over hits
+      const size_t nhits_in_subsample = is->m_time.size();
+      //starting at m_first_unique, rather than 0, to avoid double-counting hits
+      // that are in multiple SubSamples
+      for(size_t ihit = is->m_first_unique; ihit < nhits_in_subsample; ihit++) {
+	//see if the hit belongs to this trigger
+	if(std::find(is->m_trigger_readout_windows[ihit].begin(),
+		     is->m_trigger_readout_windows[ihit].end(),
+		     trigger_num) == is->m_trigger_readout_windows[ihit].end())
+	  continue;
+
+	//it belongs. Add it to the BONSAI input arrays
+	m_ss << "DEBUG: Hit " << ihit << " at time " << is->m_time[ihit];
+	StreamToLog(DEBUG2);
+	m_in_PMTIDs->push_back(is->m_PMTid[ihit]);
+	m_in_Ts    ->push_back(is->m_time[ihit]);
+      }//ihit
+    }//SubSamples
+
+    //get the number of hits
+    m_in_nhits = m_in_PMTIDs->size();
 
     //don't run energetic bonsai on large or small events
     if(m_in_nhits < m_nhits_min || m_in_nhits > m_nhits_max) {
-      m_ss << "INFO: " << m_in_nhits << " digits in current trigger. Not running BONSAI";
+      m_ss << "INFO: " << m_in_nhits << " hits in current trigger. Not running Energetic BONSAI";
       StreamToLog(INFO);
-      return true;
+      continue;
     }
 
-    //fill the inputs to energetic BONSAI with the current triggers' digit information
-    long n_not_found = 0;
-    for (long idigi=0; idigi < nhits_slots; idigi++) {
-      TObject *element = (m_trigger->GetCherenkovDigiHits())->At(idigi);
-      WCSimRootCherenkovDigiHit *digi = 
-	dynamic_cast<WCSimRootCherenkovDigiHit*>(element);
-      if(!digi) {
-	n_not_found++;
-	//this happens regularly because removing digits doesn't shrink the TClonesArray
-	m_ss << "DEBUG: Digit " << idigi << " of " << m_in_nhits << " not found in WCSimRootTrigger";
-	StreamToLog(DEBUG2);
-	continue;
-      }
-      m_ss << "DEBUG: Digit " << idigi << " at time " << digi->GetT();
-      StreamToLog(DEBUG2);
-      m_in_PMTIDs->push_back(digi->GetTubeId());
-      m_in_Ts    ->push_back(digi->GetT());
-    }//idigi
-    int digits_found = nhits_slots - n_not_found;
-    if(m_in_nhits != digits_found) {
-      m_ss << "WARN: Energetic BONSAI expected " << m_in_nhits << " digits. Found " << digits_found;
-      StreamToLog(WARN);
-      m_in_nhits = digits_found;
-    }
-    
-    m_ss << "DEBUG: Energetic BONSAI running over " << m_in_nhits << " digits";
+    m_ss << "DEBUG: Energetic BONSAI running over " << m_in_nhits << " hits";
     StreamToLog(DEBUG1);
 
     //get the energy

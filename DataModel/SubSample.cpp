@@ -13,6 +13,7 @@ SubSample::SubSample(std::vector<int> PMTid, std::vector<TimeDelta::short_time_t
   m_time   = time;
   m_charge = charge;
   m_timestamp = timestamp;
+  m_first_unique = 0;
   //set the trigger info
   const std::vector<int> empty;
   m_trigger_readout_windows.assign(m_time.size(), empty);
@@ -97,6 +98,7 @@ std::vector<SubSample> SubSample::Split(TimeDelta target_width, TimeDelta target
   }
 
   // Add digits to new SubSamples
+  int ihit_first_unique = 0, ihit_first = 0;
   for (int i = 0; i < m_time.size(); ++i){
     TimeDelta time_in_window = m_timestamp + TimeDelta(m_time.at(i)) - temp_timestamp;
     if (time_in_window < target_width){
@@ -109,7 +111,9 @@ std::vector<SubSample> SubSample::Split(TimeDelta target_width, TimeDelta target
       // Save current SubSample and rewind to prepare a new one at the overlap position
       SubSample new_sample;
       new_sample.Append(temp_PMTid, temp_time, temp_charge, temp_timestamp);
+      new_sample.m_first_unique = ihit_first_unique - ihit_first;
       split_samples.push_back(new_sample);
+      ihit_first_unique = i;
       // Reset temporary vectors
       temp_PMTid.clear();
       temp_time.clear();
@@ -124,11 +128,13 @@ std::vector<SubSample> SubSample::Split(TimeDelta target_width, TimeDelta target
         // This will stop when `i` is just outside the new time window
         // Then `i` will get increased by one at the end of the loop
       }
+      ihit_first = i + 1;
     }
-  }
+  }//i (loop over m_time)
   // Add final SubSample
   SubSample new_sample;
   new_sample.Append(temp_PMTid, temp_time, temp_charge, temp_timestamp);
+  new_sample.m_first_unique = ihit_first_unique - ihit_first;
   split_samples.push_back(new_sample);
 
   return split_samples;
@@ -233,7 +239,7 @@ void SubSample::TellMeAboutTheTriggers(const TriggerInfo & triggers, const int v
   size_t n_hits = m_time.size();
   TimeDelta hit_time;
   for(size_t ihit = 0; ihit < n_hits; ihit++) {
-    hit_time = m_time[ihit];
+    hit_time = AbsoluteDigitTime(ihit);
     //Is the hit in this readout window?
     for(std::vector<util::Window>::reverse_iterator it = readout_windows.rbegin();
 	it != readout_windows.rend(); ++it) {
