@@ -47,6 +47,6 @@ fi
 if [ -z "$FLOWERDIR" ]; then
     echo "Running without FLOWER";
 else
-    echo "#define FLOWEREXISTS" >> Build.h
+    echo "#define FLOWEREXISTS" >> $ToolDAQapp/Build.h
     export LD_LIBRARY_PATH=$FLOWERDIR:$LD_LIBRARY_PATH
 fi
