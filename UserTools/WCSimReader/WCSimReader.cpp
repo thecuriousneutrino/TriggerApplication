@@ -400,6 +400,8 @@ bool WCSimReader::Execute(){
 	if(time > last)
 	  last  = time;
       }//ihit
+      Log("TODO: The triggered time logic is not correct.");
+      Log("TODO: First and Last need to be converted to absolute times.");
       m_data->IDTriggers.AddTrigger(m_wcsim_trigger->GetTriggerType(),
 				    trigger_time - first, //readout
 				    last - trigger_time,

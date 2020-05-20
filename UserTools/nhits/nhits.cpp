@@ -111,9 +111,12 @@ bool NHits::Execute(){
       m_ss << "trigger! time  " << trigger_ts[i] << " nhits " <<  trigger_ns[i]; StreamToLog(INFO);
     }
 #else
-  // Make sure digit times are ordered in time
-  is->SortByTime();
-  AlgNDigits(&(*is));
+    // Make sure digit times are ordered in time
+    if (not is->IsSortedByTime()){
+      Log("ERROR: Input sample is not sorted by time!", ERROR, m_verbose);
+      return false;
+    }
+    AlgNDigits(&(*is));
 #endif
   }//loop over SubSamples
   //Now we have all the triggers, get the SubSample to determine
