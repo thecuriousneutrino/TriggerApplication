@@ -192,12 +192,12 @@ void SubSample::TellMeAboutTheTriggers(const TriggerInfo & triggers, const int v
   std::stringstream ss;
   for(unsigned int itrigger = m_start_trigger; itrigger < num_triggers; itrigger++) {
     util::Window readout(itrigger,
-			 triggers.m_readout_start_time[itrigger],
-			 triggers.m_readout_end_time[itrigger]);
+			 triggers.m_readout_start_time[itrigger] - m_timestamp,
+			 triggers.m_readout_end_time[itrigger]   - m_timestamp);
     readout_windows[itrigger - m_start_trigger] = readout;
     util::Window mask(itrigger,
-		      triggers.m_mask_start_time[itrigger],
-		      triggers.m_mask_end_time[itrigger]);
+		      triggers.m_mask_start_time[itrigger] - m_timestamp,
+		      triggers.m_mask_end_time[itrigger]   - m_timestamp);
     mask_windows[itrigger - m_start_trigger] = mask;
     if(util::DEBUG2 <= verbose) {
       ss << "DEBUG: Trigger: " << itrigger
