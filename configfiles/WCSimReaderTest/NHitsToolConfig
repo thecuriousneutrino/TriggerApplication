@@ -14,5 +14,5 @@ trigger_search_window_step 5
 DetectorFile inputfiles/detector.txt
 ParameterFile inputfiles/parameters.txt
 ## degrade float to int to make CPU running match GPU running
-degrade_CPU 0
+degrade_CPU 1
 

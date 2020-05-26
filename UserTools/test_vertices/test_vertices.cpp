@@ -172,7 +172,7 @@ bool test_vertices::Execute(){
 				    TimeDelta(trigger_ts[i]) + is->m_timestamp,
 				    std::vector<float>(1, trigger_ns[i]));
 
-      m_ss << " trigger! time "<< trigger_ts[i] << " nhits " <<  trigger_ns[i]; StreamToLog(INFO);
+      m_ss << " trigger! time "<< trigger_ts[i] << " -> " << TimeDelta(trigger_ts[i] ) + is->m_timestamp << " nhits " <<  trigger_ns[i]; StreamToLog(INFO);
     }
 #else
     ;

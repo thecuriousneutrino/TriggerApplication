@@ -77,7 +77,6 @@ class DataModel {
   int IDNPMTs;
   /// Number of outer detector PMTs
   int ODNPMTs;
-
   /// height of water tank
   double detector_length;
   /// radius of water tank

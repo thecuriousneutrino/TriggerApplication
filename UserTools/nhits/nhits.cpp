@@ -76,6 +76,9 @@ bool NHits::Initialise(std::string configfile, DataModel &data){
 
   if(m_stopwatch) Log(m_stopwatch->Result("Initialise"), INFO, m_verbose);
 
+
+
+
   return true;
 }
 

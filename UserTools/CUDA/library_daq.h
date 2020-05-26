@@ -4,13 +4,38 @@
 
 #pragma once
 
+#include "build.h"
+
+#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-//#include <thrust/extrema.h>
+#include <thrust/extrema.h>
 #include <limits>
 #include <limits.h>
-#include <unistd.h>
+#include <thrust/sort.h>
+#include <thrust/device_ptr.h>
+
+typedef unsigned short offset_t;
+
+/////////
+// define variable types
+/////////
+#if defined __HISTOGRAM_UCHAR__
+typedef unsigned char histogram_t;
+#elif defined __HISTOGRAM_USHORT__
+typedef unsigned short histogram_t;
+#elif defined __HISTOGRAM_UINT__
+typedef unsigned int histogram_t;
+#endif
+
+#if defined __TIME_OF_FLIGHT_UCHAR__
+typedef unsigned char time_of_flight_t;
+#elif defined __TIME_OF_FLIGHT_USHORT__
+typedef unsigned short time_of_flight_t;
+#elif defined __TIME_OF_FLIGHT_UINT__
+typedef unsigned int time_of_flight_t;
+#endif
 
 /////////////////////////////
 // define global variables //
@@ -52,8 +77,8 @@ unsigned int number_of_threads_per_block; // number of threads per core to be us
 dim3 number_of_threads_per_block_3d;
 unsigned int grid_size;  // grid = (n cores) X (n threads / core)
 /// hits
-double time_offset;  // ns, offset to make times positive
-__constant__ double constant_time_offset;
+offset_t time_offset;  // ns, offset to make times positive
+__constant__ offset_t constant_time_offset;
 unsigned int n_time_bins; // number of time bins 
 __constant__ unsigned int constant_n_time_bins;
 unsigned int n_direction_bins_theta; // number of direction bins 
@@ -74,7 +99,7 @@ texture<unsigned int, 1, cudaReadModeElementType> tex_times;
 unsigned int * host_time_bin_of_hit;
 unsigned int * device_time_bin_of_hit;
 // npmts per time bin
-unsigned int * device_n_pmts_per_time_bin; // number of active pmts in a time bin
+histogram_t * device_n_pmts_per_time_bin; // number of active pmts in a time bin
 unsigned int * host_n_pmts_per_time_bin;
 unsigned int * device_n_pmts_nhits; // number of active pmts
 unsigned int * host_n_pmts_nhits;
@@ -91,8 +116,8 @@ float cerenkov_costheta;
 __constant__ float constant_cerenkov_costheta;
 double twopi;
 bool cylindrical_grid;
-float *device_times_of_flight; // time of flight between a vertex and a pmt
-float *host_times_of_flight;
+time_of_flight_t *device_times_of_flight; // time of flight between a vertex and a pmt
+time_of_flight_t *host_times_of_flight;
 float *device_light_dx; // x distance between a vertex and a pmt
 float *host_light_dx;
 float *device_light_dy; // y distance between a vertex and a pmt
@@ -103,7 +128,7 @@ float *device_light_dr; // distance between a vertex and a pmt
 float *host_light_dr;
 bool *device_directions_for_vertex_and_pmt; // test directions for vertex and pmt
 bool *host_directions_for_vertex_and_pmt;
-texture<float, 1, cudaReadModeElementType> tex_times_of_flight;
+texture<time_of_flight_t, 1, cudaReadModeElementType> tex_times_of_flight;
 texture<float, 1, cudaReadModeElementType> tex_light_dx;
 texture<float, 1, cudaReadModeElementType> tex_light_dy;
 texture<float, 1, cudaReadModeElementType> tex_light_dz;
@@ -128,8 +153,8 @@ bool output_txt;
 unsigned int correct_mode;
 unsigned int write_output_mode;
 // find candidates
-unsigned int * host_max_number_of_pmts_in_time_bin;
-unsigned int * device_max_number_of_pmts_in_time_bin;
+histogram_t * host_max_number_of_pmts_in_time_bin;
+histogram_t * device_max_number_of_pmts_in_time_bin;
 unsigned int *  host_vertex_with_max_n_pmts;
 unsigned int *  device_vertex_with_max_n_pmts;
 unsigned int * device_number_of_pmts_in_cone_in_time_bin;
@@ -161,9 +186,9 @@ unsigned int nhits_window;
 int n_events;
 
 
-__global__ void kernel_find_vertex_with_max_npmts_in_timebin(unsigned int * np, unsigned int * mnp, unsigned int * vmnp);
-__global__ void kernel_find_vertex_with_max_npmts_and_center_of_mass_in_timebin(unsigned int * np, unsigned int * mnp, unsigned int * vmnp, unsigned int *nc, unsigned int *mnc);
-__global__ void kernel_find_vertex_with_max_npmts_in_timebin_and_directionbin(unsigned int * np, unsigned int * mnp, unsigned int * vmnp);
+__global__ void kernel_find_vertex_with_max_npmts_in_timebin(histogram_t * np, histogram_t * mnp, unsigned int * vmnp);
+__global__ void kernel_find_vertex_with_max_npmts_and_center_of_mass_in_timebin(histogram_t * np, histogram_t * mnp, unsigned int * vmnp, unsigned int *nc, unsigned int *mnc);
+__global__ void kernel_find_vertex_with_max_npmts_in_timebin_and_directionbin(unsigned int * np, histogram_t * mnp, unsigned int * vmnp);
 
 unsigned int read_number_of_input_hits();
 bool read_input();
@@ -198,6 +223,7 @@ void fill_directions_memory_on_device();
 void fill_tofs_memory_on_device_nhits();
 void coalesce_triggers();
 void separate_triggers_into_gates();
+void separate_triggers_into_gates(std::vector<int> * trigger_ns, std::vector<int> * trigger_ts);
 float timedifference_msec(struct timeval t0, struct timeval t1);
 void start_c_clock();
 double stop_c_clock();
@@ -235,6 +261,8 @@ void read_user_parameters();
 void read_user_parameters_nhits();
 void check_cudamalloc_float(unsigned int size);
 void check_cudamalloc_int(unsigned int size);
+void check_cudamalloc_unsigned_short(unsigned int size);
+void check_cudamalloc_unsigned_char(unsigned int size);
 void check_cudamalloc_unsigned_int(unsigned int size);
 void check_cudamalloc_bool(unsigned int size);
 void setup_threads_for_histo(unsigned int n);
@@ -363,7 +391,7 @@ void print_times_of_flight(){
     printf(" ( ");
     for(unsigned int ip=0; ip<n_PMTs; ip++){
       distance_index = get_distance_index(ip + 1, n_PMTs*iv);
-      printf(" %f ", host_times_of_flight[distance_index]);
+      printf(" %d ", host_times_of_flight[distance_index]);
     }
     printf(" ) \n");
   }
@@ -854,8 +882,14 @@ bool read_the_input_ToolDAQ(std::vector<int> PMTids, std::vector<int> times, int
 void allocate_tofs_memory_on_device(){
 
   printf(" [2] --- allocate memory tofs \n");
-  check_cudamalloc_float(n_test_vertices*n_PMTs);
-  checkCudaErrors(cudaMalloc((void **)&device_times_of_flight, n_test_vertices*n_PMTs*sizeof(float)));
+#if defined __TIME_OF_FLIGHT_UCHAR__
+  check_cudamalloc_unsigned_char(n_test_vertices*n_PMTs);
+#elif defined __TIME_OF_FLIGHT_USHORT__
+  check_cudamalloc_unsigned_short(n_test_vertices*n_PMTs);
+#elif defined __TIME_OF_FLIGHT_UINT__
+  check_cudamalloc_unsigned_int(n_test_vertices*n_PMTs);
+#endif
+  checkCudaErrors(cudaMalloc((void **)&device_times_of_flight, n_test_vertices*n_PMTs*sizeof(time_of_flight_t)));
 
   if( correct_mode == 10 ){
 
@@ -1036,7 +1070,7 @@ void allocate_candidates_memory_on_host(){
 
   printf(" [2] --- allocate candidates memory on host \n");
 
-  host_max_number_of_pmts_in_time_bin = (unsigned int *)malloc(n_time_bins*sizeof(unsigned int));
+  host_max_number_of_pmts_in_time_bin = (histogram_t *)malloc(n_time_bins*sizeof(histogram_t));
   host_vertex_with_max_n_pmts = (unsigned int *)malloc(n_time_bins*sizeof(unsigned int));
 
   if( correct_mode == 10 ){
@@ -1051,8 +1085,14 @@ void allocate_candidates_memory_on_device(){
 
   printf(" [2] --- allocate candidates memory on device \n");
 
+#if defined __HISTOGRAM_UCHAR__
+  check_cudamalloc_unsigned_char(n_time_bins);
+#elif defined __HISTOGRAM_USHORT__
+  check_cudamalloc_unsigned_short(n_time_bins);
+#elif defined __HISTOGRAM_UINT__
   check_cudamalloc_unsigned_int(n_time_bins);
-  checkCudaErrors(cudaMalloc((void **)&device_max_number_of_pmts_in_time_bin, n_time_bins*sizeof(unsigned int)));
+#endif
+  checkCudaErrors(cudaMalloc((void **)&device_max_number_of_pmts_in_time_bin, n_time_bins*sizeof(histogram_t)));
 
   check_cudamalloc_unsigned_int(n_time_bins);
   checkCudaErrors(cudaMalloc((void **)&device_vertex_with_max_n_pmts, n_time_bins*sizeof(unsigned int)));
@@ -1069,7 +1109,7 @@ void allocate_candidates_memory_on_device(){
 void make_table_of_tofs(){
 
   printf(" [2] --- fill times_of_flight \n");
-  host_times_of_flight = (float*)malloc(n_test_vertices*n_PMTs * sizeof(double));
+  host_times_of_flight = (time_of_flight_t*)malloc(n_test_vertices*n_PMTs * sizeof(time_of_flight_t));
   printf(" [2] speed_light_water %f \n", speed_light_water);
   if( correct_mode == 10 ){
     host_light_dx = (float*)malloc(n_test_vertices*n_PMTs * sizeof(double));
@@ -1153,7 +1193,7 @@ void fill_tofs_memory_on_device(){
   printf(" [2] --- copy tofs from host to device \n");
   checkCudaErrors(cudaMemcpy(device_times_of_flight,
 			     host_times_of_flight,
-			     n_test_vertices*n_PMTs*sizeof(float),
+			     n_test_vertices*n_PMTs*sizeof(time_of_flight_t),
 			     cudaMemcpyHostToDevice));
   if( correct_mode == 10 ){
     checkCudaErrors(cudaMemcpy(device_light_dx,host_light_dx,n_test_vertices*n_PMTs*sizeof(float),cudaMemcpyHostToDevice));
@@ -1167,7 +1207,7 @@ void fill_tofs_memory_on_device(){
   checkCudaErrors( cudaMemcpyToSymbol(constant_n_PMTs, &n_PMTs, sizeof(n_PMTs)) );
 
   // Bind the array to the texture
-  checkCudaErrors(cudaBindTexture(0,tex_times_of_flight, device_times_of_flight, n_test_vertices*n_PMTs*sizeof(float)));
+  checkCudaErrors(cudaBindTexture(0,tex_times_of_flight, device_times_of_flight, n_test_vertices*n_PMTs*sizeof(time_of_flight_t)));
   if( correct_mode == 10 ){
     checkCudaErrors(cudaBindTexture(0,tex_light_dx, device_light_dx, n_test_vertices*n_PMTs*sizeof(float)));
     checkCudaErrors(cudaBindTexture(0,tex_light_dy, device_light_dy, n_test_vertices*n_PMTs*sizeof(float)));
@@ -1409,6 +1449,59 @@ void separate_triggers_into_gates(){
   return;
 }
 
+void separate_triggers_into_gates(std::vector<int> * trigger_ns, std::vector<int> * trigger_ts){
+
+  final_trigger_pair_vertex_time.clear();
+  unsigned int trigger_index;
+
+  unsigned int time_start=0;
+  for(std::vector<std::pair<unsigned int,unsigned int> >::const_iterator itrigger=trigger_pair_vertex_time.begin(); itrigger != trigger_pair_vertex_time.end(); ++itrigger){
+    //once a trigger is found, we must jump in the future before searching for the next
+    if(itrigger->second > time_start) {
+      unsigned int triggertime = itrigger->second*time_step_size - time_offset;
+      final_trigger_pair_vertex_time.push_back(std::make_pair(itrigger->first,triggertime));
+      time_start = triggertime + trigger_gate_up;
+      trigger_index = itrigger - trigger_pair_vertex_time.begin();
+      output_trigger_information.clear();
+      output_trigger_information.push_back(vertex_x[itrigger->first]);
+      output_trigger_information.push_back(vertex_y[itrigger->first]);
+      output_trigger_information.push_back(vertex_z[itrigger->first]);
+      output_trigger_information.push_back(trigger_npmts_in_time_bin.at(trigger_index));
+      output_trigger_information.push_back(triggertime);
+
+      trigger_ns->push_back(trigger_npmts_in_time_bin.at(trigger_index));
+      trigger_ts->push_back(triggertime);
+
+      printf(" [2] triggertime: %d, npmts: %d, x: %f, y: %f, z: %f \n", triggertime, trigger_npmts_in_time_bin.at(trigger_index), vertex_x[itrigger->first], vertex_y[itrigger->first], vertex_z[itrigger->first]);
+
+      /* if( output_txt ){ */
+      /* 	FILE *of=fopen(output_file.c_str(), "w"); */
+
+      /* 	unsigned int distance_index; */
+      /* 	double tof; */
+      /* 	double corrected_time; */
+
+      /* 	for(unsigned int i=0; i<n_hits; i++){ */
+
+      /* 	  distance_index = get_distance_index(host_ids[i], n_PMTs*(itrigger->first)); */
+      /* 	  tof = host_times_of_flight[distance_index]; */
+
+      /* 	  corrected_time = host_times[i]-tof; */
+
+      /* 	  //fprintf(of, " %d %d %f \n", host_ids[i], host_times[i], corrected_time); */
+      /* 	  fprintf(of, " %d %f \n", host_ids[i], corrected_time); */
+      /* 	} */
+
+      /* 	fclose(of); */
+      /* } */
+
+    }
+  }
+
+
+  return;
+}
+
 
 float timedifference_msec(struct timeval t0, struct timeval t1){
     return (t1.tv_sec - t0.tv_sec) * 1000.0f + (t1.tv_usec - t0.tv_usec) / 1000.0f;
@@ -1587,7 +1680,7 @@ void print_gpu_properties(){
 }
 
 
-__global__ void kernel_find_vertex_with_max_npmts_in_timebin(unsigned int * np, unsigned int * mnp, unsigned int * vmnp){
+__global__ void kernel_find_vertex_with_max_npmts_in_timebin(histogram_t * np, histogram_t * mnp, unsigned int * vmnp){
 
 
   // get unique id for each thread in each block == time bin
@@ -1599,7 +1692,7 @@ __global__ void kernel_find_vertex_with_max_npmts_in_timebin(unsigned int * np, 
 
   unsigned int number_of_pmts_in_time_bin = 0;
   unsigned int time_index;
-  unsigned int max_number_of_pmts_in_time_bin=0;
+  histogram_t max_number_of_pmts_in_time_bin=0;
   unsigned int vertex_with_max_n_pmts = 0;
 
   for(unsigned int iv=0;iv<constant_n_test_vertices;iv++) { // loop over test vertices
@@ -1621,7 +1714,7 @@ __global__ void kernel_find_vertex_with_max_npmts_in_timebin(unsigned int * np, 
 
 }
 
-__global__ void kernel_find_vertex_with_max_npmts_and_center_of_mass_in_timebin(unsigned int * np, unsigned int * mnp, unsigned int * vmnp, unsigned int *nc, unsigned int *mnc){
+__global__ void kernel_find_vertex_with_max_npmts_and_center_of_mass_in_timebin(histogram_t * np, histogram_t * mnp, unsigned int * vmnp, unsigned int *nc, unsigned int *mnc){
 
 
   // get unique id for each thread in each block == time bin
@@ -1670,7 +1763,7 @@ __global__ void kernel_find_vertex_with_max_npmts_and_center_of_mass_in_timebin(
 
 }
 
-__global__ void kernel_find_vertex_with_max_npmts_in_timebin_and_directionbin(unsigned int * np, unsigned int * mnp, unsigned int * vmnp){
+__global__ void kernel_find_vertex_with_max_npmts_in_timebin_and_directionbin(unsigned int * np, histogram_t * mnp, unsigned int * vmnp){
 
 
   // get unique id for each thread in each block == time bin
@@ -1817,7 +1910,7 @@ void copy_candidates_from_device_to_host(){
 
   checkCudaErrors(cudaMemcpy(host_max_number_of_pmts_in_time_bin,
 			     device_max_number_of_pmts_in_time_bin,
-			     n_time_bins*sizeof(unsigned int),
+			     n_time_bins*sizeof(histogram_t),
 			     cudaMemcpyDeviceToHost));
   checkCudaErrors(cudaMemcpy(host_vertex_with_max_n_pmts,
 			     device_vertex_with_max_n_pmts,
@@ -2169,6 +2262,30 @@ void check_cudamalloc_unsigned_int(unsigned int size){
 
 }
 
+
+void check_cudamalloc_unsigned_short(unsigned int size){
+
+  unsigned int bytes_per_unsigned_short = 2;
+  size_t available_memory, total_memory;
+  cudaMemGetInfo(&available_memory, &total_memory);
+  if( size*bytes_per_unsigned_short > available_memory*1000/1024 ){
+    printf(" cannot allocate %d unsigned_shorts, or %d B, available %d B \n", 
+	   size, size*bytes_per_unsigned_short, available_memory*1000/1024);
+  }
+
+}
+
+void check_cudamalloc_unsigned_char(unsigned int size){
+
+  unsigned int bytes_per_unsigned_char = 1;
+  size_t available_memory, total_memory;
+  cudaMemGetInfo(&available_memory, &total_memory);
+  if( size*bytes_per_unsigned_char > available_memory*1000/1024 ){
+    printf(" cannot allocate %d unsigned_chars, or %d B, available %d B \n", 
+	   size, size*bytes_per_unsigned_char, available_memory*1000/1024);
+  }
+
+}
 
 void check_cudamalloc_bool(unsigned int size){
 

@@ -1069,7 +1069,7 @@ int GPU_daq::test_vertices_execute(std::vector<int> PMTid, std::vector<int> time
       kernel_histo_per_vertex_shared<<<number_of_kernel_blocks_3d,number_of_threads_per_block_3d,n_time_bins*sizeof(unsigned int)>>>(device_time_bin_of_hit, device_n_pmts_per_time_bin);
       cudaThreadSynchronize();
       getLastCudaError("kernel_histo_one_thread_one_vertex execution failed\n");
-    }else if( correct_mode == 8 ){
+      }else if( correct_mode == 8 ){
       setup_threads_for_histo_per(n_test_vertices);
       printf(" [2] --- execute kernel to correct times and get n pmts per time bin \n");
       kernel_correct_times_and_get_histo_per_vertex_shared<<<number_of_kernel_blocks_3d,number_of_threads_per_block_3d,n_time_bins*sizeof(unsigned int)>>>(device_n_pmts_per_time_bin);
@@ -1088,7 +1088,7 @@ int GPU_daq::test_vertices_execute(std::vector<int> PMTid, std::vector<int> time
       getLastCudaError("kernel_correct_times_calculate_averages_and_get_histo_per_vertex_shared execution failed\n");
 
 
-    }
+      }
     if( use_timing )
       elapsed_kernel_correct_times_and_get_n_pmts_per_time_bin += stop_cuda_clock();
 
@@ -1186,7 +1186,7 @@ int GPU_daq::test_vertices_execute(std::vector<int> PMTid, std::vector<int> time
     //////////////////////////////////
     if( use_timing )
       start_cuda_clock();
-    separate_triggers_into_gates();
+    separate_triggers_into_gates(trigger_ns, trigger_ts);
     if( use_timing )
       elapsed_gates += stop_cuda_clock();
 
@@ -1245,6 +1245,7 @@ int GPU_daq::test_vertices_execute(std::vector<int> PMTid, std::vector<int> time
 
   return 1;
 }
+
 
 int GPU_daq::test_vertices_finalize(){
 
