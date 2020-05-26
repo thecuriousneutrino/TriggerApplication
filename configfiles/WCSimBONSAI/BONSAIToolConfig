@@ -2,4 +2,4 @@ use_stopwatch 1
 #stopwatch_file bonsai_stopwatch.pdf
 verbose 3
 nhitsmin 1
-nhitsmax 2000
+nhitsmax 1000
