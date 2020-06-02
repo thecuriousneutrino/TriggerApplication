@@ -21,3 +21,4 @@
 #ifdef FLOWEREXISTS
 #include "FLOWERRecon/FLOWERRecon.cpp"
 #endif //FLOWEREXISTS
+#include "SupernovaDirectionCalculator/SupernovaDirectionCalculator.cpp"

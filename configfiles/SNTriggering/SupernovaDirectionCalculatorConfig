@@ -1,0 +1,6 @@
+input_filter_name filter1
+weight_events 1
+weights_file configfiles/SNTriggering/SN_dir_weights.txt
+use_stopwatch 1
+#stopwatch_file dimfit_stopwatch.pdf
+verbose 3

@@ -1,4 +1,5 @@
-reconstruction_algorithm Random_NoDirection
+#reconstruction_algorithm Random_NoDirection
+reconstruction_algorithm BONSAI
 min_recon_likelihood 0
 min_recon_time_likelihood 0
 max_z_pos 2700

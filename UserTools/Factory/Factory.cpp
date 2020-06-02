@@ -27,6 +27,7 @@ if (tool=="PrepareSubSamples") ret=new PrepareSubSamples;
 #ifdef FLOWEREXISTS
 if (tool=="FLOWERRecon") ret=new FLOWERRecon;
 #endif //FLOWEREXISTS
+if (tool=="SupernovaDirectionCalculator") ret=new SupernovaDirectionCalculator;
 return ret;
 }
 
