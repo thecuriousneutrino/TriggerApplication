@@ -70,39 +70,21 @@ bool SupernovaDirectionCalculator::Execute(){
 
   if(m_stopwatch) m_stopwatch->Start();
 
-  const int N = m_in_filter->GetNRecons();
+  float direction[3] = {0,0,1};
 
-  m_direction[0] = m_direction[1] = m_direction[2] = 0;
+  // First round
+  CalculateDirection(direction, -1.);
+  m_ss << "First pass SN neutrino direction x, y, z: " << direction[0] << ", " << direction[1] << ", " << direction[2];
+  StreamToLog(INFO);
 
-  for(int irecon = 0; irecon < N; irecon++) {
-    //get the vertex position
-    DirectionEuler dir = m_in_filter->GetDirectionEuler(irecon);
-    double dir_z = cos(dir.theta);
-    double dir_y = sin(dir.theta) * sin(dir.phi);
-    double dir_x = sin(dir.theta) * cos(dir.phi);
+  // Second round
+  CalculateDirection(direction, 0.0);
+  m_ss << "Second pass SN neutrino direction x, y, z: " << direction[0] << ", " << direction[1] << ", " << direction[2];
+  StreamToLog(INFO);
 
-    double weight = 1.;
-    if (m_weight_events){
-      double E = m_in_filter->GetEnergy(irecon);
-      weight = GetEventWeight(log10(E));
-    }
-
-    m_direction[0] += dir_x * weight;
-    m_direction[1] += dir_y * weight;
-    m_direction[2] += dir_z * weight;
-
-  }//irecon
-
-  // Normalise direction vector
-  double r = m_direction[0]*m_direction[0];
-  r +=  m_direction[1]*m_direction[1];
-  r +=  m_direction[2]*m_direction[2];
-  r = sqrt(r);
-  m_direction[0] /= r;
-  m_direction[1] /= r;
-  m_direction[2] /= r;
-
-  m_ss << "Reconstructed SN neutrino direction from " << N << " events x, y, z: " << m_direction[0] << ", " << m_direction[1] << ", " << m_direction[2] << std::endl;
+  // Third round
+  CalculateDirection(direction, 0.5);
+  m_ss << "Third pass SN neutrino direction x, y, z: " << direction[0] << ", " << direction[1] << ", " << direction[2];
   StreamToLog(INFO);
 
   if(m_stopwatch) m_stopwatch->Stop();
@@ -147,4 +129,58 @@ double SupernovaDirectionCalculator::GetEventWeight(double log10_energy){
   double y0 = m_weight[i];
   double y1 = m_weight[i+1];
   return y0 + (y1 - y0) * (x - x0) / (x1 - x0);
+}
+
+void SupernovaDirectionCalculator::CalculateDirection(float direction[3], float costheta_cut){
+  const int N = m_in_filter->GetNRecons();
+  double temp_direction[3] = {0,0,0};
+  double flat_density = 0.;
+  for(int irecon = 0; irecon < N; irecon++) {
+    //get the event direction
+    DirectionEuler dir = m_in_filter->GetDirectionEuler(irecon);
+    double dir_z = cos(dir.theta);
+    double dir_y = sin(dir.theta) * sin(dir.phi);
+    double dir_x = sin(dir.theta) * cos(dir.phi);
+
+    double weight = 1.;
+    if (m_weight_events){
+      double E = m_in_filter->GetEnergy(irecon);
+      weight = GetEventWeight(log10(E));
+    }
+
+    double costheta = dir_x * direction[0] + dir_y * direction[1] + dir_z * direction[2];
+    if (costheta < costheta_cut){
+        // Add those events to the flat weight density estimtor
+        flat_density += weight;
+    } else {
+        temp_direction[0] += dir_x * weight;
+        temp_direction[1] += dir_y * weight;
+        temp_direction[2] += dir_z * weight;
+    }
+  }//irecon
+
+  // Calculate density
+  if (flat_density > 0) {
+    flat_density /= 2 * M_PI * (1.+costheta_cut);
+
+    // Subtract expected flat contribution from vector
+    // Expectation = flat_density * surface_of_sperical_cap * centre_of_mass_of_spherical_cap
+    double h = (1.-costheta_cut);
+    double expected = flat_density * (2.*M_PI*h) * (3*pow(2-h, 2)) / (4*(3-h));
+    temp_direction[0] -= direction[0] * expected;
+    temp_direction[1] -= direction[1] * expected;
+    temp_direction[2] -= direction[2] * expected;
+  }
+
+  // Normalise direction vector
+  double r = temp_direction[0]*temp_direction[0];
+  r +=  temp_direction[1]*temp_direction[1];
+  r +=  temp_direction[2]*temp_direction[2];
+  r = sqrt(r);
+  temp_direction[0] /= r;
+  temp_direction[1] /= r;
+  temp_direction[2] /= r;
+  direction[0] = temp_direction[0];
+  direction[1] = temp_direction[1];
+  direction[2] = temp_direction[2];
 }

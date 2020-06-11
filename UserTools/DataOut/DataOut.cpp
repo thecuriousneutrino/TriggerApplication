@@ -289,10 +289,10 @@ void DataOut::AddTruthInfo(WCSimRootEvent * wcsim_event, WCSimRootEvent * origin
 
   //set pi0 info
   const WCSimRootPi0 * pi0 = old_trig->GetPi0Info();
-  Float_t pi0_vtx[3];
+  Double_t pi0_vtx[3];
   Int_t   pi0_gamma_id[2];
-  Float_t pi0_gamma_e[2];
-  Float_t pi0_gamma_vtx[2][3];
+  Double_t pi0_gamma_e[2];
+  Double_t pi0_gamma_vtx[2][3];
   for(int i = 0; i < 3; i++)
     pi0_vtx[i] = pi0->GetPi0Vtx(i);
   for(int i = 0; i < 2; i++) {
@@ -312,7 +312,7 @@ void DataOut::AddTruthInfo(WCSimRootEvent * wcsim_event, WCSimRootEvent * origin
     if(!obj) continue;
     hit = dynamic_cast<WCSimRootCherenkovHit*>(obj);
     int tube_id = hit->GetTubeID();
-    std::vector<float> true_times;
+    std::vector<double> true_times;
     std::vector<int>   primary_parent_id;
     for(int itime = hit->GetTotalPe(0); itime < hit->GetTotalPe(0) + hit->GetTotalPe(1); itime++) {
       TObject * obj = old_trig->GetCherenkovHitTimes()->At(itime);

@@ -53,4 +53,3 @@ std::ostream& operator<<(std::ostream& outs, const TriggerInfo& trig){
   }//itrig
   return outs;
 }
-

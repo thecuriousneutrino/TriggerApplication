@@ -17,17 +17,18 @@ class SupernovaDirectionCalculator: public Tool {
   bool Execute();
   bool Finalise();
 
-  /// Return the weight for the event
+  /// Return the weight for the event.
   double GetEventWeight(double log10_energy);
 
+  /// Calculate the average SN neutrino direction.
+  ///
+  /// Assumes events with cos(theta) < costheta_cut have no direction information.
+  void CalculateDirection(float direction[3], float costheta_cut);
 
  private:
 
   ReconInfo * m_in_filter;
   std::string m_input_filter_name;
-
-  /// Sum of event directions
-  double m_direction[3];
 
   /// Enable weighting of events
   bool m_weight_events;
