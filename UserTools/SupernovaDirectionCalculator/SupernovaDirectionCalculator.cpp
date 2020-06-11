@@ -73,17 +73,25 @@ bool SupernovaDirectionCalculator::Execute(){
   float direction[3] = {0,0,1};
 
   // First round
+  // (Weighted) average over all directions
   CalculateDirection(direction, -1.);
+  m_ss << "First pass: average over all events\n";
   m_ss << "First pass SN neutrino direction x, y, z: " << direction[0] << ", " << direction[1] << ", " << direction[2];
   StreamToLog(INFO);
 
   // Second round
+  // (Weighted) average over all directions w/ cos(theta) w.r.t to previous estimate >= 0.0
+  // Other events are used to estimate uniform contribution
   CalculateDirection(direction, 0.0);
+  m_ss << "Second pass: average over events w/ cos(theta) >= 0.0\n";
   m_ss << "Second pass SN neutrino direction x, y, z: " << direction[0] << ", " << direction[1] << ", " << direction[2];
   StreamToLog(INFO);
 
   // Third round
+  // (Weighted) average over all directions w/ cos(theta) w.r.t to previous estimate >= 0.5
+  // Other events are used to estimate uniform contribution
   CalculateDirection(direction, 0.5);
+  m_ss << "Third pass: average over events w/ cos(theta) >= 0.5\n";
   m_ss << "Third pass SN neutrino direction x, y, z: " << direction[0] << ", " << direction[1] << ", " << direction[2];
   StreamToLog(INFO);
 
