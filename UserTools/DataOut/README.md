@@ -31,7 +31,7 @@ DataOut
     * It is then the first trigger the digit is in
   * If there are no trigger windows, every digit will be removed
   * Digits that are triggered, but not in the 0th trigger window, are added to the relevant window before removal from the 0th trigger
-  * Caveat: turning `save_only_failed_digits` on will save only digits that don't pass a trigger
+  * Caveat: turning `save_only_failed_hits` on will save only digits that don't pass a trigger
 * Truth tracks are also moved into their corresponding trigger window
   * However the logic is slightly different (since they are never dropped)
     * If they are in the 0th trigger readout window, store in 0th trigger
@@ -45,13 +45,13 @@ DataOut
 ```
 outfilename /path/to/file
 verbose LEVEL
-save_multiple_digits_per_trigger [0,1]
+save_multiple_hits_per_trigger [0,1]
 trigger_offset OFFSET
-save_only_failed_digits [0,1]
+save_only_failed_hits [0,1]
 ```
 
 * `outfilename` File path to output file
 * `verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity)
-* `save_multiple_digits_per_trigger` is a boolean flag. If false, will only allow one digit per PMT per trigger window to be written. If true, writes out as many as exist
+* `save_multiple_hits_per_trigger` is a boolean flag. If false, will only allow one digit per PMT per trigger window to be written. If true, writes out as many as exist
 * `trigger_offset` Offset applied to trigger time to account for `WCSimWCTriggerBase::offset` constant (set to 950 ns by default). This is related to SKI delay in the electronics/DAQ
-* `save_only_failed_digits` is a boolean flag. If false, will do the normal triggering behaviour - save only digits that pass a trigger. If true, will do the opposite - save only digits that don't pass a trigger
+* `save_only_failed_hits` is a boolean flag. If false, will do the normal triggering behaviour - save only digits that pass a trigger. If true, will do the opposite - save only digits that don't pass a trigger

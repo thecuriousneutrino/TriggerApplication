@@ -1,7 +1,7 @@
 outfilename FILES/triggered.root
-save_multiple_digits_per_trigger 1
+save_multiple_hits_per_trigger 1
 trigger_offset 950
-save_only_failed_digits 0
+save_only_failed_hits 0
 use_stopwatch 1
 #stopwatch_file dataout_stopwatch.pdf
 verbose 3
