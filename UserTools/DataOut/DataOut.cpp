@@ -371,11 +371,10 @@ void DataOut::AddTruthInfo(WCSimRootEvent * wcsim_event, WCSimRootEvent * origin
 	break;
       }//idigit_old
       if(found) {
-	//new_digit->SetPhotonIds(old_digit->GetPhotonIds());
+	new_digit->SetPhotonIds(old_digit->GetPhotonIds());
       }
     }//idigit
   }//itrigger
-  Log("TODO after WCSim/WCSim#286 is merged, uncomment SetPhotonIds", WARN, m_verbose);
 }
 /////////////////////////////////////////////////////////////////
 void DataOut::FinaliseSubEvents(WCSimRootEvent * wcsim_event) {

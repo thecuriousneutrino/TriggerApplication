@@ -42,7 +42,7 @@ bool SupernovaDirectionCalculator::Initialise(std::string configfile, DataModel 
   if (m_weight_events){
     std::string weights_file, line;
     m_variables.Get("weights_file", weights_file);
-    ifstream myfile(weights_file);
+    std::ifstream myfile(weights_file);
     if (myfile.is_open()){
       // Skip first line
       getline(myfile,line);
