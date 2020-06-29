@@ -106,8 +106,8 @@ bool NHits::Execute(){
       m_data->IDTriggers.AddTrigger(kTriggerNDigits,
                                     TimeDelta(trigger_ts[i]) - m_trigger_save_window_pre + is->m_timestamp,
                                     TimeDelta(trigger_ts[i]) + m_trigger_save_window_post + is->m_timestamp,
-                                    TimeDelta(trigger_ts[i]) - m_trigger_save_window_pre + is->m_timestamp,
-                                    TimeDelta(trigger_ts[i]) + m_trigger_save_window_post + is->m_timestamp,
+                                    TimeDelta(trigger_ts[i]) - m_trigger_mask_window_pre + is->m_timestamp,
+                                    TimeDelta(trigger_ts[i]) + m_trigger_mask_window_post + is->m_timestamp,
                                     TimeDelta(trigger_ts[i]) + is->m_timestamp,
                                     std::vector<float>(1, trigger_ns[i]));
 
@@ -153,7 +153,6 @@ void NHits::AlgNDigits(const SubSample * sample)
   int first_digit_in_window = 0;
   for(;current_digit < ndigits; ++current_digit) {
     // Update first digit in trigger window
-
     if( !m_degrade_CPU ){
       TimeDelta::short_time_t digit_time = sample->m_time.at(current_digit);
       while(TimeDelta(sample->m_time[first_digit_in_window]) < TimeDelta(digit_time) - m_trigger_search_window){
@@ -196,8 +195,8 @@ void NHits::AlgNDigits(const SubSample * sample)
       triggers->AddTrigger(kTriggerNDigits,
 			   triggertime - m_trigger_save_window_pre + sample->m_timestamp,
 			   triggertime + m_trigger_save_window_post + sample->m_timestamp,
-			   triggertime - m_trigger_save_window_pre + sample->m_timestamp,
-			   triggertime + m_trigger_save_window_post + sample->m_timestamp,
+			   triggertime - m_trigger_mask_window_pre + sample->m_timestamp,
+			   triggertime + m_trigger_mask_window_post + sample->m_timestamp,
 			   triggertime + sample->m_timestamp,
 			   std::vector<float>(1, n_digits));
     }

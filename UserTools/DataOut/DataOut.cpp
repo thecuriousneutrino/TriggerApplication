@@ -135,15 +135,15 @@ bool DataOut::Execute(){
   // It puts hits into the output event in the earliest trigger they belong to
 
   //Fill the WCSimRootEvent with hit/trigger information, and truth information (if available)
-  if(m_all_triggers->m_num_triggers) {
+  if(m_all_triggers->m_num_triggers || m_data->IsMC) {
     ExecuteSubDet(m_id_wcsimevent_triggered, m_data->IDSamples, m_data->IDWCSimEvent_Raw);
     if(m_data->HasOD) {
       ExecuteSubDet(m_od_wcsimevent_triggered, m_data->ODSamples, m_data->ODWCSimEvent_Raw);
     }
-  }//>=1 trigger found
 
-  //Fill the tree with what we've just created
-  m_event_tree->Fill();
+    //Fill the tree with what we've just created
+    m_event_tree->Fill();
+  }//>=1 trigger found or IsMC
 
   //increment event number
   m_event_num++;
@@ -185,13 +185,18 @@ void DataOut::ExecuteSubDet(WCSimRootEvent * wcsim_event, std::vector<SubSample>
 /////////////////////////////////////////////////////////////////
 void DataOut::CreateSubEvents(WCSimRootEvent * wcsim_event) {
   const int n = m_all_triggers->m_num_triggers;
-  if (n==0) return;
+  WCSimRootTrigger * trig;
+  if (n==0) {
+    trig = wcsim_event->GetTrigger(0);
+    trig->SetHeader(m_event_num, 0, 0, 0);
+    return;
+  }
 
   // Change trigger times and create new SubEvents where necessary
   for(int i = 0; i < n; i++) {
     if(i)
       wcsim_event->AddSubEvent();
-    WCSimRootTrigger * trig = wcsim_event->GetTrigger(i);
+    trig = wcsim_event->GetTrigger(i);
     trig->SetHeader(m_event_num, 0, (m_all_triggers->m_trigger_time.at(i) / TimeDelta::ns), i+1);
     trig->SetTriggerInfo(m_all_triggers->m_type.at(i), m_all_triggers->m_info.at(i));
     trig->SetMode(0);
