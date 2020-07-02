@@ -39,7 +39,7 @@ ifdef FLOWERDIR
 	FlowerLib = -L$(FLOWERDIR) -lWCSimFLOWER
 endif
 
-DOXYGEN_VERSION := $(shell doxygen --version 2>/dev/null)
+DOXYGEN_VERSION = $(shell doxygen --version 2>/dev/null)
 ifdef DOXYGEN_VERSION
 	DOXYGEN_EXISTS = 1
 else
@@ -149,10 +149,10 @@ UserTools/CUDA/GPU_link.o:  UserTools/CUDA/*
 	nvcc -c --shared -Xcompiler -fPIC -dlink UserTools/CUDA/CUDA_Unity.cu -o UserTools/CUDA/CUDA_Unity.o  -I UserTools/CUDA/  $(CUDAINC) $(NVCCFLAGS) $(CUDALIB)
 	nvcc  -arch=sm_35 -dlink  -o UserTools/CUDA/GPU_link.o UserTools/CUDA/CUDA_Unity.o  $(CUDALIB) $(CUDAINC)
 
-docs:
+Docs:
 	@if [ ${DOXYGEN_EXISTS} = 1 ]; \
 	then \
 		doxygen docs/doxygen.config; \
-	else\
+	else \
 		echo "Error: doxygen program not found in path. Exiting"; \
 	fi
