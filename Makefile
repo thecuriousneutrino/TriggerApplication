@@ -149,10 +149,10 @@ UserTools/CUDA/GPU_link.o:  UserTools/CUDA/*
 	nvcc -c --shared -Xcompiler -fPIC -dlink UserTools/CUDA/CUDA_Unity.cu -o UserTools/CUDA/CUDA_Unity.o  -I UserTools/CUDA/  $(CUDAINC) $(NVCCFLAGS) $(CUDALIB)
 	nvcc  -arch=sm_35 -dlink  -o UserTools/CUDA/GPU_link.o UserTools/CUDA/CUDA_Unity.o  $(CUDALIB) $(CUDAINC)
 
-doxy:
+docs:
 	@if [ ${DOXYGEN_EXISTS} = 1 ]; \
 	then \
-		doxygen doxygen/doxygen.config; \
+		doxygen docs/doxygen.config; \
 	else\
 		echo "Error: doxygen program not found in path. Exiting"; \
 	fi
