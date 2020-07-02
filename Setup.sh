@@ -12,12 +12,12 @@ if [ "$TrigGERAppinDOCKer" = "indubitably" ]; then
     #Setup BONSAI, if it's there
     if [ -d $HYPERKDIR/hk-BONSAI ]; then
         export BONSAIDIR=$HYPERKDIR/hk-BONSAI
-	export PATH=$BONSAIDIR/rootbonsai:$PATH
+        export PATH=$BONSAIDIR/rootbonsai:$PATH
     fi
     #Setup FLOWER, if it's there
     if [ -d $HYPERKDIR/flower ]; then
         export FLOWERDIR=$HYPERKDIR/FLOWER
-	export PATH=$FLOWERDIR/rootflower:$PATH
+        export PATH=$FLOWERDIR/rootflower:$PATH
     fi
 fi
 
