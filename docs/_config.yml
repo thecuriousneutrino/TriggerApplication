@@ -1,2 +1,2 @@
-source: html/
+source: ./html/
 include: ["_*"]
