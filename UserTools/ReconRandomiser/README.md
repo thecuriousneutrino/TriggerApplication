@@ -21,6 +21,7 @@ Optionally
 ## Configuration
 
 ### Vertex distribution
+
 ```
 n_vertices_mean N
 
@@ -59,19 +60,23 @@ In order to create a uniform distribution, set `max_z_pos` and `max_r_pos` to th
 * `flat_r` If this is true, and both `x_width` and `y_width` are negative (i.e. generating a random distribution in the circularly plane), use this to generate a flat distribution in `r` (rather than flat in `x` and `y`)
 
 ### Time distribution
+
 ```
 t_min TIME
 t_max TIME
 ```
+
 * `t_min` Times are generated uniformly in the range `t_min` to `t_max` (ns)
 * `t_max` Times are generated uniformly in the range `t_min` to `t_max` (ns)
 
 ### Misc
+
 ```
 nevents N
 seed SEED
 verbose LEVEL
 ```
+
 * `nevents` Run Execute() this number of times. If not given or negative, will revert to 1
 * `seed` The random seed to use. Default 0 (always different, but not reproducable!)
 * `verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity)

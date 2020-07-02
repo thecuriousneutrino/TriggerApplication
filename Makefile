@@ -35,13 +35,23 @@ ifdef BONSAIDIR
 endif
 
 ifdef FLOWERDIR
-    FlowerInclude = -I$(FLOWERDIR)
-    FlowerLib = -L$(FLOWERDIR) -lWCSimFLOWER
+	FlowerInclude = -I$(FLOWERDIR)
+	FlowerLib = -L$(FLOWERDIR) -lWCSimFLOWER
 endif
+
+DOXYGEN_VERSION := $(shell doxygen --version 2>/dev/null)
+ifdef DOXYGEN_VERSION
+	DOXYGEN_EXISTS = 1
+else
+	DOXYGEN_EXISTS = 0
+endif
+
 
 CXXFLAGS = -g -std=c++11 -Wpedantic
 
-all: lib/libStore.so lib/libLogging.so lib/libDataModel.so include/Tool.h lib/libMyTools.so lib/libServiceDiscovery.so lib/libToolChain.so main RemoteControl  NodeDaemon
+CPU: lib/libStore.so lib/libLogging.so lib/libDataModel.so include/Tool.h lib/libMyTools.so lib/libServiceDiscovery.so lib/libToolChain.so main RemoteControl  NodeDaemon
+
+all: lib/libStore.so lib/libLogging.so lib/libDataModel.so include/Tool.h lib/libMyTools.so lib/libServiceDiscovery.so lib/libToolChain.so main RemoteControl  NodeDaemon doxy
 
 GPU: lib/libStore.so lib/libLogging.so lib/libDataModel.so include/Tool.h lib/libMyToolsGPU.so lib/libServiceDiscovery.so lib/libToolChain.so mainGPU RemoteControl NodeDaemon
 
@@ -138,3 +148,11 @@ UserTools/CUDA/GPU_link.o:  UserTools/CUDA/*
 	cp UserTools/CUDA/*.h include/
 	nvcc -c --shared -Xcompiler -fPIC -dlink UserTools/CUDA/CUDA_Unity.cu -o UserTools/CUDA/CUDA_Unity.o  -I UserTools/CUDA/  $(CUDAINC) $(NVCCFLAGS) $(CUDALIB)
 	nvcc  -arch=sm_35 -dlink  -o UserTools/CUDA/GPU_link.o UserTools/CUDA/CUDA_Unity.o  $(CUDALIB) $(CUDAINC)
+
+doxy:
+	@if [ ${DOXYGEN_EXISTS} = 1 ]; \
+	then \
+		doxygen doxygen/doxygen.config; \
+	else\
+		echo "Error: doxygen program not found in path. Exiting"; \
+	fi

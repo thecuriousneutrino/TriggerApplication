@@ -11,3 +11,6 @@ RemoteControl
 #temp files
 *~
 .#*
+
+#doxygen
+doxygen/html/
