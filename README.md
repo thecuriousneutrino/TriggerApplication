@@ -28,6 +28,8 @@ https://github.com/ToolDAQ/ToolDAQFramework/blob/master/ToolDAQ%20doc.pdf
 
 Note that there are `README.md` files in most folders. Check them out!
 
+See also the doxygen, available for each release at https://hkdaq.github.io/TriggerApplication/md__r_e_a_d_m_e.html
+
 * [Key concepts](#key-concepts)
   * [Tool](#tool)
   * [Toolchain](#toolchain)
@@ -63,6 +65,8 @@ Note that you can use the same tool multiple times, with different (or the same)
 Note that tools are run consecutively. i.e. if you have two tools (t1, t2) the following order will be used:
 * `t1::Initialise()` - `t2::Initalise()` - `t1::Execute()` - `t2::Execute()` - `t1::Execute()` - `t2::Execute()` - ... - `t1::Finalise()` - `t2::Finalise()`
 
+Note that toolchains can also be run within toolchains.
+
 ### DataModel
 
 Tools cannot communicate directly with one another. They rely on passing data between each other using a transient data model. This is found in the `DataModel` folder
@@ -92,13 +96,17 @@ Notes:
 * To delete a container use `docker rm TriggerApplciaiton`
 * When creating a container you can mount a folder from your native os with the `-v` run option e.g. `docker run --name=TriggerApplication -v local_folder_path:container_mount_path -it hkdaq/triggerapplication:latest`
 
+#### Singularity
+
+The docker container is singularity compatible. Therefore if your sys-admin doesn't want you to have access to docker (due to the elevated privileges required) ask about singularity (which doesn't require such privileges).
+
 ### From GitHub source
 
 * Clone from https://github.com/HKDAQ/TriggerApplication
   * Note the model used to commit to the main version of TriggerApplication is fork and pull request. So do fork if you need to!
 * Make sure you have sourced WCSim i.e. that you have `$WCSIMDIR` set
   * Note that this will work with the current WCSim develop branch.
-    * Versions of WCSim older than v1.8.0 will almost certainly not work. (`kTriggerNoTrig` added in v1.8.0; `WCSimRootOptions` added in v1.7.0)
+    * The next tagged version of WCSim after v1.8.0 will work. v1.8.0 and earlier will not.
   * Note that you also need ROOT setup (a WCSim prerequisite)
 * (Optional) If you want to run the BONSAI tool, make sure you have sourced [hk-BONSAI](https://github.com/hyperk/hk-BONSAI) i.e. that you have `$BONSAIDIR` set
 * (Optional) If you want to run the FLOWER tool, make sure you have sourced [FLOWER](https://github.com/HKDAQ/FLOWER) i.e. that you have `$FLOWERDIR` set
@@ -114,6 +122,7 @@ To check it has built successfully:
   * This runs an example toolchain with two versions of the `dummy` tool. It's essentially a Hello World tool
 
 #### Installing an optional package later
+
 If you do install optional packages after the initial compliation of TriggerApplication, once they are setup correctly (see above) it is a two-step process to build the tools that depend on the optional packages
 * `source Setup.sh`
 * `make clean; make`
