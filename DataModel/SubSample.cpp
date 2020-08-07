@@ -3,6 +3,13 @@
 
 #include <algorithm>
 
+SubSample::SubSample() {
+  // Assign default values
+  m_timestamp = 0;
+  m_first_unique = 0;
+  m_start_trigger = 0;
+}
+
 SubSample::SubSample(std::vector<int> PMTid, std::vector<TimeDelta::short_time_t> time, std::vector<float> charge, TimeDelta timestamp){
   // If charge vector is empty, fill with 0s
   if (charge.size() == 0){

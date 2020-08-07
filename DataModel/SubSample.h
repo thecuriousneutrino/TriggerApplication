@@ -12,7 +12,7 @@ class SubSample{
 
  public:
 
-  SubSample() : m_start_trigger(0) {};
+  SubSample();
 
   /// Deprecated constructor, use empty constructor and Append instead.
   __attribute__((deprecated))
