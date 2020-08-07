@@ -384,6 +384,9 @@ bool WCSimReader::Execute(){
   }
   else {
     //a trigger has been run, so we need to get all digits from all WCSim event triggers, and fill in the relevant TriggerInfo
+    Log("INFO: Reading in a file that has already been triggered", INFO, m_verbose);
+    Log("FATAL: This is not correctly implemented at the moment. Exiting", FATAL, m_verbose);
+    return false;
     SubSample subid_all;
     for(int itrigger = 0; itrigger < m_wcsim_event_ID->GetNumberOfEvents(); itrigger++) {
       m_wcsim_trigger = m_wcsim_event_ID->GetTrigger(itrigger);
