@@ -22,3 +22,4 @@
 #include "FLOWERRecon.h"
 #endif //FLOWEREXISTS
 #include "SupernovaDirectionCalculator.h"
+#include "Chunker.h"
