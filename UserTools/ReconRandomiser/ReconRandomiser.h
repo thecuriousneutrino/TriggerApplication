@@ -7,7 +7,8 @@
 #include "TRandom3.h"
 
 #include "Tool.h"
-
+#include "TMath.h"
+#include "Stopwatch.h"
 
 typedef enum EDistribution {kUniform, kGauss, kFixed} Distribution_t;
 

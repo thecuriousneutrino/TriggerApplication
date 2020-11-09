@@ -6,6 +6,7 @@
 
 #include "Tool.h"
 #include "TimeDelta.h"
+#include "Stopwatch.h"
 
 class dimfit: public Tool {
 

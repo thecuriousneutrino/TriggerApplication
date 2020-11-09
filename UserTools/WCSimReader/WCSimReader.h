@@ -12,6 +12,9 @@
 #include "TChain.h"
 
 #include "Tool.h"
+#include "TFile.h"
+#include "TVectorT.h"
+#include "Stopwatch.h"
 
 class WCSimReader: public Tool {
 

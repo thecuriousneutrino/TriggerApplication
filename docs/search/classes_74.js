@@ -1,7 +1,7 @@
 var searchData=
 [
   ['test_5fvertices',['test_vertices',['../classtest__vertices.html',1,'']]],
-  ['thread_5fargs',['thread_args',['../structthread__args.html',1,'']]],
+  ['thread_5fargs',['Thread_args',['../struct_thread__args.html',1,'Thread_args'],['../structthread__args.html',1,'thread_args']]],
   ['timedelta',['TimeDelta',['../class_time_delta.html',1,'']]],
   ['tool',['Tool',['../class_tool.html',1,'']]],
   ['toolchain',['ToolChain',['../class_tool_chain.html',1,'']]],

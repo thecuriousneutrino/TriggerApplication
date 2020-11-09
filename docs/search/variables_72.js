@@ -5,5 +5,6 @@ var searchData=
   ['recoinfo',['RecoInfo',['../class_data_model.html#a3fa7b34f677cf748f48ac8e1ab43eddd',1,'DataModel']]],
   ['recoinfomap',['RecoInfoMap',['../class_data_model.html#ae8fc9f82fc93299e3d8d8617814556f5',1,'DataModel']]],
   ['remote',['remote',['../class_tool_chain.html#ac727a6313d89ee5ff9ceb7c6682fdee8',1,'ToolChain']]],
-  ['remoteport',['remoteport',['../structthread__args.html#a371407c82f7f64e3d9df634e59369565',1,'thread_args']]]
+  ['remoteport',['remoteport',['../structthread__args.html#a371407c82f7f64e3d9df634e59369565',1,'thread_args']]],
+  ['running',['running',['../struct_thread__args.html#a9cb8f6b709c5687bf28531bf4d808c75',1,'Thread_args']]]
 ];

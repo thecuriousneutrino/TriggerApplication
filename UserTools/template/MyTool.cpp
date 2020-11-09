@@ -27,7 +27,7 @@ bool MyTool::Initialise(std::string configfile, DataModel &data){
   /// YOUR CODE HERE
 
 
-  if(m_stopwatch) Log(m_stopwatch->Result("Initialise"), INFO, verbose);
+  if(m_stopwatch) Log(m_stopwatch->Result("Initialise"), INFO, m_verbose);
 
   return true;
 }
@@ -48,14 +48,14 @@ bool MyTool::Execute(){
 bool MyTool::Finalise(){
 
   if(m_stopwatch) {
-    Log(m_stopwatch->Result("Execute", m_stopwatch_file), INFO, verbose);
+    Log(m_stopwatch->Result("Execute", m_stopwatch_file), INFO, m_verbose);
     m_stopwatch->Start();
   }
 
   //// YOUR CODE HERE
 
   if(m_stopwatch) {
-    Log(m_stopwatch->Result("Finalise"), INFO, verbose);
+    Log(m_stopwatch->Result("Finalise"), INFO, m_verbose);
     delete m_stopwatch;
   }
 
