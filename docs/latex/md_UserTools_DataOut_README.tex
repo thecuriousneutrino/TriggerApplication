@@ -1,0 +1,72 @@
+\hyperlink{classDataOut}{Data\-Out} takes W\-C\-Sim pass through information and trigger results, writing out a new T\-File with only the triggered digits, and some extra variables so that triggered events can be linked with W\-C\-Sim events
+
+\subsection*{Data}
+
+\hyperlink{classDataOut}{Data\-Out}
+\begin{DoxyItemize}
+\item Creates an output {\ttfamily T\-File}
+\item Sets up 3 T\-Trees
+\begin{DoxyEnumerate}
+\item {\ttfamily wcsim\-Geo\-T} has 1 entry and is a direct clone of the input tree
+
+{\ttfamily wcsimrootgeom} of type {\ttfamily W\-C\-Sim\-Root\-Geom} is the only branch
+\item {\ttfamily wcsim\-Root\-Options\-T} has N input file entries
+
+{\ttfamily wcsimrootoptions} of type {\ttfamily W\-C\-Sim\-Root\-Options} is a direct clone of the input tree
+
+{\ttfamily wcsimfilename} of type {\ttfamily T\-Obj\-String} is the W\-C\-Sim file this options class came from
+\item {\ttfamily wcsim\-T} has N events entries
+\begin{DoxyItemize}
+\item {\ttfamily wcsimrootevent} of type {\ttfamily W\-C\-Sim\-Root\-Event} stores the I\-D events. This is identical to the W\-C\-Sim event tree, with digits outside the trigger window removed$\ast$
+\begin{DoxyItemize}
+\item This {\ttfamily W\-C\-Sim\-Root\-Event} with removed digits can be accessed by other tools using {\ttfamily I\-D\-W\-C\-Sim\-Event\-\_\-\-Triggered} in the data model
+\end{DoxyItemize}
+\item {\ttfamily wcsimrootevent\-\_\-\-O\-D} of type {\ttfamily W\-C\-Sim\-Root\-Event} stores the O\-D events. This is identical to the W\-C\-Sim event tree, with digits outside the trigger window removed$\ast$
+\begin{DoxyItemize}
+\item This {\ttfamily W\-C\-Sim\-Root\-Event} with removed digits can be accessed by other tools using {\ttfamily O\-D\-W\-C\-Sim\-Event\-\_\-\-Triggered} in the data model
+\end{DoxyItemize}
+\item {\ttfamily wcsimfilename} of type {\ttfamily T\-Obj\-Array} of {\ttfamily T\-Obj\-String} stores the W\-C\-Sim filename(s) of the current event
+\item {\ttfamily wcsimeventnums} of type {\ttfamily vector$<$int$>$} stors the W\-C\-Sim event number(s) of the current event
+\end{DoxyItemize}
+\end{DoxyEnumerate}
+\item $\ast$\-Any digit that is not in a trigger window is removed from the output {\ttfamily T\-Clones\-Array}
+\begin{DoxyItemize}
+\item This is done using a combination of {\ttfamily I\-D\-Triggers} and {\ttfamily O\-D\-Triggers} that triggers have filled
+\begin{DoxyItemize}
+\item e.\-g. if an O\-D digit is doesn't have any O\-D triggers, but is within an I\-D trigger window, the O\-D digit will be saved
+\item This is different to W\-C\-Sim which handles I\-D/\-O\-D triggers separately
+\end{DoxyItemize}
+\item The logic of which trigger to add a digit too is\-:
+\begin{DoxyItemize}
+\item Time order the triggers
+\item It is then the first trigger the digit is in
+\end{DoxyItemize}
+\item If there are no trigger windows, every digit will be removed
+\item Digits that are triggered, but not in the 0th trigger window, are added to the relevant window before removal from the 0th trigger
+\item Caveat\-: turning {\ttfamily save\-\_\-only\-\_\-failed\-\_\-hits} on will save only digits that don't pass a trigger
+\end{DoxyItemize}
+\item Truth tracks are also moved into their corresponding trigger window
+\begin{DoxyItemize}
+\item However the logic is slightly different (since they are never dropped)
+\begin{DoxyItemize}
+\item If they are in the 0th trigger readout window, store in 0th trigger
+\item If they are after the 0th readout window and before the end of the 1st trigger window, store in the 1st trigger
+\item etc
+\item But note that W\-C\-Sim\-Root\-Trigger object aren't created just for tracks, therefore if the track time is beyond the last trigger window, it is stored in the last trigger
+\end{DoxyItemize}
+\item Note that this is not exactly equivalent to W\-C\-Sim. W\-C\-Sim uses a fixed \char`\"{}`trigger\-\_\-time` + 950 ns\char`\"{} for this check, rather than \char`\"{}`trigger\-\_\-time` + `postrigger\-\_\-save\-\_\-window`\char`\"{}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Configuration}
+
+``` outfilename /path/to/file verbose L\-E\-V\-E\-L save\-\_\-multiple\-\_\-hits\-\_\-per\-\_\-trigger \mbox{[}0,1\mbox{]} trigger\-\_\-offset O\-F\-F\-S\-E\-T save\-\_\-only\-\_\-failed\-\_\-hits \mbox{[}0,1\mbox{]} ```
+
+
+\begin{DoxyItemize}
+\item {\ttfamily outfilename} File path to output file
+\item {\ttfamily verbose} Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity)
+\item {\ttfamily save\-\_\-multiple\-\_\-hits\-\_\-per\-\_\-trigger} is a boolean flag. If false, will only allow one digit per P\-M\-T per trigger window to be written. If true, writes out as many as exist
+\item {\ttfamily trigger\-\_\-offset} Offset applied to trigger time to account for {\ttfamily W\-C\-Sim\-W\-C\-Trigger\-Base\-::offset} constant (set to 950 ns by default). This is related to S\-K\-I delay in the electronics/\-D\-A\-Q
+\item {\ttfamily save\-\_\-only\-\_\-failed\-\_\-hits} is a boolean flag. If false, will do the normal triggering behaviour -\/ save only digits that pass a trigger. If true, will do the opposite -\/ save only digits that don't pass a trigger 
+\end{DoxyItemize}

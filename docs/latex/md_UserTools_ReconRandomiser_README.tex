@@ -1,0 +1,88 @@
+Produce randomised vertex distributions
+
+Multiple versions of the tools can be run in a tool\-Chain to create complicated event distributions
+\begin{DoxyItemize}
+\item e.\-g. to add a volume-\/like distribution on top of a point-\/like distribution
+\end{DoxyItemize}
+
+Optionally
+\begin{DoxyItemize}
+\item Apply smearing (emulating reconstruction, to 0th order) (T\-O\-D\-O)
+\item Apply fixing points on a grid (emulating fixed grid-\/based reconstruction, to 0th order)
+\item Also produce directions (T\-O\-D\-O)
+\end{DoxyItemize}
+
+\subsection*{Data}
+
+
+\begin{DoxyItemize}
+\item Writes output to {\ttfamily Reco\-Info}
+\begin{DoxyItemize}
+\item Likelihoods and \hyperlink{classNHits}{N\-Hits} are set to a large number, so they are always accepted by future tools
+\item The Reconstructer type is set to {\ttfamily k\-Recon\-Random\-No\-Direction} or {\ttfamily k\-Recon\-Random}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Configuration}
+
+\subsubsection*{Vertex distribution}
+
+``` n\-\_\-vertices\-\_\-mean N
+
+x\-\_\-mean\-\_\-pos P\-O\-S x\-\_\-width W\-I\-D\-T\-H y\-\_\-mean\-\_\-pos P\-O\-S y\-\_\-width W\-I\-D\-T\-H z\-\_\-mean\-\_\-pos P\-O\-S z\-\_\-width W\-I\-D\-T\-H
+
+max\-\_\-z\-\_\-pos F\-L\-O\-A\-T max\-\_\-r\-\_\-pos F\-L\-O\-A\-T
+
+flat\-\_\-r B\-O\-O\-L ```
+
+Specify the simulated vertex distribution to generate.
+
+In order to create a uniform distribution, set {\ttfamily max\-\_\-z\-\_\-pos} and {\ttfamily max\-\_\-r\-\_\-pos} to the size of your detector, and {\ttfamily x\-\_\-width}, {\ttfamily y\-\_\-width}, {\ttfamily z\-\_\-width} all to negative values
+\begin{DoxyItemize}
+\item {\ttfamily n\-\_\-vertices\-\_\-mean} Poisson mean of the number of vertices to generate
+\item {\ttfamily x\-\_\-mean\-\_\-pos} The mean {\ttfamily x} position (cm)
+\item {\ttfamily x\-\_\-width} The width of the Gaussian in {\ttfamily x (cm)}
+\begin{DoxyItemize}
+\item If 0, no throws
+\item If $<$0, throw uniformly between {\ttfamily ±max\-\_\-r\-\_\-pos}. In this case, {\ttfamily x\-\_\-mean\-\_\-pos} is ignored
+\end{DoxyItemize}
+\item {\ttfamily y\-\_\-mean\-\_\-pos} The mean {\ttfamily y} position (cm)
+\item {\ttfamily y\-\_\-width} The width of the Gaussian in {\ttfamily y} (cm)
+\begin{DoxyItemize}
+\item If {\ttfamily 0}, no throws
+\item If {\ttfamily $<$1\-E-\/6}, throw uniformly between {\ttfamily ±max\-\_\-r\-\_\-pos}. In this case, {\ttfamily y\-\_\-mean\-\_\-pos} is ignored
+\end{DoxyItemize}
+\item {\ttfamily z\-\_\-mean\-\_\-pos} The mean {\ttfamily z} position (cm)
+\item {\ttfamily z\-\_\-width} The width of the Gaussian in {\ttfamily z} (cm)
+\begin{DoxyItemize}
+\item If 0, no throws
+\item If $<$0, throw uniformly between {\ttfamily ±max\-\_\-z\-\_\-pos}. In this case, {\ttfamily z\-\_\-mean\-\_\-pos} is ignored
+\end{DoxyItemize}
+\item {\ttfamily max\-\_\-r\-\_\-pos} Events with larger {\ttfamily r} (in cm) than this will be rethrown
+\item {\ttfamily max\-\_\-z\-\_\-pos} Events with larger {\ttfamily $|$z$|$} (in cm) than this will be rethrown
+\begin{DoxyItemize}
+\item Note that this is a detector half-\/height because the co-\/ordinate origin is at the detector centre
+\end{DoxyItemize}
+\item {\ttfamily flat\-\_\-r} If this is true, and both {\ttfamily x\-\_\-width} and {\ttfamily y\-\_\-width} are negative (i.\-e. generating a random distribution in the circularly plane), use this to generate a flat distribution in {\ttfamily r} (rather than flat in {\ttfamily x} and {\ttfamily y})
+\end{DoxyItemize}
+
+\subsubsection*{Time distribution}
+
+``` t\-\_\-min T\-I\-M\-E t\-\_\-max T\-I\-M\-E ```
+
+
+\begin{DoxyItemize}
+\item {\ttfamily t\-\_\-min} Times are generated uniformly in the range {\ttfamily t\-\_\-min} to {\ttfamily t\-\_\-max} (ns)
+\item {\ttfamily t\-\_\-max} Times are generated uniformly in the range {\ttfamily t\-\_\-min} to {\ttfamily t\-\_\-max} (ns)
+\end{DoxyItemize}
+
+\subsubsection*{Misc}
+
+``` nevents N seed S\-E\-E\-D verbose L\-E\-V\-E\-L ```
+
+
+\begin{DoxyItemize}
+\item {\ttfamily nevents} Run Execute() this number of times. If not given or negative, will revert to 1
+\item {\ttfamily seed} The random seed to use. Default 0 (always different, but not reproducable!)
+\item {\ttfamily verbose} Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity) 
+\end{DoxyItemize}

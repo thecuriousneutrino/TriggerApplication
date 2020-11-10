@@ -1,0 +1,99 @@
+\hypertarget{classSubSample}{\section{Sub\-Sample Class Reference}
+\label{classSubSample}\index{Sub\-Sample@{Sub\-Sample}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classSubSample_a56eeea67b7852ab8a2c5682f908abc93}{\hyperlink{classSubSample_a56eeea67b7852ab8a2c5682f908abc93}{Sub\-Sample} (std\-::vector$<$ int $>$ P\-M\-Tid, std\-::vector$<$ \hyperlink{classTimeDelta_afe4b7adde6a0645a8ada61f39e198c8e}{Time\-Delta\-::short\-\_\-time\-\_\-t} $>$ time, std\-::vector$<$ float $>$ charge=std\-::vector$<$ float $>$(), \hyperlink{classTimeDelta}{Time\-Delta} timestamp=0)}\label{classSubSample_a56eeea67b7852ab8a2c5682f908abc93}
+
+\begin{DoxyCompactList}\small\item\em Deprecated constructor, use empty constructor and Append instead. \end{DoxyCompactList}\item 
+bool \hyperlink{classSubSample_abc19e029b849c88e4a605327a1ba7816}{Append} (const \hyperlink{classSubSample}{Sub\-Sample} \&sub)
+\item 
+bool \hyperlink{classSubSample_abbb16914eb71ed96e07fc065c77a61a2}{Append} (const std\-::vector$<$ int $>$ P\-M\-Tid, const std\-::vector$<$ \hyperlink{classTimeDelta_afe4b7adde6a0645a8ada61f39e198c8e}{Time\-Delta\-::short\-\_\-time\-\_\-t} $>$ time, const std\-::vector$<$ float $>$ charge, const \hyperlink{classTimeDelta}{Time\-Delta} timestamp)
+\item 
+\hypertarget{classSubSample_ae2e236965be0457c1374947774436be8}{\hyperlink{classTimeDelta}{Time\-Delta} \hyperlink{classSubSample_ae2e236965be0457c1374947774436be8}{Absolute\-Digit\-Time} (int index) const }\label{classSubSample_ae2e236965be0457c1374947774436be8}
+
+\begin{DoxyCompactList}\small\item\em Return the absolute time (timestamp + digit time) of a digit. \end{DoxyCompactList}\item 
+\hypertarget{classSubSample_a3af7256b98eb7eb10d748fe136e40f87}{void \hyperlink{classSubSample_a3af7256b98eb7eb10d748fe136e40f87}{Sort\-By\-Time} ()}\label{classSubSample_a3af7256b98eb7eb10d748fe136e40f87}
+
+\begin{DoxyCompactList}\small\item\em Sort all digits in the \hyperlink{classSubSample}{Sub\-Sample} by their time. \end{DoxyCompactList}\item 
+\hypertarget{classSubSample_ab2b86eb86fd4c4e7d57b38241de53803}{bool \hyperlink{classSubSample_ab2b86eb86fd4c4e7d57b38241de53803}{Is\-Sorted\-By\-Time} () const }\label{classSubSample_ab2b86eb86fd4c4e7d57b38241de53803}
+
+\begin{DoxyCompactList}\small\item\em Check whether all hits are in time order. \end{DoxyCompactList}\item 
+std\-::vector$<$ \hyperlink{classSubSample}{Sub\-Sample} $>$ \hyperlink{classSubSample_ae91087e3c593a1870f61f3b656685915}{Split} (\hyperlink{classTimeDelta}{Time\-Delta} target\-\_\-width, \hyperlink{classTimeDelta}{Time\-Delta} target\-\_\-overlap) const 
+\item 
+void \hyperlink{classSubSample_a487b77424fb4df7202573d32fc2d8393}{Tell\-Me\-About\-The\-Triggers} (const \hyperlink{classTriggerInfo}{Trigger\-Info} \&triggers, const int verbose)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classSubSample_a72a6636299a7baca19c916b069a187f7}{\hyperlink{classTimeDelta}{Time\-Delta} \hyperlink{classSubSample_a72a6636299a7baca19c916b069a187f7}{m\-\_\-timestamp}}\label{classSubSample_a72a6636299a7baca19c916b069a187f7}
+
+\begin{DoxyCompactList}\small\item\em Timestamp of the whole \hyperlink{classSubSample}{Sub\-Sample}. \end{DoxyCompactList}\item 
+\hypertarget{classSubSample_adc85934cd222f1f74b99b2ef4963fc9a}{std\-::vector$<$ int $>$ \hyperlink{classSubSample_adc85934cd222f1f74b99b2ef4963fc9a}{m\-\_\-\-P\-M\-Tid}}\label{classSubSample_adc85934cd222f1f74b99b2ef4963fc9a}
+
+\begin{DoxyCompactList}\small\item\em Vector of P\-M\-T I\-Ds for all hits in \hyperlink{classSubSample}{Sub\-Sample}. \end{DoxyCompactList}\item 
+\hypertarget{classSubSample_add9e70423870598d31cd57084ecf13ad}{std\-::vector\\*
+$<$ \hyperlink{classTimeDelta_afe4b7adde6a0645a8ada61f39e198c8e}{Time\-Delta\-::short\-\_\-time\-\_\-t} $>$ \hyperlink{classSubSample_add9e70423870598d31cd57084ecf13ad}{m\-\_\-time}}\label{classSubSample_add9e70423870598d31cd57084ecf13ad}
+
+\begin{DoxyCompactList}\small\item\em Vector of hit times relative to timestamp for all hits in \hyperlink{classSubSample}{Sub\-Sample}. Unit\-: ns. \end{DoxyCompactList}\item 
+\hypertarget{classSubSample_a997905ab2499c068d107f0ee7ac8b294}{std\-::vector$<$ float $>$ \hyperlink{classSubSample_a997905ab2499c068d107f0ee7ac8b294}{m\-\_\-charge}}\label{classSubSample_a997905ab2499c068d107f0ee7ac8b294}
+
+\begin{DoxyCompactList}\small\item\em Vector of charges for all hits in \hyperlink{classSubSample}{Sub\-Sample}. Unit\-: photoelectrons (M\-C), calibrated photoelectrons (data) \end{DoxyCompactList}\item 
+\hypertarget{classSubSample_adb0dbcc161e814ca568ca75f6edc871e}{std\-::vector$<$ std\-::vector$<$ int $>$ $>$ \hyperlink{classSubSample_adb0dbcc161e814ca568ca75f6edc871e}{m\-\_\-trigger\-\_\-readout\-\_\-windows}}\label{classSubSample_adb0dbcc161e814ca568ca75f6edc871e}
+
+\begin{DoxyCompactList}\small\item\em Stores the trigger readout windows each hit is associated with. \end{DoxyCompactList}\item 
+\hypertarget{classSubSample_a8b9b65c716d5f31fefc6233abc17e198}{std\-::vector$<$ bool $>$ \hyperlink{classSubSample_a8b9b65c716d5f31fefc6233abc17e198}{m\-\_\-masked}}\label{classSubSample_a8b9b65c716d5f31fefc6233abc17e198}
+
+\begin{DoxyCompactList}\small\item\em Is each hit masked from future trigger decisions? \end{DoxyCompactList}\item 
+\hypertarget{classSubSample_a46cadde852fa5715eb199073dc18719c}{unsigned int \hyperlink{classSubSample_a46cadde852fa5715eb199073dc18719c}{m\-\_\-first\-\_\-unique}}\label{classSubSample_a46cadde852fa5715eb199073dc18719c}
+
+\begin{DoxyCompactList}\small\item\em Position of the first hit that isn't overlapping with the previous \hyperlink{classSubSample}{Sub\-Sample}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classSubSample_abc19e029b849c88e4a605327a1ba7816}{\index{Sub\-Sample@{Sub\-Sample}!Append@{Append}}
+\index{Append@{Append}!SubSample@{Sub\-Sample}}
+\subsubsection[{Append}]{\setlength{\rightskip}{0pt plus 5cm}bool Sub\-Sample\-::\-Append (
+\begin{DoxyParamCaption}
+\item[{const {\bf Sub\-Sample} \&}]{sub}
+\end{DoxyParamCaption}
+)}}\label{classSubSample_abc19e029b849c88e4a605327a1ba7816}
+Append the hits in a different \hyperlink{classSubSample}{Sub\-Sample} to this one
+
+Returns {\ttfamily true} if successful. \hypertarget{classSubSample_abbb16914eb71ed96e07fc065c77a61a2}{\index{Sub\-Sample@{Sub\-Sample}!Append@{Append}}
+\index{Append@{Append}!SubSample@{Sub\-Sample}}
+\subsubsection[{Append}]{\setlength{\rightskip}{0pt plus 5cm}bool Sub\-Sample\-::\-Append (
+\begin{DoxyParamCaption}
+\item[{const std\-::vector$<$ int $>$}]{P\-M\-Tid, }
+\item[{const std\-::vector$<$ {\bf Time\-Delta\-::short\-\_\-time\-\_\-t} $>$}]{time, }
+\item[{const std\-::vector$<$ float $>$}]{charge, }
+\item[{const {\bf Time\-Delta}}]{timestamp}
+\end{DoxyParamCaption}
+)}}\label{classSubSample_abbb16914eb71ed96e07fc065c77a61a2}
+Append the hits in a different \hyperlink{classSubSample}{Sub\-Sample} to this one
+
+Returns {\ttfamily true} if successful. \hypertarget{classSubSample_ae91087e3c593a1870f61f3b656685915}{\index{Sub\-Sample@{Sub\-Sample}!Split@{Split}}
+\index{Split@{Split}!SubSample@{Sub\-Sample}}
+\subsubsection[{Split}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$ {\bf Sub\-Sample} $>$ Sub\-Sample\-::\-Split (
+\begin{DoxyParamCaption}
+\item[{{\bf Time\-Delta}}]{target\-\_\-width, }
+\item[{{\bf Time\-Delta}}]{target\-\_\-overlap}
+\end{DoxyParamCaption}
+) const}}\label{classSubSample_ae91087e3c593a1870f61f3b656685915}
+Split \hyperlink{classSubSample}{Sub\-Sample} into multiple overlapping ones
+
+The \hyperlink{classSubSample}{Sub\-Sample} needs to be sorted by time for this to work! Otherwise it will return an empty vector. \hypertarget{classSubSample_a487b77424fb4df7202573d32fc2d8393}{\index{Sub\-Sample@{Sub\-Sample}!Tell\-Me\-About\-The\-Triggers@{Tell\-Me\-About\-The\-Triggers}}
+\index{Tell\-Me\-About\-The\-Triggers@{Tell\-Me\-About\-The\-Triggers}!SubSample@{Sub\-Sample}}
+\subsubsection[{Tell\-Me\-About\-The\-Triggers}]{\setlength{\rightskip}{0pt plus 5cm}void Sub\-Sample\-::\-Tell\-Me\-About\-The\-Triggers (
+\begin{DoxyParamCaption}
+\item[{const {\bf Trigger\-Info} \&}]{triggers, }
+\item[{const int}]{verbose}
+\end{DoxyParamCaption}
+)}}\label{classSubSample_a487b77424fb4df7202573d32fc2d8393}
+Picks up the trigger readout and mask windows from the input, and sets digit m\-\_\-trigger\-\_\-readout\-\_\-windows and m\-\_\-masked appropriately 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+Data\-Model/Sub\-Sample.\-h\item 
+Data\-Model/Sub\-Sample.\-cpp\end{DoxyCompactItemize}

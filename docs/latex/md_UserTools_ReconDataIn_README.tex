@@ -1,0 +1,18 @@
+Read a {\ttfamily recon\-Tree} {\ttfamily T\-Tree} into the {\ttfamily \hyperlink{classReconInfo}{Recon\-Info}} of {\ttfamily \hyperlink{classDataModel}{Data\-Model}}
+
+\subsection*{Data}
+
+
+\begin{DoxyItemize}
+\item Sets up a {\ttfamily T\-Chain} for {\ttfamily recon\-Tree} using {\ttfamily infilenames} as the filename(s)
+\item For every entry in the tree
+\begin{DoxyItemize}
+\item Add an entry to {\ttfamily \hyperlink{classReconInfo}{Recon\-Info}} in the {\ttfamily \hyperlink{classDataModel}{Data\-Model}}
+\end{DoxyItemize}
+\item W\-A\-R\-N\-I\-N\-G\-: {\ttfamily Execute()} sets {\ttfamily Stop\-Loop} to {\ttfamily true}, therefore any toolchains using this tool in \char`\"{}infinite-\/loop mode\char`\"{} is limited to only run {\ttfamily Execute()} once
+\item W\-A\-R\-N\-I\-N\-G\-: if you use this tool in a toolchain with a fixed number of {\ttfamily $>$1} events, the same data will be added to {\ttfamily \hyperlink{classReconInfo}{Recon\-Info}} every time (i.\-e. the entire {\ttfamily T\-Chain} is added to {\ttfamily \hyperlink{classReconInfo}{Recon\-Info}} every event)
+\end{DoxyItemize}
+
+\subsection*{Configuration}
+
+``` infilenames /path/to/files verbose L\-E\-V\-E\-L ``{\ttfamily  $\ast$}infilenames{\ttfamily Path to the input file(s). Accepts wildcards (results are read into a}T\-Chain{\ttfamily ) $\ast$}verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity) 

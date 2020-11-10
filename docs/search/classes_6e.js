@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['nhits',['NHits',['../class_n_hits.html',1,'']]]
+  ['nhits',['NHits',['../classNHits.html',1,'']]]
 ];

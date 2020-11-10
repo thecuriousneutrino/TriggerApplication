@@ -1,0 +1,81 @@
+\hypertarget{classTimeDelta}{\section{Time\-Delta Class Reference}
+\label{classTimeDelta}\index{Time\-Delta@{Time\-Delta}}
+}
+
+
+{\ttfamily \#include $<$Time\-Delta.\-h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classTimeDelta_afe4b7adde6a0645a8ada61f39e198c8e}{typedef float \hyperlink{classTimeDelta_afe4b7adde6a0645a8ada61f39e198c8e}{short\-\_\-time\-\_\-t}}\label{classTimeDelta_afe4b7adde6a0645a8ada61f39e198c8e}
+
+\begin{DoxyCompactList}\small\item\em Type for relative hit times within a \hyperlink{classSubSample}{Sub\-Sample}. Unit = ns. \end{DoxyCompactList}\item 
+\hypertarget{classTimeDelta_a7713378e4dff3b1ed5f407260dbca5d6}{typedef int64\-\_\-t \hyperlink{classTimeDelta_a7713378e4dff3b1ed5f407260dbca5d6}{long\-\_\-time\-\_\-t}}\label{classTimeDelta_a7713378e4dff3b1ed5f407260dbca5d6}
+
+\begin{DoxyCompactList}\small\item\em Type for absolute timestamps of a \hyperlink{classSubSample}{Sub\-Sample}. Unit = ns. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classTimeDelta_a7ea75472b12ecb4cbbd6327a1627d334}{\hyperlink{classTimeDelta_a7ea75472b12ecb4cbbd6327a1627d334}{Time\-Delta} ()}\label{classTimeDelta_a7ea75472b12ecb4cbbd6327a1627d334}
+
+\begin{DoxyCompactList}\small\item\em Default constructor (sets all times to 0) \end{DoxyCompactList}\item 
+\hypertarget{classTimeDelta_a2efa569f8caa02d8229c81ffb8905a17}{\hyperlink{classTimeDelta_a2efa569f8caa02d8229c81ffb8905a17}{Time\-Delta} (const \hyperlink{classTimeDelta}{Time\-Delta} \&)=default}\label{classTimeDelta_a2efa569f8caa02d8229c81ffb8905a17}
+
+\begin{DoxyCompactList}\small\item\em Copy constructor (just copies all member variables) \end{DoxyCompactList}\item 
+\hypertarget{classTimeDelta_a4e1bf5f12a59a250a8a947b1fc60ef1a}{\hyperlink{classTimeDelta_a4e1bf5f12a59a250a8a947b1fc60ef1a}{Time\-Delta} (double naive\-\_\-ns)}\label{classTimeDelta_a4e1bf5f12a59a250a8a947b1fc60ef1a}
+
+\begin{DoxyCompactList}\small\item\em Constructor from naive floating point value (in ns) \end{DoxyCompactList}\item 
+\hypertarget{classTimeDelta_a5b48188f53b39792626cac33924a3e85}{void \hyperlink{classTimeDelta_a5b48188f53b39792626cac33924a3e85}{Normalize} ()}\label{classTimeDelta_a5b48188f53b39792626cac33924a3e85}
+
+\begin{DoxyCompactList}\small\item\em Ensure that the time difference stored in m\-\_\-short\-\_\-time is small and positive. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classTimeDelta_a8460bb5b9864d7e42276b972f25c3d17}{\hyperlink{classTimeDelta_afe4b7adde6a0645a8ada61f39e198c8e}{short\-\_\-time\-\_\-t} \hyperlink{classTimeDelta_a8460bb5b9864d7e42276b972f25c3d17}{m\-\_\-short\-\_\-time}}\label{classTimeDelta_a8460bb5b9864d7e42276b972f25c3d17}
+
+\begin{DoxyCompactList}\small\item\em Member for short time deltas. \end{DoxyCompactList}\item 
+\hypertarget{classTimeDelta_a310ecd14cd77043ebd915f4eba2ba974}{\hyperlink{classTimeDelta_a7713378e4dff3b1ed5f407260dbca5d6}{long\-\_\-time\-\_\-t} \hyperlink{classTimeDelta_a310ecd14cd77043ebd915f4eba2ba974}{m\-\_\-long\-\_\-time}}\label{classTimeDelta_a310ecd14cd77043ebd915f4eba2ba974}
+
+\begin{DoxyCompactList}\small\item\em Member for long time delta. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classTimeDelta_aaed4f6897565e9a943bc0fa22d11a7e6}{static constexpr double \hyperlink{classTimeDelta_aaed4f6897565e9a943bc0fa22d11a7e6}{s\-\_\-long\-\_\-time\-\_\-unit} = 1.}\label{classTimeDelta_aaed4f6897565e9a943bc0fa22d11a7e6}
+
+\begin{DoxyCompactList}\small\item\em Relative unit of long time member, i.\-e. long\-\_\-unit / short\-\_\-unit, both ns so = 1. \end{DoxyCompactList}\item 
+\hypertarget{classTimeDelta_a03f69da08874841bc4e2434f1a3c3bfa}{static const \hyperlink{classTimeDelta}{Time\-Delta} \hyperlink{classTimeDelta_a03f69da08874841bc4e2434f1a3c3bfa}{ps} = \hyperlink{classTimeDelta}{Time\-Delta}(0.\-001)}\label{classTimeDelta_a03f69da08874841bc4e2434f1a3c3bfa}
+
+\begin{DoxyCompactList}\small\item\em \hyperlink{classTimeDelta}{Time\-Delta} of 1 ps. \end{DoxyCompactList}\item 
+\hypertarget{classTimeDelta_a18daad365109f816af53d205daa9daf9}{static const \hyperlink{classTimeDelta}{Time\-Delta} \hyperlink{classTimeDelta_a18daad365109f816af53d205daa9daf9}{ns} = \hyperlink{classTimeDelta}{Time\-Delta}(1.\-0)}\label{classTimeDelta_a18daad365109f816af53d205daa9daf9}
+
+\begin{DoxyCompactList}\small\item\em \hyperlink{classTimeDelta}{Time\-Delta} of 1 ns. \end{DoxyCompactList}\item 
+\hypertarget{classTimeDelta_a507b83ceb342b95a0c5343f488f12b34}{static const \hyperlink{classTimeDelta}{Time\-Delta} \hyperlink{classTimeDelta_a507b83ceb342b95a0c5343f488f12b34}{us} = 1000 $\ast$ \hyperlink{classTimeDelta_a18daad365109f816af53d205daa9daf9}{Time\-Delta\-::ns}}\label{classTimeDelta_a507b83ceb342b95a0c5343f488f12b34}
+
+\begin{DoxyCompactList}\small\item\em \hyperlink{classTimeDelta}{Time\-Delta} of 1 us. \end{DoxyCompactList}\item 
+\hypertarget{classTimeDelta_a46782a352ae9ed3cffd8f8a4d50828ed}{static const \hyperlink{classTimeDelta}{Time\-Delta} \hyperlink{classTimeDelta_a46782a352ae9ed3cffd8f8a4d50828ed}{ms} = 1000 $\ast$ \hyperlink{classTimeDelta_a507b83ceb342b95a0c5343f488f12b34}{Time\-Delta\-::us}}\label{classTimeDelta_a46782a352ae9ed3cffd8f8a4d50828ed}
+
+\begin{DoxyCompactList}\small\item\em \hyperlink{classTimeDelta}{Time\-Delta} of 1 ms. \end{DoxyCompactList}\item 
+\hypertarget{classTimeDelta_af7435a6440a54b9d16135bafc1d8856c}{static const \hyperlink{classTimeDelta}{Time\-Delta} \hyperlink{classTimeDelta_af7435a6440a54b9d16135bafc1d8856c}{s} = 1000 $\ast$ \hyperlink{classTimeDelta_a46782a352ae9ed3cffd8f8a4d50828ed}{Time\-Delta\-::ms}}\label{classTimeDelta_af7435a6440a54b9d16135bafc1d8856c}
+
+\begin{DoxyCompactList}\small\item\em \hyperlink{classTimeDelta}{Time\-Delta} of 1 s. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Universal data type to store both large scale (unix timestamp) and short scale (hit times) time differences
+
+The type and unit of the long and short scale times are optimised to allow Sub\-Samples to store many hits relative to a single timestamp efficiently.
+
+The base unit for physics simulations (at least in W\-C\-Sim) is ns, that that is the chosen as the unit for the short time scales. A signed 64 bit integer can hold values up to 2$^\wedge$63 = 9.\-22337204 x 10$^\wedge$18, which in ns would be more than 290 years. Long enough for the long time deltas.
+
+When creating \hyperlink{classTimeDelta}{Time\-Delta} instances, one should use the unit constants to do so\-: \begin{DoxyVerb}TimeDelta t = 0.7 * TimeDelta::ms;
+\end{DoxyVerb}
+
+
+To convert into a naive floating point value, use them with the division operator\-: \begin{DoxyVerb}double naive_t = t / TimeDelta::us;\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+Data\-Model/Time\-Delta.\-h\item 
+Data\-Model/Time\-Delta.\-cpp\end{DoxyCompactItemize}

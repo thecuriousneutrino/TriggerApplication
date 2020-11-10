@@ -1,0 +1,43 @@
+\hyperlink{classFLOWERRecon}{F\-L\-O\-W\-E\-R\-Recon} will take a reconstructed vertex (and hits from the associated trigger) from the \hyperlink{classDataModel}{Data\-Model} and run the F\-L\-O\-W\-E\-R low-\/energy reconstruction algorithm
+
+\subsection*{Data}
+
+
+\begin{DoxyItemize}
+\item Performs setup of F\-L\-O\-W\-E\-R reading in from the \hyperlink{classDataModel}{Data\-Model}
+\begin{DoxyItemize}
+\item Geometry from {\ttfamily W\-C\-Sim\-Geom\-Tree}
+\item P\-M\-T dark rate from {\ttfamily I\-D\-P\-M\-T\-Dark\-Rate}
+\item Number of P\-M\-Ts from {\ttfamily I\-D\-N\-P\-M\-Ts}
+\end{DoxyItemize}
+\item For each reconstructed vertex that pass a filter (see {\ttfamily \hyperlink{classReconFilter}{Recon\-Filter}})
+\begin{DoxyItemize}
+\item Read in the vertex from the {\ttfamily \hyperlink{classReconInfo}{Recon\-Info}}
+\item Get the hits in the trigger from {\ttfamily I\-D\-W\-C\-Sim\-Event\-\_\-\-Triggered}
+\item Run the F\-L\-O\-W\-E\-R external program to get the reconstructed energy
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Configuration}
+
+\subsubsection*{Parameters that specify which reconstructed events to use}
+
+``` input\-\_\-filter\-\_\-name N\-A\-M\-E nhitsmin N\-U\-M nhitsmax N\-U\-M ```
+
+
+\begin{DoxyItemize}
+\item {\ttfamily input\-\_\-filter\-\_\-name} Name of the {\ttfamily \hyperlink{classReconInfo}{Recon\-Info}} object to take from the map {\ttfamily Reco\-Info\-Map}
+\begin{DoxyItemize}
+\item If A\-L\-L takes the all reconstructed events from the global object {\ttfamily Reco\-Info}
+\end{DoxyItemize}
+\item {\ttfamily nhitsmin} When the number of hits in the trigger is below this number, F\-L\-O\-W\-E\-R will not be called
+\item {\ttfamily nhitsmax} When the number of hits in the trigger is above this number, F\-L\-O\-W\-E\-R will not be called
+\end{DoxyItemize}
+
+\subsubsection*{F\-L\-O\-W\-E\-R running parameters}
+
+``` n\-\_\-working\-\_\-pmts N\-U\-M detector\-\_\-name N\-A\-M\-E overwrite\-\_\-nearest\-\_\-neighbours B\-O\-O\-L flower\-\_\-verbose N\-U\-M ``{\ttfamily  $\ast$}n\-\_\-working\-\_\-pmts{\ttfamily Use this to mask P\-M\-Ts. If}n\-\_\-working\-\_\-pmts{\ttfamily more than}number of P\-M\-Ts in simulated geometry{\ttfamily , this is set to}number of P\-M\-Ts in simulated geometry{\ttfamily . Default is}number of P\-M\-Ts in simulated geometry{\ttfamily  $\ast$}detector\-\_\-name{\ttfamily Used by F\-L\-O\-W\-E\-R to set default values of e.\-g. nearest neighbour distance $\ast$}overwrite\-\_\-nearest\-\_\-neighboursfalse{\ttfamily \-: read in the nearest neighbour file from}\$\-F\-L\-O\-W\-E\-R\-D\-I\-R/data/{\ttfamily .}true{\ttfamily \-: overwrite this file with a recalculation. Takes $\sim$5 minutes to calculate for $\sim$40k P\-M\-Ts $\ast$}flower\-\_\-verbose` Verbosity level for F\-L\-O\-W\-E\-R internally. Runs from 0 (low verbosity) to 9 (high verbosity)
+
+\subsubsection*{Misc}
+
+``` verbose L\-E\-V\-E\-L ``{\ttfamily  $\ast$}verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity) 

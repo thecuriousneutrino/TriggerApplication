@@ -1,0 +1,96 @@
+\hypertarget{classReconInfo}{\section{Recon\-Info Class Reference}
+\label{classReconInfo}\index{Recon\-Info@{Recon\-Info}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classReconInfo_af15bf0a0673c3ba6a18423e0357bd95b}{void {\bfseries Add\-Recon} (Reconstructer\-\_\-t reconstructer, int trigger\-\_\-num, int nhits, \hyperlink{classTimeDelta}{Time\-Delta} time, double $\ast$vertex, double goodness\-\_\-of\-\_\-fit, double goodness\-\_\-of\-\_\-time\-\_\-fit, bool fill\-\_\-has\-\_\-direction=true, double energy=-\/1.)}\label{classReconInfo_af15bf0a0673c3ba6a18423e0357bd95b}
+
+\item 
+\hypertarget{classReconInfo_acf71ac70ce0587d31d3040d35bf50b51}{void {\bfseries Add\-Recon} (Reconstructer\-\_\-t reconstructer, int trigger\-\_\-num, int nhits, \hyperlink{classTimeDelta}{Time\-Delta} time, double $\ast$vertex, double goodness\-\_\-of\-\_\-fit, double goodness\-\_\-of\-\_\-time\-\_\-fit, double $\ast$direction\-\_\-euler, double $\ast$cherenkov\-\_\-cone, double direction\-\_\-likelihood, double energy=-\/1.)}\label{classReconInfo_acf71ac70ce0587d31d3040d35bf50b51}
+
+\item 
+\hypertarget{classReconInfo_a96c16b9d66349d7eed2e4ada1c40525c}{void {\bfseries Add\-Recon\-From} (\hyperlink{classReconInfo}{Recon\-Info} $\ast$in, const int irecon)}\label{classReconInfo_a96c16b9d66349d7eed2e4ada1c40525c}
+
+\item 
+\hypertarget{classReconInfo_a2a9e7b5d70ab362de7d34217d15310dc}{int {\bfseries Get\-N\-Recons} ()}\label{classReconInfo_a2a9e7b5d70ab362de7d34217d15310dc}
+
+\item 
+\hypertarget{classReconInfo_ab515ad33a974ea715d0b4cb5edf101f9}{\hyperlink{classTimeDelta}{Time\-Delta} {\bfseries Get\-First\-Time} ()}\label{classReconInfo_ab515ad33a974ea715d0b4cb5edf101f9}
+
+\item 
+\hypertarget{classReconInfo_ac9a0283e1c4a62135793c256d48bf99d}{\hyperlink{classTimeDelta}{Time\-Delta} {\bfseries Get\-Last\-Time} ()}\label{classReconInfo_ac9a0283e1c4a62135793c256d48bf99d}
+
+\item 
+\hypertarget{classReconInfo_a4cbe5c22fdb5ccb337e91b636770c8d8}{Reconstructer\-\_\-t {\bfseries Get\-Reconstructer} (int irecon)}\label{classReconInfo_a4cbe5c22fdb5ccb337e91b636770c8d8}
+
+\item 
+\hypertarget{classReconInfo_a6bf88674ba47e30e004ec39179806575}{int {\bfseries Get\-Trigger\-Num} (int irecon)}\label{classReconInfo_a6bf88674ba47e30e004ec39179806575}
+
+\item 
+\hypertarget{classReconInfo_a9e34f7e22595b583f6b70749cf3321b6}{int {\bfseries Get\-N\-Hits} (int irecon)}\label{classReconInfo_a9e34f7e22595b583f6b70749cf3321b6}
+
+\item 
+\hypertarget{classReconInfo_ac19bad0f4af4dabb4e8517181f670795}{double {\bfseries Get\-Energy} (int irecon)}\label{classReconInfo_ac19bad0f4af4dabb4e8517181f670795}
+
+\item 
+\hypertarget{classReconInfo_ae54737e4ec00e103cfd214dafa6b6313}{void {\bfseries Set\-Energy} (int irecon, double energy)}\label{classReconInfo_ae54737e4ec00e103cfd214dafa6b6313}
+
+\item 
+\hypertarget{classReconInfo_ac98f1d0a6be5e2ae54ea209022bad403}{\hyperlink{classTimeDelta}{Time\-Delta} {\bfseries Get\-Time} (int irecon)}\label{classReconInfo_ac98f1d0a6be5e2ae54ea209022bad403}
+
+\item 
+\hypertarget{classReconInfo_a3b0e7457d82ba538556e377e5a67ebe2}{\hyperlink{structPos3D}{Pos3\-D} {\bfseries Get\-Vertex} (int irecon)}\label{classReconInfo_a3b0e7457d82ba538556e377e5a67ebe2}
+
+\item 
+\hypertarget{classReconInfo_a62fdfb94f15d32711fb78db2dfdf8c84}{double {\bfseries Get\-Goodness\-Of\-Fit} (int irecon)}\label{classReconInfo_a62fdfb94f15d32711fb78db2dfdf8c84}
+
+\item 
+\hypertarget{classReconInfo_a453dae55666b27b10a8d13aba3112b93}{double {\bfseries Get\-Goodness\-Of\-Time\-Fit} (int irecon)}\label{classReconInfo_a453dae55666b27b10a8d13aba3112b93}
+
+\item 
+\hypertarget{classReconInfo_ac4f154d184b7645943955f507281672e}{bool {\bfseries Get\-Has\-Direction} (int irecon)}\label{classReconInfo_ac4f154d184b7645943955f507281672e}
+
+\item 
+\hypertarget{classReconInfo_aace0a3e60fd49fbb5ef7a0a14afbd934}{\hyperlink{structDirectionEuler}{Direction\-Euler} {\bfseries Get\-Direction\-Euler} (int irecon)}\label{classReconInfo_aace0a3e60fd49fbb5ef7a0a14afbd934}
+
+\item 
+\hypertarget{classReconInfo_a98857e740b0c84d05a350a375ab00aab}{\hyperlink{structCherenkovCone}{Cherenkov\-Cone} {\bfseries Get\-Cherenkov\-Cone} (int irecon)}\label{classReconInfo_a98857e740b0c84d05a350a375ab00aab}
+
+\item 
+\hypertarget{classReconInfo_a8fd62e5800e1dfd8b4fbb73db36c6c80}{double {\bfseries Get\-Direction\-Likelihood} (int irecon)}\label{classReconInfo_a8fd62e5800e1dfd8b4fbb73db36c6c80}
+
+\item 
+\hypertarget{classReconInfo_a011aa23ea6b1dcc430b107d89faa24b0}{void {\bfseries Reset} ()}\label{classReconInfo_a011aa23ea6b1dcc430b107d89faa24b0}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classReconInfo_ac3f741957faf5a7d1c3d21bff107e12a}{static std\-::string {\bfseries Enum\-As\-String} (Reconstructer\-\_\-t r)}\label{classReconInfo_ac3f741957faf5a7d1c3d21bff107e12a}
+
+\item 
+\hypertarget{classReconInfo_a76cff9cb354ff64edee198be5339a40e}{static Reconstructer\-\_\-t {\bfseries Reconstructer\-From\-String} (std\-::string s)}\label{classReconInfo_a76cff9cb354ff64edee198be5339a40e}
+
+\item 
+\hypertarget{classReconInfo_aa2b43e35c45992db11f8809384602853}{static std\-::string {\bfseries Enum\-As\-String} (N\-Clusters\-Warning\-\_\-t w)}\label{classReconInfo_aa2b43e35c45992db11f8809384602853}
+
+\item 
+\hypertarget{classReconInfo_a2f307a0fdbd190822a0377a011c9d379}{static N\-Clusters\-Warning\-\_\-t {\bfseries N\-Clusters\-Warning\-From\-String} (std\-::string s)}\label{classReconInfo_a2f307a0fdbd190822a0377a011c9d379}
+
+\item 
+\hypertarget{classReconInfo_a82fd1058a8c3f23498671fcacc96d819}{static std\-::string {\bfseries Enum\-As\-String} (S\-N\-Warning\-\_\-t w)}\label{classReconInfo_a82fd1058a8c3f23498671fcacc96d819}
+
+\item 
+\hypertarget{classReconInfo_a498702bd5e2e496f872976f14853b8ea}{static S\-N\-Warning\-\_\-t {\bfseries S\-N\-Warning\-From\-String} (std\-::string s)}\label{classReconInfo_a498702bd5e2e496f872976f14853b8ea}
+
+\item 
+\hypertarget{classReconInfo_a9d68ec13cb242350f97d30b7d9257ab4}{static bool {\bfseries Should\-Provide\-Direction} (Reconstructer\-\_\-t r)}\label{classReconInfo_a9d68ec13cb242350f97d30b7d9257ab4}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+Data\-Model/Recon\-Info.\-h\item 
+Data\-Model/Recon\-Info.\-cpp\end{DoxyCompactItemize}

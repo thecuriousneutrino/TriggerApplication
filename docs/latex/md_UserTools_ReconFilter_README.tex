@@ -1,0 +1,60 @@
+Filter out reconstructed events that don't pass cuts
+
+\subsection*{Data}
+
+
+\begin{DoxyItemize}
+\item Read in a collection of reconstruction results from a {\ttfamily \hyperlink{classReconInfo}{Recon\-Info}} object
+\begin{DoxyItemize}
+\item From {\ttfamily Reco\-Info}, or from a map
+\end{DoxyItemize}
+\item For every event that passes criteria (fiducial volume, reconstruction tool, etc.)
+\begin{DoxyItemize}
+\item Write out into new {\ttfamily Reco\-Info} object
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Configuration}
+
+\subsubsection*{The parameters saying what to filter}
+
+``` reconstruction\-\_\-algorithm A\-L\-G\-S\-T\-R\-I\-N\-G min\-\_\-recon\-\_\-likelihood L\-I\-K\-E\-L\-I\-H\-O\-O\-D min\-\_\-recon\-\_\-time\-\_\-likelihood L\-I\-K\-E\-L\-I\-H\-O\-O\-D max\-\_\-r\-\_\-pos D\-I\-S\-T\-A\-N\-C\-E max\-\_\-z\-\_\-pos D\-I\-S\-T\-A\-N\-C\-E ```
+
+
+\begin{DoxyItemize}
+\item {\ttfamily reconstruction\-\_\-algorithm} Use the results of which reconstruction algorithm?
+\item {\ttfamily min\-\_\-recon\-\_\-likelihood} Events with a likelihood smaller than this will not be included in dimfit calculations
+\item {\ttfamily min\-\_\-recon\-\_\-time\-\_\-likelihood} Events with a time-\/fit likelihood smaller than this will not be included in dimfit calculations
+\item {\ttfamily max\-\_\-r\-\_\-pos} Events with larger reconstructed {\ttfamily r} (in cm) than this will not be included in dimfit calculations
+\item {\ttfamily max\-\_\-z\-\_\-pos} Events with larger reconstructed {\ttfamily z} (in cm) than this will not be included in dimfit calculations
+\begin{DoxyItemize}
+\item Note that this is a detector half-\/height because the co-\/ordinate origin is at the detector centre
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsubsection*{Input/output}
+
+``` input\-\_\-filter\-\_\-name N\-A\-M\-E output\-\_\-filter\-\_\-name N\-A\-M\-E ```
+
+
+\begin{DoxyItemize}
+\item {\ttfamily input\-\_\-filter\-\_\-name} Name of the {\ttfamily \hyperlink{classReconInfo}{Recon\-Info}} object to take from the map {\ttfamily Reco\-Info\-Map}
+\begin{DoxyItemize}
+\item If A\-L\-L takes the all reconstructed events from the global object {\ttfamily Reco\-Info}
+\end{DoxyItemize}
+\item {\ttfamily output\-\_\-filter\-\_\-name} Name of the {\ttfamily \hyperlink{classReconInfo}{Recon\-Info}} object to save in the map {\ttfamily Reco\-Info\-Map}
+\begin{DoxyItemize}
+\item Cannot be A\-L\-L
+\item Cannot be the same as {\ttfamily input\-\_\-filter\-\_\-name}
+\end{DoxyItemize}
+\item {\ttfamily outfilename} File path to output file
+\end{DoxyItemize}
+
+\subsubsection*{Misc}
+
+``` verbose L\-E\-V\-E\-L ```
+
+
+\begin{DoxyItemize}
+\item {\ttfamily verbose} Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity) 
+\end{DoxyItemize}
