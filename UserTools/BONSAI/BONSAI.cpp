@@ -1,7 +1,5 @@
 #include "BONSAI.h"
 
-#include "Utilities.h"
-
 BONSAI::BONSAI():Tool(){}
 
 bool BONSAI::Initialise(std::string configfile, DataModel &data){
