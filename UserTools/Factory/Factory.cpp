@@ -30,7 +30,13 @@ if (tool=="FLOWERRecon") ret=new FLOWERRecon;
 if (tool=="SupernovaDirectionCalculator") ret=new SupernovaDirectionCalculator;
 if (tool=="Chunker") ret=new Chunker;
 if (tool=="bob") ret=new bob;
-  if (tool=="bill") ret=new bill;
+if (tool=="bill") ret=new bill;
+if (tool=="b1") ret=new b1;
+if (tool=="b3") ret=new b3;
+if (tool=="b2") ret=new b2;
+if (tool=="c1") ret=new c1;
+if (tool=="c2") ret=new c2;
+  if (tool=="c3") ret=new c3;
 return ret;
 }
 
