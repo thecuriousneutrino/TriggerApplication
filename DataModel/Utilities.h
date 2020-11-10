@@ -69,6 +69,12 @@ class Utilities{
   bool KillThread(Thread_args* &args); 
   bool KillThread(std::string ThreadName);
 
+  template <typename T>  bool KillThread(T* pointer){
+    
+    return KillThread((Thread_args*) pointer);
+
+  }
+
   template <typename T>  bool SendPointer(zmq::socket_t* sock, T* pointer){
     
     std::stringstream tmp;
