@@ -67,7 +67,7 @@ mainGPU: src/main.cpp UserTools/CUDA/GPU_link.o | lib/libMyToolsGPU.so lib/libSt
 
 
 lib/libStore.so: $(ToolDAQPath)/ToolDAQFramework/src/Store/*
-	cd $(ToolDAQPath)/ToolDAQFramework && make lib/libStore.so
+	cd $(ToolDAQPath)/ToolDAQFramework && $(MAKE) lib/libStore.so
 	@echo -e "\e[38;5;118m\n*************** Copying " $@ "****************\e[0m"
 	cp $(ToolDAQPath)/ToolDAQFramework/src/Store/*.h include/
 	cp $(ToolDAQPath)/ToolDAQFramework/lib/libStore.so lib/
@@ -121,24 +121,24 @@ lib/libMyToolsGPU.so: UserTools/*/* UserTools/* UserTools/CUDA/GPU_link.o includ
 	g++ $(CXXFLAGS) -shared  UserTools/*/*.o  -DGPU UserTools/CUDA/CUDA_Unity.o -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyToolsGPU.so $(MyToolsIncludeGPU) $(MyToolsLibGPU) $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude)
 
 RemoteControl:
-	cd $(ToolDAQPath)/ToolDAQFramework/ && make RemoteControl
+	cd $(ToolDAQPath)/ToolDAQFramework/ && $(MAKE) RemoteControl
 	@echo -e "\e[38;5;118m\n*************** Copying " $@ "****************\e[0m"
 	cp $(ToolDAQPath)/ToolDAQFramework/RemoteControl ./
 
 NodeDaemon: 
-	cd $(ToolDAQPath)/ToolDAQFramework/ && make NodeDaemon
+	cd $(ToolDAQPath)/ToolDAQFramework/ && $(MAKE) NodeDaemon
 	@echo -e "\e[38;5;226m\n*************** Copying " $@ "****************\e[0m"
 	cp $(ToolDAQPath)/ToolDAQFramework/NodeDaemon ./
 
 lib/libServiceDiscovery.so: $(ToolDAQPath)/ToolDAQFramework/src/ServiceDiscovery/* | lib/libStore.so
-	cd $(ToolDAQPath)/ToolDAQFramework && make lib/libServiceDiscovery.so
+	cd $(ToolDAQPath)/ToolDAQFramework && $(MAKE) lib/libServiceDiscovery.so
 	@echo -e "\e[38;5;118m\n*************** Copying " $@ "****************\e[0m"
 	cp $(ToolDAQPath)/ToolDAQFramework/src/ServiceDiscovery/ServiceDiscovery.h include/
 	cp $(ToolDAQPath)/ToolDAQFramework/lib/libServiceDiscovery.so lib/
 	#g++ $(CXXFLAGS) -shared -fPIC -I include $(ToolDAQPath)/ToolDAQFramework/src/ServiceDiscovery/ServiceDiscovery.cpp -o lib/libServiceDiscovery.so -L lib/ -lStore  $(ZMQInclude) $(ZMQLib) $(BoostLib) $(BoostInclude)
 
 lib/libLogging.so:  $(ToolDAQPath)/ToolDAQFramework/src/Logging/* | lib/libStore.so
-	cd $(ToolDAQPath)/ToolDAQFramework && make lib/libLogging.so
+	cd $(ToolDAQPath)/ToolDAQFramework && $(MAKE) lib/libLogging.so
 	@echo -e "\e[38;5;118m\n*************** Copying " $@ "****************\e[0m"
 	cp $(ToolDAQPath)/ToolDAQFramework/src/Logging/Logging.h include/
 	cp $(ToolDAQPath)/ToolDAQFramework/lib/libLogging.so lib/
