@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <deque>
 
 #include "TChain.h"
 
@@ -23,6 +24,7 @@
 #include <PMTInfo.h>
 #include <TriggerInfo.h>
 #include <ReconInfo.h>
+#include <TimeSlice.h>
 
 /**
 * \class DataModel
@@ -41,6 +43,8 @@ class DataModel {
  public:
   
   DataModel(); ///< Simple constructor
+
+  std::deque<TimeSlice*> time_slices;
 
   /// Get filtered reconstructed information.
   ///

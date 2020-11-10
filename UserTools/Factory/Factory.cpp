@@ -29,6 +29,7 @@ if (tool=="FLOWERRecon") ret=new FLOWERRecon;
 #endif //FLOWEREXISTS
 if (tool=="SupernovaDirectionCalculator") ret=new SupernovaDirectionCalculator;
 
+  if (tool=="PWCSimReader") ret=new PWCSimReader;
 return ret;
 }
 
