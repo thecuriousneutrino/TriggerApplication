@@ -90,8 +90,8 @@ bool Chunker::Finalise(){
     m_util->KillThread(args.at(i));
   
 
-    delete args.at(i);
-    args.at(i)=0;
+    //    delete args.at(i);
+    //args.at(i)=0;
   }
   
   args.clear();

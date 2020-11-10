@@ -189,7 +189,7 @@ void *Utilities::Thread(void *arg){
   Thread_args *args = static_cast<Thread_args *>(arg);
 
   while (!args->kill){
-    
+       
     if(args->running) args->func(args );
     else usleep(100);
   
@@ -241,9 +241,9 @@ bool Utilities::KillThread(Thread_args* &args){
     args->kill=true;
     
     pthread_join(args->thread, NULL);
+    
     delete args;
     args=0;
-    
     
   }
   

@@ -28,7 +28,9 @@ if (tool=="PrepareSubSamples") ret=new PrepareSubSamples;
 if (tool=="FLOWERRecon") ret=new FLOWERRecon;
 #endif //FLOWEREXISTS
 if (tool=="SupernovaDirectionCalculator") ret=new SupernovaDirectionCalculator;
-  if (tool=="Chunker") ret=new Chunker;
+if (tool=="Chunker") ret=new Chunker;
+if (tool=="bob") ret=new bob;
+  if (tool=="bill") ret=new bill;
 return ret;
 }
 

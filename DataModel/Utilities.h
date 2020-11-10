@@ -70,8 +70,8 @@ class Utilities{
   bool KillThread(std::string ThreadName);
 
   template <typename T>  bool KillThread(T* pointer){
-    
-    return KillThread((Thread_args*) pointer);
+    Thread_args* tmp=pointer;
+    return KillThread(tmp);
 
   }
 

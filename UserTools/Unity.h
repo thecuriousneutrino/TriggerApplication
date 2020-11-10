@@ -23,3 +23,5 @@
 #endif //FLOWEREXISTS
 #include "SupernovaDirectionCalculator.h"
 #include "Chunker.h"
+#include "bob.h"
+#include "bill.h"
