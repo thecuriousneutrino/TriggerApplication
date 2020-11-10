@@ -1,0 +1,6 @@
+#WCSim Config file
+
+Verbosity 0
+Threads 1
+Concurrent_Slices 2
+Input_File test
