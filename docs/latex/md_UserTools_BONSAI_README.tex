@@ -1,0 +1,16 @@
+Call hk-\/\-B\-O\-N\-S\-A\-I for every trigger, to reconstruct the event vertex position and direction. hk-\/\-B\-O\-N\-S\-A\-I is a low-\/energy reconstruction algorithm/software, therefore should only be run on low-\/energy events.
+
+\subsection*{Data}
+
+
+\begin{DoxyItemize}
+\item For every trigger, gets the digit information from the data member {\ttfamily I\-D\-W\-C\-Sim\-Event\-\_\-\-Triggered} (filled by the \hyperlink{classDataOut}{Data\-Out} tool)
+\begin{DoxyItemize}
+\item If the number of digits is in range \mbox{[}{\ttfamily nhitmin}, {\ttfamily nhitmax}\mbox{]} (inclusive), calls \hyperlink{classBONSAI}{B\-O\-N\-S\-A\-I} with the digit information
+\item Fills the {\ttfamily Reco\-Info} in the data model with the \hyperlink{classBONSAI}{B\-O\-N\-S\-A\-I} result
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Configuration}
+
+``` verbose L\-E\-V\-E\-L nhitsmin U\-I\-N\-T nhitsmax U\-I\-N\-T ``{\ttfamily  $\ast$}verbose{\ttfamily Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity) $\ast$}nhitsmin{\ttfamily If the number of digits in a trigger is less than this, don't run \hyperlink{classBONSAI}{B\-O\-N\-S\-A\-I} $\ast$}nhitsmax` If the number of digits in a trigger is more than this, don't run \hyperlink{classBONSAI}{B\-O\-N\-S\-A\-I} 

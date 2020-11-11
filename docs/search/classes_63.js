@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cherenkovcone',['CherenkovCone',['../struct_cherenkov_cone.html',1,'']]]
+  ['cherenkovcone',['CherenkovCone',['../structCherenkovCone.html',1,'']]]
 ];

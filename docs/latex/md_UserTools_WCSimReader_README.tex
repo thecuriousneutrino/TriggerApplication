@@ -1,0 +1,71 @@
+\hyperlink{classWCSimReader}{W\-C\-Sim\-Reader} reads in W\-C\-Sim root files
+
+\subsection*{Data}
+
+\hyperlink{classWCSimReader}{W\-C\-Sim\-Reader}
+\begin{DoxyItemize}
+\item reads in W\-C\-Sim root files
+\item adds to the transient data model
+\begin{DoxyItemize}
+\item P\-M\-T geometry (I\-D, position, angle) Stored in a {\ttfamily vector} of {\ttfamily \hyperlink{classPMTInfo}{P\-M\-T\-Info}}
+\begin{DoxyItemize}
+\item {\ttfamily I\-D\-Geom} I\-D P\-M\-Ts
+\item {\ttfamily O\-D\-Geom} O\-D P\-M\-Ts
+\end{DoxyItemize}
+\item Digitised hit information (charge, time, I\-D) Stored in a {\ttfamily vector} of {\ttfamily \hyperlink{classSubSample}{Sub\-Sample}}
+\begin{DoxyItemize}
+\item {\ttfamily I\-D\-Samples} for I\-D digits
+\item {\ttfamily O\-D\-Samples} for O\-D digits
+\end{DoxyItemize}
+\item Number of P\-M\-Ts Stored as an {\ttfamily int}
+\begin{DoxyItemize}
+\item {\ttfamily I\-D\-N\-P\-M\-Ts} for I\-D number of P\-M\-Ts
+\item {\ttfamily O\-D\-N\-P\-M\-Ts} for O\-D number of P\-M\-Ts
+\end{DoxyItemize}
+\item P\-M\-T dark rate Stored as {\ttfamily double}
+\begin{DoxyItemize}
+\item {\ttfamily I\-D\-P\-M\-T\-Dark\-Rate} for I\-D P\-M\-T dark rate
+\item {\ttfamily O\-D\-P\-M\-T\-Dark\-Rate} for O\-D P\-M\-T dark rate
+\end{DoxyItemize}
+\item Flag to state whether the O\-D exists. Stored as a {\ttfamily bool}
+\begin{DoxyItemize}
+\item {\ttfamily Has\-O\-D}
+\end{DoxyItemize}
+\item Flag to state whether the \char`\"{}data\char`\"{} is from Monte Carlo Stored as {\ttfamily bool}
+\begin{DoxyItemize}
+\item {\ttfamily Is\-M\-C}
+\end{DoxyItemize}
+\item Linking of new events to original W\-C\-Sim files/event numbers.
+\begin{DoxyItemize}
+\item {\ttfamily Current\-W\-C\-Sim\-Files} is a {\ttfamily T\-Obj\-Array} of {\ttfamily T\-Obj\-String}. Note that these are the files after the wildcard expansion.
+\item {\ttfamily Current\-W\-C\-Sim\-Event\-Nums} us a {\ttfamily vector$<$int$>$}
+\end{DoxyItemize}
+\item W\-C\-Sim pass through information
+\begin{DoxyItemize}
+\item {\ttfamily T\-Chain $\ast$} are stored for each of the W\-C\-Sim trees
+\begin{DoxyItemize}
+\item {\ttfamily W\-C\-Sim\-Geom\-Tree} for the geometry
+\item {\ttfamily W\-C\-Sim\-Options\-Tree} for the options
+\item {\ttfamily W\-C\-Sim\-Event\-Tree} for the events
+\end{DoxyItemize}
+\item Additionally, the current {\ttfamily W\-C\-Sim\-Root\-Event $\ast$} are stored
+\begin{DoxyItemize}
+\item {\ttfamily I\-D\-W\-C\-Sim\-Event\-\_\-\-Raw} for the I\-D events
+\item {\ttfamily O\-D\-W\-C\-Sim\-Event\-\_\-\-Raw} for the O\-D events
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Configuration}
+
+``` infile /path/to/file(s) filelist /path/to/txt/file/list nevents N first\-\_\-event N verbose L\-E\-V\-E\-L ```
+
+
+\begin{DoxyItemize}
+\item {\ttfamily infile} File path to W\-C\-Sim root file. Can use wildcards to pickup multiple files
+\item {\ttfamily filelist} File path to a text file with a filepath to a W\-C\-Sim root file on each line. Can also contain wildcards
+\item {\ttfamily nevents} will read only this number of events. If {\ttfamily N $<$= 0}, read all. If {\ttfamily N $>$ number of available events}, read all.
+\item {\ttfamily first\-\_\-event} will skip to this event number. If {\ttfamily N $>$ number of available events}, will read the final event only. If {\ttfamily N $<$ 0}, will set it to 0. Default is 0
+\item {\ttfamily verbose} Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity) 
+\end{DoxyItemize}

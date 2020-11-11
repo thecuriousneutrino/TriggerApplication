@@ -1,0 +1,37 @@
+\hypertarget{classutil_1_1Stopwatch}{\section{util\-:\-:Stopwatch Class Reference}
+\label{classutil_1_1Stopwatch}\index{util\-::\-Stopwatch@{util\-::\-Stopwatch}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classutil_1_1Stopwatch_af8055e6f405f2093127dcb08a33dd6ab}{{\bfseries Stopwatch} (const char $\ast$tool\-\_\-name)}\label{classutil_1_1Stopwatch_af8055e6f405f2093127dcb08a33dd6ab}
+
+\item 
+\hypertarget{classutil_1_1Stopwatch_aaf40a5394011e56a8a51e4b87467e556}{void \hyperlink{classutil_1_1Stopwatch_aaf40a5394011e56a8a51e4b87467e556}{Start} ()}\label{classutil_1_1Stopwatch_aaf40a5394011e56a8a51e4b87467e556}
+
+\begin{DoxyCompactList}\small\item\em Start the stopwatch. \end{DoxyCompactList}\item 
+\hypertarget{classutil_1_1Stopwatch_a0dbc5976e1bd883b0fcf382d6dd1d9ed}{\hyperlink{structutil_1_1StopwatchTimes}{Stopwatch\-Times} \hyperlink{classutil_1_1Stopwatch_a0dbc5976e1bd883b0fcf382d6dd1d9ed}{Stop} ()}\label{classutil_1_1Stopwatch_a0dbc5976e1bd883b0fcf382d6dd1d9ed}
+
+\begin{DoxyCompactList}\small\item\em Stop the stopwatch, returning the C\-P\-U time. \end{DoxyCompactList}\item 
+std\-::string \hyperlink{classutil_1_1Stopwatch_a089b8a02ad5a8c15f6310c6ee99911a6}{Result} (std\-::string method\-\_\-name, std\-::string output\-\_\-file=\char`\"{}\char`\"{})
+\item 
+\hypertarget{classutil_1_1Stopwatch_a86422283a59fda34c035f3a043192e28}{void \hyperlink{classutil_1_1Stopwatch_a86422283a59fda34c035f3a043192e28}{Reset} ()}\label{classutil_1_1Stopwatch_a86422283a59fda34c035f3a043192e28}
+
+\begin{DoxyCompactList}\small\item\em Stop the stopwatch, and clear the results vector. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classutil_1_1Stopwatch_a089b8a02ad5a8c15f6310c6ee99911a6}{\index{util\-::\-Stopwatch@{util\-::\-Stopwatch}!Result@{Result}}
+\index{Result@{Result}!util::Stopwatch@{util\-::\-Stopwatch}}
+\subsubsection[{Result}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string util\-::\-Stopwatch\-::\-Result (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{method\-\_\-name, }
+\item[{std\-::string}]{output\-\_\-file = {\ttfamily \char`\"{}\char`\"{}}}
+\end{DoxyParamCaption}
+)}}\label{classutil_1_1Stopwatch_a089b8a02ad5a8c15f6310c6ee99911a6}
+Get the formatted results, including min, max, average, total If output\-\_\-file has a length, will save a histogram to a pdf 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+Data\-Model/Stopwatch.\-h\item 
+Data\-Model/Stopwatch.\-cpp\end{DoxyCompactItemize}

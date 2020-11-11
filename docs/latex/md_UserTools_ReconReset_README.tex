@@ -1,0 +1,22 @@
+Reset {\ttfamily Reco\-Info} objects held in the data model
+
+
+\begin{DoxyItemize}
+\item W\-A\-R\-N\-I\-N\-G {\ttfamily Reco\-Info}, and every {\ttfamily \hyperlink{classReconInfo}{Recon\-Info}} object within {\ttfamily Reco\-Info\-Map}, are cleared by this tool. All tools that use a {\ttfamily \hyperlink{classReconInfo}{Recon\-Info}} object in the data model (e.\-g. {\ttfamily dimfit}) should be run {\itshape B\-E\-F\-O\-R\-E} this tool
+\item W\-A\-R\-N\-I\-N\-G If you don't use {\ttfamily \hyperlink{classReconReset}{Recon\-Reset}}, then your {\ttfamily Reco\-Info} objects won't reset between {\ttfamily Execute()} calls
+\end{DoxyItemize}
+
+\subsection*{Data}
+
+
+\begin{DoxyItemize}
+\item Calls {\ttfamily Reset()} on
+\begin{DoxyItemize}
+\item {\ttfamily Reco\-Info}
+\item Every entry in {\ttfamily Reco\-Info\-Map}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Configuration}
+
+``` verbose L\-E\-V\-E\-L ``{\ttfamily  $\ast$}verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity) 

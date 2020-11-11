@@ -1,0 +1,51 @@
+\hypertarget{classTriggerInfo}{\section{Trigger\-Info Class Reference}
+\label{classTriggerInfo}\index{Trigger\-Info@{Trigger\-Info}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classTriggerInfo_a29808bd2956d4561fa6e5f77bb23ab60}{void \hyperlink{classTriggerInfo_a29808bd2956d4561fa6e5f77bb23ab60}{Add\-Trigger} (Trigger\-Type\-\_\-t type, double starttime, double endtime, double triggertime, std\-::vector$<$ float $>$ info)}\label{classTriggerInfo_a29808bd2956d4561fa6e5f77bb23ab60}
+
+\begin{DoxyCompactList}\small\item\em Add a trigger, all times in ns. \end{DoxyCompactList}\item 
+\hypertarget{classTriggerInfo_a7df314e7d8cead52a2b9cf8b2d21c383}{void \hyperlink{classTriggerInfo_a7df314e7d8cead52a2b9cf8b2d21c383}{Add\-Trigger} (Trigger\-Type\-\_\-t type, \hyperlink{classTimeDelta}{Time\-Delta} readout\-\_\-start\-\_\-time, \hyperlink{classTimeDelta}{Time\-Delta} readout\-\_\-end\-\_\-time, \hyperlink{classTimeDelta}{Time\-Delta} mask\-\_\-start\-\_\-time, \hyperlink{classTimeDelta}{Time\-Delta} mask\-\_\-end\-\_\-time, \hyperlink{classTimeDelta}{Time\-Delta} trigger\-\_\-time, std\-::vector$<$ float $>$ info)}\label{classTriggerInfo_a7df314e7d8cead52a2b9cf8b2d21c383}
+
+\begin{DoxyCompactList}\small\item\em Add a trigger. \end{DoxyCompactList}\item 
+\hypertarget{classTriggerInfo_ad86bd4bc2abff60889b1b3e18a01002c}{void \hyperlink{classTriggerInfo_ad86bd4bc2abff60889b1b3e18a01002c}{Add\-Triggers} (\hyperlink{classTriggerInfo}{Trigger\-Info} $\ast$in)}\label{classTriggerInfo_ad86bd4bc2abff60889b1b3e18a01002c}
+
+\begin{DoxyCompactList}\small\item\em Add all triggers from another \hyperlink{classTriggerInfo}{Trigger\-Info} object. \end{DoxyCompactList}\item 
+\hypertarget{classTriggerInfo_a2e1db8250d38d31dc335828ce2f3bf18}{void \hyperlink{classTriggerInfo_a2e1db8250d38d31dc335828ce2f3bf18}{Clear} ()}\label{classTriggerInfo_a2e1db8250d38d31dc335828ce2f3bf18}
+
+\begin{DoxyCompactList}\small\item\em Clear all triggers. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classTriggerInfo_a7850546ae941ddd4d525d013190ea1d9}{unsigned int \hyperlink{classTriggerInfo_a7850546ae941ddd4d525d013190ea1d9}{m\-\_\-num\-\_\-triggers}}\label{classTriggerInfo_a7850546ae941ddd4d525d013190ea1d9}
+
+\begin{DoxyCompactList}\small\item\em The number of triggers. \end{DoxyCompactList}\item 
+\hypertarget{classTriggerInfo_af7dd95a327a61bdf1021a3d390413fee}{std\-::vector$<$ Trigger\-Type\-\_\-t $>$ \hyperlink{classTriggerInfo_af7dd95a327a61bdf1021a3d390413fee}{m\-\_\-type}}\label{classTriggerInfo_af7dd95a327a61bdf1021a3d390413fee}
+
+\begin{DoxyCompactList}\small\item\em The type of Trigger. \end{DoxyCompactList}\item 
+\hypertarget{classTriggerInfo_a2417285ae1e8bf98c79d88bfaff7b570}{std\-::vector$<$ \hyperlink{classTimeDelta}{Time\-Delta} $>$ \hyperlink{classTriggerInfo_a2417285ae1e8bf98c79d88bfaff7b570}{m\-\_\-readout\-\_\-start\-\_\-time}}\label{classTriggerInfo_a2417285ae1e8bf98c79d88bfaff7b570}
+
+\begin{DoxyCompactList}\small\item\em The starting time of the trigger window. \end{DoxyCompactList}\item 
+\hypertarget{classTriggerInfo_a1b27e4798addb4ebbb2cb7eb14722483}{std\-::vector$<$ \hyperlink{classTimeDelta}{Time\-Delta} $>$ \hyperlink{classTriggerInfo_a1b27e4798addb4ebbb2cb7eb14722483}{m\-\_\-readout\-\_\-end\-\_\-time}}\label{classTriggerInfo_a1b27e4798addb4ebbb2cb7eb14722483}
+
+\begin{DoxyCompactList}\small\item\em The ending time of the trigger window. \end{DoxyCompactList}\item 
+\hypertarget{classTriggerInfo_aa687342103b521c5ab70ad378efd8290}{std\-::vector$<$ \hyperlink{classTimeDelta}{Time\-Delta} $>$ \hyperlink{classTriggerInfo_aa687342103b521c5ab70ad378efd8290}{m\-\_\-mask\-\_\-start\-\_\-time}}\label{classTriggerInfo_aa687342103b521c5ab70ad378efd8290}
+
+\begin{DoxyCompactList}\small\item\em The starting time of the hit mask. \end{DoxyCompactList}\item 
+\hypertarget{classTriggerInfo_aea9dee3503ce18d1f7419c30e502b502}{std\-::vector$<$ \hyperlink{classTimeDelta}{Time\-Delta} $>$ \hyperlink{classTriggerInfo_aea9dee3503ce18d1f7419c30e502b502}{m\-\_\-mask\-\_\-end\-\_\-time}}\label{classTriggerInfo_aea9dee3503ce18d1f7419c30e502b502}
+
+\begin{DoxyCompactList}\small\item\em The ending time of the hit mask. \end{DoxyCompactList}\item 
+\hypertarget{classTriggerInfo_a296c17ef4291b793f2d4bb0acaa8d541}{std\-::vector$<$ \hyperlink{classTimeDelta}{Time\-Delta} $>$ \hyperlink{classTriggerInfo_a296c17ef4291b793f2d4bb0acaa8d541}{m\-\_\-trigger\-\_\-time}}\label{classTriggerInfo_a296c17ef4291b793f2d4bb0acaa8d541}
+
+\begin{DoxyCompactList}\small\item\em The actual time of the trigger. \end{DoxyCompactList}\item 
+\hypertarget{classTriggerInfo_ade80e80d18eae83c0c484e79dbf1207d}{std\-::vector$<$ std\-::vector$<$ float $>$ $>$ \hyperlink{classTriggerInfo_ade80e80d18eae83c0c484e79dbf1207d}{m\-\_\-info}}\label{classTriggerInfo_ade80e80d18eae83c0c484e79dbf1207d}
+
+\begin{DoxyCompactList}\small\item\em Additional information, specific to the trigger. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+Data\-Model/Trigger\-Info.\-h\item 
+Data\-Model/Trigger\-Info.\-cpp\end{DoxyCompactItemize}

@@ -113,10 +113,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a7fce0f8f3ec7978c5e7cd3d7053f899b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes all entries in the <a class="el" href="class_store.html">Store</a>.  <a href="#a7fce0f8f3ec7978c5e7cd3d7053f899b">More...</a><br/></td></tr>
 <tr class="separator:a7fce0f8f3ec7978c5e7cd3d7053f899b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41eaa81c4612fb5bdbf850afb6428977"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_store.html#a41eaa81c4612fb5bdbf850afb6428977">Has</a> (std::string key)</td></tr>
+<tr class="memdesc:a41eaa81c4612fb5bdbf850afb6428977"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns bool based on if store contains entry given by sting.  <a href="#a41eaa81c4612fb5bdbf850afb6428977">More...</a><br/></td></tr>
 <tr class="separator:a41eaa81c4612fb5bdbf850afb6428977"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abdc0134daa34b808328070f5d6b295f3"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:abdc0134daa34b808328070f5d6b295f3"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_store.html#abdc0134daa34b808328070f5d6b295f3">Get</a> (std::string name, T &amp;out)</td></tr>
-<tr class="memdesc:abdc0134daa34b808328070f5d6b295f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns bool based on if store contains entry given by sting.  <a href="#abdc0134daa34b808328070f5d6b295f3">More...</a><br/></td></tr>
 <tr class="separator:abdc0134daa34b808328070f5d6b295f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af586739813ce18da6f5e3561d134a814"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:af586739813ce18da6f5e3561d134a814"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_store.html#af586739813ce18da6f5e3561d134a814">Set</a> (std::string name, T in)</td></tr>
@@ -218,11 +218,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>Returns bool based on if store contains entry given by sting. </p>
+<p>Templated getter function for tore content. Assignment is templated and via reference. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">string</td><td>key to comapre. Templated getter function for tore content. Assignment is templated and via reference. </td></tr>
     <tr><td class="paramname">name</td><td>The ASCII key that the variable in the <a class="el" href="class_store.html">Store</a> is stored with. </td></tr>
     <tr><td class="paramname">out</td><td>The variable to fill with the value. </td></tr>
   </table>
@@ -247,6 +245,14 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Returns bool based on if store contains entry given by sting. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">string</td><td>key to comapre. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -514,7 +520,7 @@ template&lt;typename T &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jul 2 2020 17:27:58 for TriggerApplication by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Nov 9 2020 18:57:10 for TriggerApplication by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.5
 </small></address>

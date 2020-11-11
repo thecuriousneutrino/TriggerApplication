@@ -7,6 +7,7 @@
 #include "Tool.h"
 
 #include "GPUFunctions.h"
+#include "Stopwatch.h"
 
 class test_vertices: public Tool {
 

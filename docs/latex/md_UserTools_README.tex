@@ -1,0 +1,176 @@
+This is a list of tools with a brief description
+
+For more, see the R\-E\-A\-D\-M\-E of each tool
+
+\section*{Table of Contents }
+
+
+\begin{DoxyItemize}
+\item \href{#triggerapplication-tools}{\tt Trigger\-Application tools}
+\begin{DoxyItemize}
+\item \href{#data-input}{\tt Data input}
+\begin{DoxyItemize}
+\item \href{#simulationdigit-input}{\tt Simulation/digit input}
+\item \href{#reconstruction-input}{\tt Reconstruction input}
+\end{DoxyItemize}
+\item \href{#data-output}{\tt Data output}
+\begin{DoxyItemize}
+\item \href{#trigger-output}{\tt Trigger output}
+\item \href{#reconstruction-output}{\tt Reconstruction output}
+\end{DoxyItemize}
+\item \href{#data-resets}{\tt Data resets}
+\begin{DoxyItemize}
+\item \href{#reconstruction-reset}{\tt Reconstruction reset}
+\end{DoxyItemize}
+\item \href{#triggers}{\tt Triggers}
+\item \href{#reconstruction}{\tt Reconstruction}
+\item \href{#supernova-filters}{\tt Super\-Nova Filters}
+\item \href{#supernova-triggers}{\tt Super\-Nova Triggers}
+\item \href{#miscellaneous}{\tt Miscellaneous}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Data input}
+
+\subsubsection*{Simulation/digit input}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{classWCSimReader}{W\-C\-Sim\-Reader}
+\begin{DoxyItemize}
+\item Read in simulation data from W\-C\-Sim files
+\end{DoxyItemize}
+\item \hyperlink{classWCSimASCIReader}{W\-C\-Sim\-A\-S\-C\-I\-Reader}
+\begin{DoxyItemize}
+\item Read in simulation data from A\-S\-C\-I\-I files
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsubsection*{Reconstruction input}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{classReconRandomiser}{Recon\-Randomiser}
+\begin{DoxyItemize}
+\item Produce randomised reconstruction distributions
+\end{DoxyItemize}
+\item \hyperlink{classReconDataIn}{Recon\-Data\-In}
+\begin{DoxyItemize}
+\item Read in reconstruction data from a {\ttfamily T\-Tree}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Data output}
+
+\subsubsection*{Trigger output}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{classDataOut}{Data\-Out}
+\begin{DoxyItemize}
+\item Write out trigger (+ full simulation) data in W\-C\-Sim file format
+\end{DoxyItemize}
+\item \hyperlink{classTriggerOutput}{Trigger\-Output}
+\begin{DoxyItemize}
+\item Write out trigger data in text format
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsubsection*{Reconstruction output}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{classReconDataOut}{Recon\-Data\-Out}
+\begin{DoxyItemize}
+\item Write out reconstructed event data in a {\ttfamily T\-Tree}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Data resets}
+
+\subsubsection*{Reconstruction reset}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{classReconReset}{Recon\-Reset}
+\begin{DoxyItemize}
+\item {\ttfamily Reset()} all instances of {\ttfamily \hyperlink{classReconInfo}{Recon\-Info}} in the data model
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Triggers}
+
+
+\begin{DoxyItemize}
+\item nhits
+\begin{DoxyItemize}
+\item Trigger on more than x-\/digits in a y ns sliding-\/window
+\end{DoxyItemize}
+\item \hyperlink{classtest__vertices}{test\-\_\-vertices}
+\begin{DoxyItemize}
+\item Trigger on more than x-\/digits in a y ns sliding-\/window, using time-\/of-\/flight subtracted times, on a fixed grid of vertices
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Reconstruction}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{classBONSAI}{B\-O\-N\-S\-A\-I}
+\begin{DoxyItemize}
+\item Reconstruct low-\/energy events with hk-\/\-B\-O\-N\-S\-A\-I
+\item Requires a trigger
+\item Returns reconstructed vertex position and direction
+\end{DoxyItemize}
+\item \hyperlink{classFLOWERRecon}{F\-L\-O\-W\-E\-R\-Recon}
+\begin{DoxyItemize}
+\item Reconstruct energy of low-\/energy events with F\-L\-O\-W\-E\-R
+\item Requires a reconstructed vertex
+\item Returns reconstructed energy
+\end{DoxyItemize}
+\item (\hyperlink{classtest__vertices}{test\-\_\-vertices})
+\begin{DoxyItemize}
+\item T\-O\-D\-O\-: add option (or similar tool) to \hyperlink{classtest__vertices}{test\-\_\-vertices}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Super\-Nova Filters}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{classReconFilter}{Recon\-Filter}
+\begin{DoxyItemize}
+\item Filter out reconstructed events that don't pass cuts
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Super\-Nova Triggers}
+
+
+\begin{DoxyItemize}
+\item dimfit
+\begin{DoxyItemize}
+\item Find the number of dimensions that a positional vertex distribution corresponds to
+\item Algorithm inherited from S\-K
+\item Compare nclusters to thresholds for golden, normal and silent warnings
+\item Passes dimensionality, nclusters, and highest nclusters\-\_\-warning level passed to data model
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\subsection*{Miscellaneous}
+
+
+\begin{DoxyItemize}
+\item C\-U\-D\-A
+\begin{DoxyItemize}
+\item Some C\-U\-D\-A-\/\-G\-P\-U related code for on-\/\-G\-P\-U triggers
+\end{DoxyItemize}
+\item template
+\begin{DoxyItemize}
+\item Skeleton used by {\ttfamily new\-Tool.\-sh}
+\end{DoxyItemize}
+\item \hyperlink{classDummyTool}{Dummy\-Tool}
+\begin{DoxyItemize}
+\item Dummy that prints out differnt messages to the console depending on the debug level 
+\end{DoxyItemize}
+\end{DoxyItemize}

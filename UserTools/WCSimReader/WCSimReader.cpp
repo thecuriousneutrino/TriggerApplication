@@ -1,7 +1,5 @@
 #include "WCSimReader.h"
 
-#include "TFile.h"
-#include "TVectorT.h"
 
 WCSimReader::WCSimReader():Tool(){}
 

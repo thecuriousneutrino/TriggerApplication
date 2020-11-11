@@ -1,0 +1,44 @@
+Write out a new file with a {\ttfamily T\-Tree} storing reconstruction information
+
+\subsection*{Data}
+
+
+\begin{DoxyItemize}
+\item Sets up a {\ttfamily T\-Tree} called {\ttfamily recon\-Tree} which is filled with the result of every reconstruction taken from the data member {\ttfamily Reco\-Info} (or {\ttfamily Reco\-Info\-Map})
+\begin{DoxyItemize}
+\item {\ttfamily Event\-Num}
+\item {\ttfamily Trigger\-Num}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+{\ttfamily N\-Digits}
+\begin{DoxyItemize}
+\item {\ttfamily Reconstructer} an enumeration of the tool that reconstructed (e.\-g. k\-Recon\-B\-O\-N\-S\-A\-I)
+\begin{DoxyItemize}
+\item T\-O\-D\-O it is currently cast to an int. Need to setup a root linkdef to allow the enum to be used directly in the tree
+\end{DoxyItemize}
+\item {\ttfamily Time}
+\item {\ttfamily Vertex\mbox{[}3\mbox{]}} x,y,z
+\item {\ttfamily Goodness\-Of\-Fit}
+\item {\ttfamily Goodness\-Of\-Time\-Fit}
+\item {\ttfamily Has\-Direction} boolean saying whether the reconstruction tool provides direction
+\item {\ttfamily \hyperlink{structDirectionEuler}{Direction\-Euler}\mbox{[}3\mbox{]}} theta (zenith), phi (azimuth), alpha
+\item {\ttfamily \hyperlink{structCherenkovCone}{Cherenkov\-Cone}\mbox{[}2\mbox{]}} cos(\-Cherenkov angle), ellipticity
+\item {\ttfamily Direction\-Likelihood}
+\end{DoxyItemize}
+
+For more information on the meaning of the output, see for example the \href{https://github.com/hyperk/hk-BONSAI}{\tt hk-\/\-B\-O\-N\-S\-A\-I documentation}
+
+\subsection*{Configuration}
+
+``` input\-\_\-filter\-\_\-name N\-A\-M\-E outfilename /path/to/file verbose L\-E\-V\-E\-L ```
+
+
+\begin{DoxyItemize}
+\item {\ttfamily input\-\_\-filter\-\_\-name} Name of the {\ttfamily \hyperlink{classReconInfo}{Recon\-Info}} object to take from the map {\ttfamily Reco\-Info\-Map}
+\begin{DoxyItemize}
+\item If A\-L\-L takes the all reconstructed events from the global object {\ttfamily Reco\-Info}
+\end{DoxyItemize}
+\item {\ttfamily outfilename} File path to output file
+\item {\ttfamily verbose} Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity) 
+\end{DoxyItemize}

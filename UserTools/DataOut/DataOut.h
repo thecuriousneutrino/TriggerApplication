@@ -13,6 +13,8 @@
 #include "TTree.h"
 
 #include "Tool.h"
+#include "TimeDelta.h"
+#include "Stopwatch.h"
 
 class DataOut: public Tool {
 

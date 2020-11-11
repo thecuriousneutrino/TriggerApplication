@@ -1,0 +1,23 @@
+\hyperlink{classPrepareSubSamples}{Prepare\-Sub\-Samples} will take the provided Sub\-Samples in the \hyperlink{classDataModel}{Data\-Model} and make them correspond to the expected format from real data. Specifically it will\-:
+
+
+\begin{DoxyEnumerate}
+\item Sort all digits in the Sub\-Samples by their time.
+\item Split Sub\-Samples that are too long into multiple (slightly overlapping) ones.
+\item Ensure positive, small digit times by adjusting the timestamp of each \hyperlink{classSubSample}{Sub\-Sample}.
+\end{DoxyEnumerate}
+
+\subsection*{Data}
+
+\hyperlink{classPrepareSubSamples}{Prepare\-Sub\-Samples} will change/replace the I\-D and O\-D Sub\-Samples in the \hyperlink{classDataModel}{Data\-Model} if necessary.
+
+\subsection*{Configuration}
+
+``` sample\-\_\-width W\-I\-D\-T\-H sample\-\_\-overlap O\-V\-E\-R\-L\-A\-P verbose L\-E\-V\-E\-L ```
+
+
+\begin{DoxyItemize}
+\item {\ttfamily sample\-\_\-width} The (maximum) width of each \hyperlink{classSubSample}{Sub\-Sample} in ns
+\item {\ttfamily sample\-\_\-overlap} The overlap of consecutive samples in ns
+\item {\ttfamily verbose} Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity) 
+\end{DoxyItemize}

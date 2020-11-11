@@ -79,7 +79,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">TriggerApplication </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Trigger Application is designed as a modular trigger software to run successive triggers on WCSim data.</p>
+<div class="textblock"><p><a href="https://hkdaq.github.io/TriggerApplication/">https://hkdaq.github.io/TriggerApplication/</a></p>
+<p>Trigger Application is designed as a modular trigger software to run successive triggers on WCSim data.</p>
 <p>It's built from ToolDAQ Application <a href="#myfootnote1">[1]</a> which is an open source general DAQ Application template built using the modular ToolDAQ Framework core <a href="#myfootnote2">[2]</a> to give separation between core and implementation code.</p>
 <hr/>
 <h1>Concept</h1>
@@ -92,6 +93,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <hr/>
 <h1>Tutorial</h1>
 <p>Note that there are <code>README.md</code> files in most folders. Check them out!</p>
+<p>See also the doxygen, available for each release at <a href="https://hkdaq.github.io/TriggerApplication/md__r_e_a_d_m_e.html">https://hkdaq.github.io/TriggerApplication/md__r_e_a_d_m_e.html</a></p>
 <ul>
 <li><a href="#key-concepts">Key concepts</a><ul>
 <li><a href="#tool">Tool</a></li>
@@ -134,6 +136,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <ul>
 <li><code>t1::Initialise()</code> - <code>t2::Initalise()</code> - <code>t1::Execute()</code> - <code>t2::Execute()</code> - <code>t1::Execute()</code> - <code>t2::Execute()</code> - ... - <code>t1::Finalise()</code> - <code>t2::Finalise()</code></li>
 </ul>
+<p>Note that toolchains can also be run within toolchains.</p>
 <h3><a class="el" href="class_data_model.html">DataModel</a></h3>
 <p>Tools cannot communicate directly with one another. They rely on passing data between each other using a transient data model. This is found in the <code><a class="el" href="class_data_model.html">DataModel</a></code> folder</p>
 <h2>Installation</h2>
@@ -159,6 +162,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>To delete a container use <code>docker rm TriggerApplciaiton</code></li>
 <li>When creating a container you can mount a folder from your native os with the <code>-v</code> run option e.g. <code>docker run --name=TriggerApplication -v local_folder_path:container_mount_path -it hkdaq/triggerapplication:latest</code></li>
 </ul>
+<h4>Singularity</h4>
+<p>The docker container is singularity compatible. Therefore if your sys-admin doesn't want you to have access to docker (due to the elevated privileges required) ask about singularity (which doesn't require such privileges).</p>
 <h3>From GitHub source</h3>
 <ul>
 <li>Clone from <a href="https://github.com/HKDAQ/TriggerApplication">https://github.com/HKDAQ/TriggerApplication</a><ul>
@@ -167,7 +172,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </li>
 <li>Make sure you have sourced WCSim i.e. that you have <code>$WCSIMDIR</code> set<ul>
 <li>Note that this will work with the current WCSim develop branch.<ul>
-<li>Versions of WCSim older than v1.8.0 will almost certainly not work. (<code>kTriggerNoTrig</code> added in v1.8.0; <code>WCSimRootOptions</code> added in v1.7.0)</li>
+<li>The next tagged version of WCSim after v1.8.0 will work. v1.8.0 and earlier will not.</li>
 </ul>
 </li>
 <li>Note that you also need ROOT setup (a WCSim prerequisite)</li>
@@ -301,7 +306,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jul 2 2020 17:27:57 for TriggerApplication by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Nov 9 2020 18:57:10 for TriggerApplication by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.5
 </small></address>

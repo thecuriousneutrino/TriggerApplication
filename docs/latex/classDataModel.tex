@@ -1,0 +1,143 @@
+\hypertarget{classDataModel}{\section{Data\-Model Class Reference}
+\label{classDataModel}\index{Data\-Model@{Data\-Model}}
+}
+
+
+{\ttfamily \#include $<$Data\-Model.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classDataModel_abff03aef2cb531142a35781bb87c3365}{\hyperlink{classDataModel_abff03aef2cb531142a35781bb87c3365}{Data\-Model} ()}\label{classDataModel_abff03aef2cb531142a35781bb87c3365}
+
+\begin{DoxyCompactList}\small\item\em Simple constructor. \end{DoxyCompactList}\item 
+\hyperlink{classReconInfo}{Recon\-Info} $\ast$ \hyperlink{classDataModel_a1887c7e14241754c9967876de5b3495a}{Get\-Filter} (std\-::string name, bool can\-\_\-create)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classDataModel_a4baac5fe364a7a23762d70d2c2216486}{Store \hyperlink{classDataModel_a4baac5fe364a7a23762d70d2c2216486}{vars}}\label{classDataModel_a4baac5fe364a7a23762d70d2c2216486}
+
+\begin{DoxyCompactList}\small\item\em This Store can be used for any variables. It is an inefficent ascii based storage. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a878e0d87285f0b3541a3e7116a5f00b6}{Boost\-Store \hyperlink{classDataModel_a878e0d87285f0b3541a3e7116a5f00b6}{C\-Store}}\label{classDataModel_a878e0d87285f0b3541a3e7116a5f00b6}
+
+\begin{DoxyCompactList}\small\item\em This is a more efficent binary Boost\-Store that can be used to store a dynamic set of inter Tool variables. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_ad1ffc080c3b263bf3ee382a531321ad4}{std\-::map$<$ std\-::string, \\*
+Boost\-Store $\ast$ $>$ \hyperlink{classDataModel_ad1ffc080c3b263bf3ee382a531321ad4}{Stores}}\label{classDataModel_ad1ffc080c3b263bf3ee382a531321ad4}
+
+\begin{DoxyCompactList}\small\item\em This is a map of named Boo\-Store pointers which can be deffined to hold a nammed collection of any tipe of Boost\-Store. It is usefull to store data that needs subdividing into differnt stores. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_aa777da4c632e4659ee5b1447ad513458}{Logging $\ast$ \hyperlink{classDataModel_aa777da4c632e4659ee5b1447ad513458}{Log}}\label{classDataModel_aa777da4c632e4659ee5b1447ad513458}
+
+\begin{DoxyCompactList}\small\item\em Log class pointer for use in Tools, it can be used to send messages which can have multiple error levels and destination end points. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a2c6dfd692e50f90e55338970ea7f8d61}{zmq\-::context\-\_\-t $\ast$ \hyperlink{classDataModel_a2c6dfd692e50f90e55338970ea7f8d61}{context}}\label{classDataModel_a2c6dfd692e50f90e55338970ea7f8d61}
+
+\begin{DoxyCompactList}\small\item\em Z\-M\-Q contex used for producing zmq sockets for inter thread, process, or computer communication. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a117f5512507948489a7e726391c04324}{std\-::vector$<$ \hyperlink{classSubSample}{Sub\-Sample} $>$ \hyperlink{classDataModel_a117f5512507948489a7e726391c04324}{I\-D\-Samples}}\label{classDataModel_a117f5512507948489a7e726391c04324}
+
+\begin{DoxyCompactList}\small\item\em Inner detector digit collections. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_ac5669b4fb4e31fcb9525981ace801017}{std\-::vector$<$ \hyperlink{classSubSample}{Sub\-Sample} $>$ \hyperlink{classDataModel_ac5669b4fb4e31fcb9525981ace801017}{O\-D\-Samples}}\label{classDataModel_ac5669b4fb4e31fcb9525981ace801017}
+
+\begin{DoxyCompactList}\small\item\em Outer detector digit collections. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a8b6ab332fa38b2ebfb686cb47e37a027}{std\-::vector$<$ \hyperlink{classPMTInfo}{P\-M\-T\-Info} $>$ \hyperlink{classDataModel_a8b6ab332fa38b2ebfb686cb47e37a027}{I\-D\-Geom}}\label{classDataModel_a8b6ab332fa38b2ebfb686cb47e37a027}
+
+\begin{DoxyCompactList}\small\item\em Geometry information for the inner detector. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a71675824a1aef386894d876545f52094}{std\-::vector$<$ \hyperlink{classPMTInfo}{P\-M\-T\-Info} $>$ \hyperlink{classDataModel_a71675824a1aef386894d876545f52094}{O\-D\-Geom}}\label{classDataModel_a71675824a1aef386894d876545f52094}
+
+\begin{DoxyCompactList}\small\item\em Geometry information for the outer detector. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a1ec2850822f07de49f6ddb05a8537881}{\hyperlink{classTriggerInfo}{Trigger\-Info} \hyperlink{classDataModel_a1ec2850822f07de49f6ddb05a8537881}{I\-D\-Triggers}}\label{classDataModel_a1ec2850822f07de49f6ddb05a8537881}
+
+\begin{DoxyCompactList}\small\item\em Triggered time windows for the inner detector. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_aac80402a18f6fcde9ec271211152e3a0}{\hyperlink{classTriggerInfo}{Trigger\-Info} \hyperlink{classDataModel_aac80402a18f6fcde9ec271211152e3a0}{O\-D\-Triggers}}\label{classDataModel_aac80402a18f6fcde9ec271211152e3a0}
+
+\begin{DoxyCompactList}\small\item\em Triggered time windows for the outer detector. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a5471c8c372e061f47601f7c910e5d5c1}{bool \hyperlink{classDataModel_a5471c8c372e061f47601f7c910e5d5c1}{triggeroutput}}\label{classDataModel_a5471c8c372e061f47601f7c910e5d5c1}
+
+\begin{DoxyCompactList}\small\item\em D\-E\-P\-R\-E\-C\-A\-T\-E\-D! Use I\-D\-Triggers and O\-D\-Triggers instead. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a3fa7b34f677cf748f48ac8e1ab43eddd}{\hyperlink{classReconInfo}{Recon\-Info} \hyperlink{classDataModel_a3fa7b34f677cf748f48ac8e1ab43eddd}{Reco\-Info}}\label{classDataModel_a3fa7b34f677cf748f48ac8e1ab43eddd}
+
+\begin{DoxyCompactList}\small\item\em Store reconstruction information (vertex time/position, fit likelihoods, optionally direction) \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a251e064bd60670ee4ac0eb94e42706ba}{std\-::map$<$ std\-::string, \\*
+\hyperlink{classReconInfo}{Recon\-Info} $\ast$ $>$ \hyperlink{classDataModel_a251e064bd60670ee4ac0eb94e42706ba}{Reco\-Info\-Map}}\label{classDataModel_a251e064bd60670ee4ac0eb94e42706ba}
+
+\begin{DoxyCompactList}\small\item\em Store filtered reconstruction information. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a402d65b5d38d1df743b148ff2050f30f}{double \hyperlink{classDataModel_a402d65b5d38d1df743b148ff2050f30f}{I\-D\-P\-M\-T\-Dark\-Rate}}\label{classDataModel_a402d65b5d38d1df743b148ff2050f30f}
+
+\begin{DoxyCompactList}\small\item\em Dark noise rate of inner detector P\-M\-Ts, unit\-: ? \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a30c2323b27be73a78886b527c8b43b30}{double \hyperlink{classDataModel_a30c2323b27be73a78886b527c8b43b30}{O\-D\-P\-M\-T\-Dark\-Rate}}\label{classDataModel_a30c2323b27be73a78886b527c8b43b30}
+
+\begin{DoxyCompactList}\small\item\em Dark noise rate of outer detector P\-M\-Ts, unit\-: ? \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a136ac1e3b7197b8d77ce09280ff38110}{int \hyperlink{classDataModel_a136ac1e3b7197b8d77ce09280ff38110}{I\-D\-N\-P\-M\-Ts}}\label{classDataModel_a136ac1e3b7197b8d77ce09280ff38110}
+
+\begin{DoxyCompactList}\small\item\em Number of inner detector P\-M\-Ts. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a59c6f8afcab3b346d18d97b715763c1f}{int \hyperlink{classDataModel_a59c6f8afcab3b346d18d97b715763c1f}{O\-D\-N\-P\-M\-Ts}}\label{classDataModel_a59c6f8afcab3b346d18d97b715763c1f}
+
+\begin{DoxyCompactList}\small\item\em Number of outer detector P\-M\-Ts. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_ac64cb381d1cd620bcf8ecff268dc18e0}{double \hyperlink{classDataModel_ac64cb381d1cd620bcf8ecff268dc18e0}{detector\-\_\-length}}\label{classDataModel_ac64cb381d1cd620bcf8ecff268dc18e0}
+
+\begin{DoxyCompactList}\small\item\em height of water tank \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a2177924e78852c71c372749fffa1137d}{double \hyperlink{classDataModel_a2177924e78852c71c372749fffa1137d}{detector\-\_\-radius}}\label{classDataModel_a2177924e78852c71c372749fffa1137d}
+
+\begin{DoxyCompactList}\small\item\em radius of water tank \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a33c62502670e975cbc0e9ed6f0afa22f}{double \hyperlink{classDataModel_a33c62502670e975cbc0e9ed6f0afa22f}{pmt\-\_\-radius}}\label{classDataModel_a33c62502670e975cbc0e9ed6f0afa22f}
+
+\begin{DoxyCompactList}\small\item\em radius of each P\-M\-T \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_aaff7bd723178271d795835e7d1e1dbef}{T\-Chain $\ast$ \hyperlink{classDataModel_aaff7bd723178271d795835e7d1e1dbef}{W\-C\-Sim\-Geom\-Tree}}\label{classDataModel_aaff7bd723178271d795835e7d1e1dbef}
+
+\begin{DoxyCompactList}\small\item\em The {\ttfamily W\-C\-Sim\-Root\-Geom} tree from input W\-C\-Sim file(s) \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a89cf7601bf57652b4a1363ec7dbc6dba}{T\-Chain $\ast$ \hyperlink{classDataModel_a89cf7601bf57652b4a1363ec7dbc6dba}{W\-C\-Sim\-Options\-Tree}}\label{classDataModel_a89cf7601bf57652b4a1363ec7dbc6dba}
+
+\begin{DoxyCompactList}\small\item\em The {\ttfamily W\-C\-Sim\-Root\-Options} tree from input W\-C\-Sim file(s) \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a5154cb6c2af332e5db8cf9c7620369f1}{T\-Chain $\ast$ \hyperlink{classDataModel_a5154cb6c2af332e5db8cf9c7620369f1}{W\-C\-Sim\-Event\-Tree}}\label{classDataModel_a5154cb6c2af332e5db8cf9c7620369f1}
+
+\begin{DoxyCompactList}\small\item\em The {\ttfamily W\-C\-Sim\-Root\-Event} tree from input W\-C\-Sim file(s) \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_af13fe686acf2a60b84315c65f00af3cf}{int \hyperlink{classDataModel_af13fe686acf2a60b84315c65f00af3cf}{Current\-W\-C\-Sim\-Event\-Num}}\label{classDataModel_af13fe686acf2a60b84315c65f00af3cf}
+
+\begin{DoxyCompactList}\small\item\em The original W\-C\-Sim files' event number for the current event. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_ad368f473d985725a81a460595945c25b}{T\-Obj\-String \hyperlink{classDataModel_ad368f473d985725a81a460595945c25b}{Current\-W\-C\-Sim\-File}}\label{classDataModel_ad368f473d985725a81a460595945c25b}
+
+\begin{DoxyCompactList}\small\item\em The original W\-C\-Sim files' filename for the current event. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a56a200514179bea6b890f71defbc604d}{W\-C\-Sim\-Root\-Event $\ast$ \hyperlink{classDataModel_a56a200514179bea6b890f71defbc604d}{I\-D\-W\-C\-Sim\-Event\-\_\-\-Raw}}\label{classDataModel_a56a200514179bea6b890f71defbc604d}
+
+\begin{DoxyCompactList}\small\item\em The original, unmodified {\ttfamily W\-C\-Sim\-Root\-Event} for the I\-D. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a661853dc2ab04c2ef681cd0174fabe5c}{W\-C\-Sim\-Root\-Event $\ast$ \hyperlink{classDataModel_a661853dc2ab04c2ef681cd0174fabe5c}{O\-D\-W\-C\-Sim\-Event\-\_\-\-Raw}}\label{classDataModel_a661853dc2ab04c2ef681cd0174fabe5c}
+
+\begin{DoxyCompactList}\small\item\em The original, unmodified {\ttfamily W\-C\-Sim\-Root\-Event} for the O\-D. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_ab7b2e24128b6b1f3346c4e78009f75c7}{std\-::vector$<$ \hyperlink{structSNWarningParams}{S\-N\-Warning\-Params} $>$ \hyperlink{classDataModel_ab7b2e24128b6b1f3346c4e78009f75c7}{Supernova\-Warning\-Parameters}}\label{classDataModel_ab7b2e24128b6b1f3346c4e78009f75c7}
+
+\begin{DoxyCompactList}\small\item\em Store the dimensionality, number of reconstructed vertices and the highest nclusters warning threshold passed. \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a414da75f26f3460f26285bd815f1e1b3}{bool \hyperlink{classDataModel_a414da75f26f3460f26285bd815f1e1b3}{Has\-O\-D}}\label{classDataModel_a414da75f26f3460f26285bd815f1e1b3}
+
+\begin{DoxyCompactList}\small\item\em Does the geometry include the outer detector? \end{DoxyCompactList}\item 
+\hypertarget{classDataModel_a172f201ebabd4bd2ec50673a31d242df}{bool \hyperlink{classDataModel_a172f201ebabd4bd2ec50673a31d242df}{Is\-M\-C}}\label{classDataModel_a172f201ebabd4bd2ec50673a31d242df}
+
+\begin{DoxyCompactList}\small\item\em Is this simulated data? \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This class Is a transient data model class for your Tools within the Tool\-Chain. If Tools need to comunicate they pass all data objects through the data model. There fore inter tool data objects should be deffined in this class.
+
+\begin{DoxyParagraph}{Author\-:}
+B.\-Richards 
+\end{DoxyParagraph}
+\begin{DoxyParagraph}{Date\-:}
+2019/05/26 18\-:34\-:00 
+\end{DoxyParagraph}
+Contact\-: \href{mailto:b.richards@qmul.ac.uk}{\tt b.\-richards@qmul.\-ac.\-uk} 
+
+\subsection{Member Function Documentation}
+\hypertarget{classDataModel_a1887c7e14241754c9967876de5b3495a}{\index{Data\-Model@{Data\-Model}!Get\-Filter@{Get\-Filter}}
+\index{Get\-Filter@{Get\-Filter}!DataModel@{Data\-Model}}
+\subsubsection[{Get\-Filter}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Recon\-Info} $\ast$ Data\-Model\-::\-Get\-Filter (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{name, }
+\item[{bool}]{can\-\_\-create}
+\end{DoxyParamCaption}
+)}}\label{classDataModel_a1887c7e14241754c9967876de5b3495a}
+Get filtered reconstructed information.
+
+If {\ttfamily name == A\-L\-L}\-: pointer to all events ({\ttfamily Reco\-Info}) Otherwise, returns pointer to {\ttfamily Reco\-Info\-Map} entry name Caveat\-: if {\ttfamily !can\-\_\-create} and {\ttfamily name} not found, return {\ttfamily 0} 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+Data\-Model/Data\-Model.\-h\item 
+Data\-Model/Data\-Model.\-cpp\end{DoxyCompactItemize}

@@ -1,0 +1,90 @@
+The \hyperlink{classDataModel}{Data\-Model} class can be defined how ever the user requires. A Store is provided which ineficently maps variables to string lkeys via conversion to stringstream and can be used for debuging or other useful vairables.
+
+\subsection*{T\-O\-D\-O}
+
+Set up to allow multiple types of P\-M\-T in the I\-D (e.\-g. 20" + m\-P\-M\-T hybrid geometry). For this, a proposal (Tom) is to
+\begin{DoxyItemize}
+\item replace all I\-D/\-O\-D variables in the data model by {\ttfamily std\-::vector$<$\hyperlink{classSubSample}{Sub\-Sample}$>$ I\-D\-Triggers, O\-D\-Triggers} with a {\ttfamily std\-::map$<$Photo\-Detector\-Type\-\_\-t, std\-::vector$<$\hyperlink{classSubSample}{Sub\-Sample}$>$ $\ast$ $>$}
+\item add entries to the map (i.\-e. create std\-::vector$<$\-Sub\-Sample$>$ $\ast$) in tools that read the geometry (e.\-g. {\ttfamily \hyperlink{classWCSimReader}{W\-C\-Sim\-Reader}})
+\item remove {\ttfamily Has\-O\-D}
+\item Photo\-Detector\-Type\-\_\-t will be e.\-g. k\-O\-D3\-Inch, k\-I\-D20\-Inch, k\-I\-Dm\-P\-M\-T for now, but can be given more representative names in the future (e.\-g. add model numbers)
+\end{DoxyItemize}
+
+\subsection*{Related classes}
+
+\subsubsection*{\hyperlink{classSubSample}{Sub\-Sample}}
+
+Stores (in vectors) relative digit time, digit charge, and P\-M\-T I\-D.
+
+Vectors of hit information are added using the {\ttfamily Append} method.
+
+All digit times are relative to the {\ttfamily m\-\_\-timestamp}. When comparing times between different Sub\-Samples, this needs to be taken into account.
+
+Which trigger readout window(s) a digit is associated with, and whether a digit should be masked from future triggers are held in additional vectors, and are set with {\ttfamily Tell\-Me\-About\-The\-Triggers()}
+
+\subsubsection*{\hyperlink{classTimeDelta}{Time\-Delta}}
+
+Universal class to store bothe long and short time information. These are used for trigger times that are aware of the timestamp realtive to which they were created.
+
+\subsubsection*{\hyperlink{classTriggerInfo}{Trigger\-Info}}
+
+Stores {\ttfamily m\-\_\-\-N} triggers, with information including {\ttfamily Trigger\-Type\-\_\-t}, readout window start/end times, the trigger time, and additional trigger information {\ttfamily std\-::vector$<$float$>$}
+
+Triggers can be added one at a time, or by copying them all from another {\ttfamily \hyperlink{classTriggerInfo}{Trigger\-Info}} instance
+
+Triggers can be sorted into time order using {\ttfamily Sort\-By\-Start\-Time()}
+
+\subsubsection*{\hyperlink{classPMTInfo}{P\-M\-T\-Info}}
+
+Stores the P\-M\-T I\-D, and the x, y, z position of each tube
+
+\paragraph*{Important data members}
+
+``` int m\-\_\-tubeno; float m\-\_\-x, m\-\_\-y, m\-\_\-z; ```
+
+\paragraph*{Important methods}
+
+{\ttfamily  }
+
+\subsubsection*{\hyperlink{classReconInfo}{Recon\-Info}}
+
+Stores {\ttfamily f\-N\-Recons} results of reconstruction algorithms
+\begin{DoxyItemize}
+\item Vertex position / time (required)
+\item Directionality (optional)
+\item Energy (optional) T\-O\-D\-O
+\item Likelihoods associated with each fit
+\end{DoxyItemize}
+
+Reconstruction results can be added one at a time, or by copying them all from another {\ttfamily \hyperlink{classTriggerInfo}{Trigger\-Info}} instance
+
+Keeps track of the earliest/latest reconstructed event time (useful for looping by future tools)
+
+\paragraph*{Important data members}
+
+``` int f\-N\-Recons; double f\-First\-Time; double f\-Last\-Time; //event info std\-::vector$<$\-Reconstructer\-\_\-t$>$ f\-Reconstructer; std\-::vector$<$int$>$ f\-Trigger\-Num; std\-::vector$<$int$>$ f\-N\-Hits; //vertex info std\-::vector$<$double$>$ f\-Time; std\-::vector$<$\-Pos3\-D$>$ f\-Vertex; std\-::vector$<$double$>$ f\-Goodness\-Of\-Fit; std\-::vector$<$double$>$ f\-Goodness\-Of\-Time\-Fit; //direction info std\-::vector$<$bool$>$ f\-Has\-Direction; std\-::vector$<$\-Direction\-Euler$>$ f\-Direction\-Euler; std\-::vector$<$\-Cherenkov\-Cone$>$ f\-Cherenkov\-Cone; std\-::vector$<$double$>$ f\-Direction\-Likelihood; ```
+
+\paragraph*{Important methods}
+
+``` // Add vertex result void Add\-Recon(Reconstructer\-\_\-t reconstructer, int trigger\-\_\-num, int nhits, double time, double $\ast$ vertex, double goodness\-\_\-of\-\_\-fit, double goodness\-\_\-of\-\_\-time\-\_\-fit, bool fill\-\_\-has\textbackslash{} \-\_\-direction = true)
+
+// Add vertex + direction result void Add\-Recon(Reconstructer\-\_\-t reconstructer, int trigger\-\_\-num, int nhits, double time, double $\ast$ vertex, double goodness\-\_\-of\-\_\-fit, double goodness\-\_\-of\-\_\-time\-\_\-fit, double $\ast$ direction\-\_\-euler, double $\ast$ cherenkov\-\_\-cone, double direction\-\_\-likelihood)
+
+// Add vertex(+ direction) result from reconstruction irecon within in void Add\-Recon\-From(\-Recon\-Info $\ast$ in, const int irecon)
+
+void Reset() ```
+
+\paragraph*{Related things}
+
+
+\begin{DoxyItemize}
+\item {\ttfamily enum Reconstructer\-\_\-t} -\/ an enumeration of reconstruction tools. E.\-g. {\ttfamily k\-Recon\-B\-O\-N\-S\-A\-I}
+\item {\ttfamily enum N\-Clusters\-Warning\-\_\-t} -\/ an enumeration of the nclusters warning thresholds used in the supernova trigger
+\item {\ttfamily enum S\-N\-Warning\-\_\-t} -\/ an enumeration of supernova warning levels that are assigned based on the values of nclusters and dimensionality
+\item {\ttfamily struct \hyperlink{structSNWarningParams}{S\-N\-Warning\-Params}} holds nclusters, dim and highest nclusters threshold passed
+\item {\ttfamily struct \hyperlink{structPos3D}{Pos3\-D}} holds x, y, z positions
+\item {\ttfamily struct \hyperlink{structDirectionEuler}{Direction\-Euler}} holds theta, phi, alpha directions
+\item {\ttfamily struct \hyperlink{structCherenkovCone}{Cherenkov\-Cone}} holds cos\-\_\-angle, ellipticity of the Chrenkov cone
+\end{DoxyItemize}
+
+Note\-: this is the format that \hyperlink{classBONSAI}{B\-O\-N\-S\-A\-I} returns directions. Other conventions might be more useful for S\-N trigger purposes 

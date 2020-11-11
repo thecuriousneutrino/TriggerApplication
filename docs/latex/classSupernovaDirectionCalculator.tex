@@ -1,0 +1,45 @@
+\hypertarget{classSupernovaDirectionCalculator}{\section{Supernova\-Direction\-Calculator Class Reference}
+\label{classSupernovaDirectionCalculator}\index{Supernova\-Direction\-Calculator@{Supernova\-Direction\-Calculator}}
+}
+Inheritance diagram for Supernova\-Direction\-Calculator\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classSupernovaDirectionCalculator}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classSupernovaDirectionCalculator_aed7b11a1833767006bffac07ad3cced7}{bool {\bfseries Initialise} (std\-::string configfile, \hyperlink{classDataModel}{Data\-Model} \&data)}\label{classSupernovaDirectionCalculator_aed7b11a1833767006bffac07ad3cced7}
+
+\item 
+\hypertarget{classSupernovaDirectionCalculator_a4762604ba2382d21f239d6e71a97a174}{bool {\bfseries Execute} ()}\label{classSupernovaDirectionCalculator_a4762604ba2382d21f239d6e71a97a174}
+
+\item 
+\hypertarget{classSupernovaDirectionCalculator_a467b25370dad440342bf49be3eabd73b}{bool {\bfseries Finalise} ()}\label{classSupernovaDirectionCalculator_a467b25370dad440342bf49be3eabd73b}
+
+\item 
+\hypertarget{classSupernovaDirectionCalculator_a70ead4a641b1837728469307676330ba}{double \hyperlink{classSupernovaDirectionCalculator_a70ead4a641b1837728469307676330ba}{Get\-Event\-Weight} (double log10\-\_\-energy)}\label{classSupernovaDirectionCalculator_a70ead4a641b1837728469307676330ba}
+
+\begin{DoxyCompactList}\small\item\em Return the weight for the event. \end{DoxyCompactList}\item 
+void \hyperlink{classSupernovaDirectionCalculator_a20f7efcc68e303a9d049395663c08a03}{Calculate\-Direction} (float direction\mbox{[}3\mbox{]}, float costheta\-\_\-cut)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classSupernovaDirectionCalculator_a20f7efcc68e303a9d049395663c08a03}{\index{Supernova\-Direction\-Calculator@{Supernova\-Direction\-Calculator}!Calculate\-Direction@{Calculate\-Direction}}
+\index{Calculate\-Direction@{Calculate\-Direction}!SupernovaDirectionCalculator@{Supernova\-Direction\-Calculator}}
+\subsubsection[{Calculate\-Direction}]{\setlength{\rightskip}{0pt plus 5cm}void Supernova\-Direction\-Calculator\-::\-Calculate\-Direction (
+\begin{DoxyParamCaption}
+\item[{float}]{direction\mbox{[}3\mbox{]}, }
+\item[{float}]{costheta\-\_\-cut}
+\end{DoxyParamCaption}
+)}}\label{classSupernovaDirectionCalculator_a20f7efcc68e303a9d049395663c08a03}
+Calculate the average S\-N neutrino direction.
+
+Assumes events with cos(theta) $<$ costheta\-\_\-cut have no direction information. 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+User\-Tools/\-Supernova\-Direction\-Calculator/Supernova\-Direction\-Calculator.\-h\item 
+User\-Tools/\-Supernova\-Direction\-Calculator/Supernova\-Direction\-Calculator.\-cpp\end{DoxyCompactItemize}

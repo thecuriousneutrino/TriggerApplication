@@ -3,10 +3,10 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 
 #include "Tool.h"
-
-#include <vector>
+#include "Stopwatch.h"
 
 #include "WCSimRootEvent.hh"
 #include "WCSimBonsai.hh"

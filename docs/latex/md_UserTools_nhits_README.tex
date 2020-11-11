@@ -1,0 +1,37 @@
+Trigger on more than x-\/digits in a y ns sliding-\/window
+
+C\-P\-U and C\-U\-D\-A-\/\-G\-P\-U versions are available
+
+\subsection*{Data}
+
+
+\begin{DoxyItemize}
+\item Adjusts threshold for noise (if set)
+\item Picks the relevant digits information from the data model (I\-D\-Sample or O\-D\-Samples)
+\item Calls the G\-P\-U or C\-P\-U algorithm
+\begin{DoxyItemize}
+\item C\-P\-U version
+\begin{DoxyItemize}
+\item Sort digits by time
+\item Loop over all digits
+\item Find digit with more than threshold digits in window preceding digit time
+\begin{DoxyItemize}
+\item If found, issue trigger with pre and post trigger window around that hit
+\item Continue with first hit outside the post-\/trigger window
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item G\-P\-U version
+\begin{DoxyItemize}
+\item T\-O\-D\-O add explanation here
+\item T\-O\-D\-O ensure the algorithm is similar (may not be identical due to G\-P\-U-\/related optimisations that can be made), the definitions of trigger time etc are identical, and the results are identical
+\item T\-O\-D\-O make the G\-P\-U version of the code work with the \hyperlink{classWCSimReader}{W\-C\-Sim\-Reader} tool
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item T\-O\-D\-O make both versions work with the \hyperlink{classWCSimASCIReader}{W\-C\-Sim\-A\-S\-C\-I\-Reader} tool
+\end{DoxyItemize}
+
+\subsection*{Configuration}
+
+``` trigger\-\_\-search\-\_\-window W\-I\-N\-D\-O\-W trigger\-\_\-threshold T\-H\-R\-E\-S\-H\-O\-L\-D trigger\-\_\-threshold\-\_\-adjust\-\_\-for\-\_\-noise B\-O\-O\-L pretrigger\-\_\-save\-\_\-window P\-R\-E\-T\-R\-I\-G\-G\-E\-R posttrigger\-\_\-save\-\_\-window P\-O\-S\-T\-T\-R\-I\-G\-G\-E\-R trigger\-\_\-od B\-O\-O\-L use\-\_\-stopwatch B\-O\-O\-L stopwatch\-\_\-file F\-I\-L\-E\-N\-A\-M\-E verbose L\-E\-V\-E\-L ``{\ttfamily  $\ast$}trigger\-\_\-search\-\_\-window{\ttfamily Width of the sliding window, in ns $\ast$}trigger\-\_\-threshold{\ttfamily Trigger threshold -\/ number of triggers must be above this value (equal to does not fire the trigger) $\ast$}trigger\-\_\-threshold\-\_\-adjust\-\_\-for\-\_\-noise{\ttfamily Add the average dark noise rate to the threshold? $\ast$}pretrigger\-\_\-save\-\_\-window{\ttfamily After a trigger is found, save digits from}trigger\-\_\-time -\/ pretrigger\-\_\-save\-\_\-window{\ttfamily to}trigger\-\_\-time + posttrigger\-\_\-save\-\_\-window{\ttfamily  $\ast$}posttrigger\-\_\-save\-\_\-window{\ttfamily After a trigger is found, save digits from}trigger\-\_\-time -\/ pretrigger\-\_\-save\-\_\-window{\ttfamily to}trigger\-\_\-time + posttrigger\-\_\-save\-\_\-window{\ttfamily  $\ast$}trigger\-\_\-od{\ttfamily Trigger on O\-D digits, rather than I\-D digits? $\ast$}use\-\_\-stopwatch{\ttfamily Use the Stopwatch functionality implemented for this tool? $\ast$}stopwatch\-\_\-file{\ttfamily Save the time it takes for each run of}Execute(){\ttfamily to a histogram. Should end in .pdf, .eps, etc. $\ast$}verbose` Verbosity level. Runs from 0 (low verbosity) to 9 (high verbosity)
+
+There are also parameters used by the G\-P\-U version of the code ``` std\-::string P\-M\-T\-File; std\-::string Detector\-File; std\-::string Parameter\-File; ``` T\-O\-D\-O these G\-P\-U parameters should be removed (use \hyperlink{classWCSimReader}{W\-C\-Sim\-Reader} / \hyperlink{classWCSimASCIReader}{W\-C\-Sim\-A\-S\-C\-I\-Reader} instead) 
