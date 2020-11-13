@@ -118,7 +118,8 @@ lib/libMyToolsGPU.so: UserTools/*/* UserTools/* UserTools/CUDA/GPU_link.o includ
 	@echo -e "\e[38;5;226m\n*************** Making " $@ "****************\e[0m"
 	cp UserTools/*/*.h include/
 	cp UserTools/*.h include/
-	g++ $(CXXFLAGS) -shared  UserTools/*/*.o  -DGPU UserTools/CUDA/CUDA_Unity.o -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyToolsGPU.so $(MyToolsIncludeGPU) $(MyToolsLibGPU) $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude)
+	g++ $(CXXFLAGS) -shared  UserTools/*/*.o  -DGPU UserTools/CUDA/CUDA_Unity.o -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyToolsGPU.so $(MyToolsIncludeGPU) $(MyToolsLibGPU) $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude)  $(FlowerLib) $(FlowerInclude)
+
 
 RemoteControl:
 	cd $(ToolDAQPath)/ToolDAQFramework/ && $(MAKE) RemoteControl
