@@ -59,11 +59,11 @@ bool PWCSimReader::Execute(){
 	
 	m_data->time_slices.push_back(args.at(i)->time_slice);
 	args.at(i)->time_slice=0;
-      
+	
       }
       
       if(m_data->time_slices.size()<m_slicecount){
-	TimeSlice* tmp=new TimeSlice;
+	TimeSlice* tmp=new TimeSlice();
 	args.at(i)->time_slice=tmp;
 	args.at(i)->event_num=m_event_num;
 	m_event_num++;

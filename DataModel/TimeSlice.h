@@ -9,10 +9,11 @@ class TimeSlice{
  public:
 
   TimeSlice();
+  ~TimeSlice();
 
   //Tom please add what ever WCSim ID OD mPMT structures etc needed to load in a single WCSim event
 
-  std::map<float,Chunk*> chunks;
+  std::map<float,Chunk*>* chunks;
 
 
 

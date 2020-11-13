@@ -23,3 +23,5 @@
 #endif //FLOWEREXISTS
 #include "SupernovaDirectionCalculator.h"
 #include "PWCSimReader.h"
+#include "Chunker.h"
+#include "Pnhits.h"
