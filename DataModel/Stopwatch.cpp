@@ -43,6 +43,8 @@ std::string util::Stopwatch::Result(std::string method_name, std::string output_
   //get the stats
   double min_cpu  = 9999, max_cpu  = -9999, tot_cpu  = 0;
   double min_real = 9999, max_real = -9999, tot_real = 0;
+  double cpu_var = 0.;
+  double real_var = 0.;
   double cpu, real;
   const int n = m_results.size();
   for(size_t i = 0; i < n; i++) {
@@ -65,7 +67,9 @@ std::string util::Stopwatch::Result(std::string method_name, std::string output_
     TH1D hcpu ("hcpu",  ";Time (s);Runs", sqrt(n), min, max);
     TH1D hreal("hreal", ";Time (s);Runs", sqrt(n), min, max);
     for(size_t i = 0; i < n; i++) {
+      cpu_var += pow((m_results[i].cpu_time-tot_cpu/n),2.)/(n-1.);
       hcpu .Fill(m_results[i].cpu_time);
+      real_var += pow((m_results[i].real_time-tot_real/n),2.)/(n-1.);
       hreal.Fill(m_results[i].real_time);
     }//i
     TCanvas c;
@@ -84,11 +88,13 @@ std::string util::Stopwatch::Result(std::string method_name, std::string output_
   std::stringstream ss;
   ss << m_tool_name << "::" << method_name << "() run timing stats:" << std::endl
      << " CPU Time (s): Total = " << tot_cpu << std::endl
-     << "             Average = " << tot_cpu / (double)n
+     << "             Average = " << tot_cpu / (double)n << std::endl
+     << "             Sample standard deviation = " << sqrt(cpu_var)
      << " over " << n << " runs" << std::endl
      << "  Range of " << min_cpu << " to " << max_cpu << std::endl
      << " Real Time (s): Total = " << tot_real << std::endl
-     << "              Average = " << tot_real / (double)n
+     << "              Average = " << tot_real / (double)n << std::endl
+     << "              Sample standard deviation = " << sqrt(real_var)
      << " over " << n << " runs" << std::endl
      << "  Range of " << min_real << " to " << max_real << std::endl;
 
