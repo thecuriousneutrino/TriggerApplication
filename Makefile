@@ -61,9 +61,9 @@ main: src/main.cpp | lib/libMyTools.so lib/libStore.so lib/libLogging.so lib/lib
 	@echo -e "\e[38;5;226m\n*************** Making " $@ "****************\e[0m"
 	g++ $(CXXFLAGS) src/main.cpp -o main -I include -L lib -lStore -lMyTools -lToolChain -lDataModel -lLogging -lServiceDiscovery -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsInclude)  $(MyToolsLib) $(ZMQLib) $(ZMQInclude)  $(BoostLib) $(BoostInclude) $(BonsaiLib) $(BonsaiInclude) $(FlowerLib) $(FlowerInclude)
 
-mainGPU: src/main.cpp UserTools/CUDA/GPU_link.o | lib/libMyToolsGPU.so lib/libStore.so lib/libLogging.so lib/libToolChain.so lib/libDataModel.so lib/libServiceDiscovery.so
+mainGPU: src/main.cpp UserTools/CUDA/CUDA/GPU_link.o | lib/libMyToolsGPU.so lib/libStore.so lib/libLogging.so lib/libToolChain.so lib/libDataModel.so lib/libServiceDiscovery.so
 	@echo -e "\e[38;5;226m\n*************** Making " $@ "****************\e[0m"
-	g++ $(CXXFLAGS) src/main.cpp UserTools/CUDA/GPU_link.o -o main -I include -L lib -lStore -lMyToolsGPU  -lMyTools -lToolChain -lDataModel -lLogging -lServiceDiscovery -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsIncludeGPU)  $(MyToolsLibGPU) $(ZMQLib) $(ZMQInclude)  $(BoostLib) $(BoostInclude)
+	g++ $(CXXFLAGS) src/main.cpp UserTools/CUDA/CUDA/GPU_link.o -o mainGPU -I include -L lib -lStore -lMyToolsGPU  -lMyTools -lToolChain -lDataModel -lLogging -lServiceDiscovery -lpthread $(DataModelInclude) $(DataModelLib) $(MyToolsIncludeGPU)  $(MyToolsLibGPU) $(ZMQLib) $(ZMQInclude)  $(BoostLib) $(BoostInclude) $(FlowerLib) $(FlowerInclude)
 
 
 lib/libStore.so: $(ToolDAQPath)/ToolDAQFramework/src/Store/*
@@ -97,7 +97,7 @@ clean:
 	rm -f main
 	rm -f RemoteControl
 	rm -f NodeDaemon
-	rm -f UserTools/CUDA/*.o
+	rm -f UserTools/CUDA/CUDA/*.o
 	rm -f UserTools/*/*.o
 	rm -f DataModel/*.o
 
@@ -114,12 +114,11 @@ lib/libMyTools.so: UserTools/*/* UserTools/* include/Tool.h  lib/libLogging.so l
 	cp UserTools/*.h include/
 	g++ $(CXXFLAGS) -shared  UserTools/*/*.o -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyTools.so $(MyToolsInclude) $(MyToolsLib) $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude) $(BonsaiLib) $(BonsaiInclude) $(FlowerLib) $(FlowerInclude)
 
-lib/libMyToolsGPU.so: UserTools/*/* UserTools/* UserTools/CUDA/GPU_link.o include/Tool.h lib/libLogging.so lib/libStore.so  $(patsubst UserTools/%.cpp, UserTools/%.o, $(wildcard UserTools/*/*.cpp)) | lib/libDataModel.so
+lib/libMyToolsGPU.so: UserTools/*/* UserTools/* UserTools/CUDA/CUDA/GPU_link.o include/Tool.h lib/libLogging.so lib/libStore.so  $(patsubst UserTools/%.cpp, UserTools/%.o, $(wildcard UserTools/*/*.cpp)) | lib/libDataModel.so
 	@echo -e "\e[38;5;226m\n*************** Making " $@ "****************\e[0m"
 	cp UserTools/*/*.h include/
 	cp UserTools/*.h include/
-	g++ $(CXXFLAGS) -shared  UserTools/*/*.o  -DGPU UserTools/CUDA/CUDA_Unity.o -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyToolsGPU.so $(MyToolsIncludeGPU) $(MyToolsLibGPU) $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude)  $(FlowerLib) $(FlowerInclude)
-
+	g++ $(CXXFLAGS) -shared  UserTools/*/*.o  -DGPU UserTools/CUDA/CUDA/CUDA_Unity.o -I include -L lib -lStore -lDataModel -lLogging -o lib/libMyToolsGPU.so $(MyToolsIncludeGPU) $(MyToolsLibGPU) $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude) $(BoostLib) $(BoostInclude) $(FlowerLib) $(FlowerInclude)
 
 RemoteControl:
 	cd $(ToolDAQPath)/ToolDAQFramework/ && $(MAKE) RemoteControl
@@ -151,11 +150,11 @@ update:
 	cd $(ToolDAQPath)/zeromq-4.0.7; git pull
 	git pull
 
-UserTools/CUDA/GPU_link.o:  UserTools/CUDA/*
+UserTools/CUDA/CUDA/GPU_link.o:  UserTools/CUDA/CUDA/*
 	@echo "\n*************** Compiling & Linking " $@ "****************"
-	cp UserTools/CUDA/*.h include/
-	nvcc -c --shared -Xcompiler -fPIC -dlink UserTools/CUDA/CUDA_Unity.cu -o UserTools/CUDA/CUDA_Unity.o  -I UserTools/CUDA/  $(CUDAINC) $(NVCCFLAGS) $(CUDALIB)
-	nvcc  -arch=sm_35 -dlink  -o UserTools/CUDA/GPU_link.o UserTools/CUDA/CUDA_Unity.o  $(CUDALIB) $(CUDAINC)
+	cp UserTools/CUDA/CUDA/*.h include/
+	nvcc -c --shared -Xcompiler -fPIC -dlink UserTools/CUDA/CUDA/CUDA_Unity.cu -o UserTools/CUDA/CUDA/CUDA_Unity.o  -I UserTools/CUDA/CUDA/  $(CUDAINC) $(NVCCFLAGS) $(CUDALIB)
+	nvcc  -arch=sm_35 -dlink  -o UserTools/CUDA/CUDA/GPU_link.o UserTools/CUDA/CUDA/CUDA_Unity.o  $(CUDALIB) $(CUDAINC)
 
 Docs:
 	@if [ ${DOXYGEN_EXISTS} = 1 ]; \
